@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Введение в машинное обучение</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Konstantin Zaitsev   Summer school 2017" />
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Введение в машинное обучение
+## на языке R
+### Konstantin Zaitsev <br/> Summer school 2017
+### 1/08/2017
+
+---
+
+
+
+
+background-image: url(MachineLearningDiagram.png)
+background-size: cover
+
+---
+
+# Введение в процесс ML
+
+Загрузим библиотеки и данные
+
+
+```r
+library(ggplot2)
+
+ageData &lt;- read.csv("age_data.tsv", sep="\t")
+```
+--
+В файле **age_data.tsv** находятся данные о количестве раковых инцидентов и возрастные группы этих пациентов на территории UK.
+
+```r
+head(ageData)
+```
+
+```
+##   Age.Start Age.End Male.Cases Female.Cases Male.Rates Female.Rates
+## 1         0       4        419          358       20.4         18.3
+## 2         5       9        242          184       12.6         10.0
+## 3        10      14        228          203       12.6         11.7
+## 4        15      19        412          389       20.7         20.6
+## 5        20      24        684          755       31.2         35.5
+## 6        25      29       1065         1650       49.0         75.7
+```
+
+---
+## Данные
+
+
+```r
+ggplot(data=ageData, aes(x=Age.End, y=Male.Cases)) +
+  geom_point(size=3) + theme_bw()
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-3-1.png" width="100%" /&gt;
+
+---
+
+## Обучающая и тестирующая выборка
+
+- Наша задача построить предсказатель, который по возрасту мог бы предположить число раковых инцидентов внутри этой возрастной группы. Прежде чем начать наше обучение, нужно разбить наши данные на обучающую и тестирующую выборку.
+
+--
+
+- Обычно такое разбиение делают на группы 80% и 20%, однако в нашем случае мы просто разобьем наши 18 сэмплов на две группы по 12 и 6.
+
+---
+
+## Разбиение
+
+
+```r
+set.seed(1)
+training &lt;- sample(1:nrow(ageData), 12)
+validation &lt;- (1:nrow(ageData))[-training]
+
+ageData$set &lt;- NA
+ageData[training, "set"] &lt;- "training"
+ageData[validation, "set"] &lt;- "validation"
+
+head(ageData[ , c(1:3, 7)])
+```
+
+```
+##   Age.Start Age.End Male.Cases        set
+## 1         0       4        419   training
+## 2         5       9        242   training
+## 3        10      14        228   training
+## 4        15      19        412 validation
+## 5        20      24        684   training
+## 6        25      29       1065 validation
+```
+
+---
+
+## Разбиение
+
+```r
+ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+  geom_point(size=3) + theme_bw()
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-5-1.png" width="100%" /&gt;
+
+---
+
+## Полиномиальная регрессия
+
+- Мы прибегнем к полиномиальной регрессии в качестве нашего предсказателя: обучим нашу модель на тренировочных данных, и будем проверять, как эта модель работает на тестовых данных.
+
+--
+
+- Будем проверять для разных степеней многочлена и рассмотрим явление переобучения (**overfitting**)
+
+--
+
+- Сначала построим простую линейную регрессию, а затем будем постепенно увеличивать степень многочлена
+
+---
+
+## Задача регрессии
+
+- Каждый объект `\(x\)` описывается набором признаков `\(x_1, x_2, \dots , x_m\)`, а также известно значение зависимой переменной, которую мы пытаемся предсказать `\(y\)`.
+
+- Тогда все объекты можно представить матрицей `\(X\)` размера `\(n \times m\)`, где `\(n\)` -- количество объектов, а `\(m\)` -- количество признаков.
+
+--
+
+Задача регрессии заключается в нахождении зависимости переменной `\(y\)` от вектора признаков `\((x_1, \dots , x_m)\)`. Зависимость можно описать с помощью функции:
+
+$$ f(x_1, \dots, x_m) = f(x) \sim y $$
+
+--
+
+Задача регрессии -- задача нахождения функции `\(f\)`.
+
+---
+
+## Линейная регрессия
+
+Множество функций откуда выбирается f представимо в виде:
+
+$$ f(x) = b_0 + b_1 x_1 + b_2 x_2 + \dots + b_n x_n $$
+--
+
+Линейная регрессия -- способ подобрать `\(b_i\)` таким способом, чтобы приблизить значения `\(f(x)\)` нашими значениями `\(y\)`. Для этого мы будем минимизировать квадратичную ошибку:
+
+$$ \sum_{i=1}^n (f(x_i) - y_i)^2 $$
+
+---
+
+## Наш случай
+
+У нас всего одна переменная **Age.End** и одна переменная, которую мы пытаемся предсказать **Male.Cases**, тогда линейная регрессия одной переменной выглядит как:
+
+$$ y \sim a + b x $$
+
+
+---
+
+## Как это выглядит
+
+
+```r
+ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+  geom_point(size=3) + theme_bw() + 
+  geom_smooth(data=subset(ageData, set == "training"),
+              method="lm", formula = y ~ x, se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-6-1.png" width="100%" /&gt;
+
+---
+
+## Визуализация ошибки
+
+
+```r
+train &lt;- subset(ageData, set == "training")
+
+with(train, {
+  fit &lt;- lm(Male.Cases ~ Age.End)
+  prediction &lt;- predict(fit, data.frame('Age.End' = ageData$Age.End))
+  predicted &lt;- cbind(ageData, prediction)
+  
+  ggplot(data=predicted, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + 
+    geom_point(aes(y = prediction), shape = 1, size=3) +
+    geom_segment(aes(xend = Age.End, yend = prediction), alpha = .8) +
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ x, se=F, fullrange=T) +
+    theme_bw()
+  
+})
+```
+
+---
+
+## Визуализация ошибки
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
+
+---
+
+## Выводы
+
+- Линейная регрессия -- очень простая модель и не может хорошо приближать наши данные.
+
+--
+
+- Мы можем воспользоваться полиномиальной регрессией.
+
+---
+class: inverse, middle, center
+
+# Полиномиальная регрессия
+
+---
+
+## Полиномиальная регрессия
+
+- Пускай есть лишь одна зависимая переменная (признак) -- `\(x\)` и переменная, которую мы пытаемся предсказать, -- `\(y\)`.
+
+- Тогда мы будем выбирать функцию `\(f\)` из множества функций вида (многочлены степени не более k):
+
+$$ f(x) = b_0 + b_1 x + b_2 x^2 + \dots + b_n x^k $$
+
+--
+
+- Полиномиальная регрессия -- способ подобрать `\(b_i\)` таким способом, чтобы приблизить значения `\(f(x)\)` нашими значениями `\(y\)`. Для этого мы будем минимизировать квадратичную ошибку:
+
+$$ \sum_{i=1}^n (f(x_i) - y_i)^2 $$
+
+--
+
+- Множество фунций в линейной регрессии является подмножеством функций полиномиальной регрессии.
+
+---
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 1 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 2 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-10-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 3 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-11-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 4 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 5 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-13-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 6 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-14-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 7 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-15-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 8 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-16-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 9 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-17-1.png" width="100%" /&gt;
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 10 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-18-1.png" width="100%" /&gt;
+
+
+---
+count: false
+
+## Как это выглядит
+
+
+```r
+* degree &lt;- 11 
+  ggplot(data=ageData, aes(x=Age.End, y=Male.Cases, color=set)) +
+    geom_point(size=3) + theme_bw() + 
+    geom_smooth(data=subset(ageData, set == "training"),
+                method="lm", formula = y ~ poly(x, degree), se=F, fullrange=T)
+```
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-19-1.png" width="100%" /&gt;
+
+---
+background-image: url(http://5sec.info/files/images/large/scream_edvard_munch.jpg)
+background-size: cover
+
+# Переобучение
+
+---
+
+# Переобучение 
+
+Переобучение (переподгонка, пере- в значении «слишком», англ. **overfitting**) в машинном обучении и статистике — явление, когда построенная модель хорошо объясняет примеры из обучающей выборки, но относительно плохо работает на примерах, не участвовавших в обучении (на примерах из тестовой выборки) (с) Wikipedia
+
+--
+
+- Переобучение нужно рассматривать в контексте оптимизации параметров обучения
+
+--
+
+- В нашем случае мы можем оптимизировать степень многочлена
+
+---
+# Визуализация переобучения
+
+
+```r
+with(train, {
+  results &lt;- lapply(1:10, function(degree) {
+    fit &lt;- lm(Male.Cases ~ poly(Age.End, degree=degree, raw=T))
+    prediction &lt;- predict(fit, data.frame('Age.End' = ageData$Age.End))
+    se &lt;- (ageData$Male.Cases - prediction)^2
+    
+    rmseTrain &lt;- sqrt(mean(se[training]))
+    rmseValid &lt;- sqrt(mean(se[validation]))
+    return(c(degree, rmseTrain, rmseValid))
+  })
+  
+  results &lt;- do.call(rbind, results)
+  colnames(results) &lt;- c("Degree", "SSE Train", "SSE Validation")
+  toPlot &lt;- rbind(
+    data.frame(degree=results[, "Degree"], SSE=results[, "SSE Train"], dataset="Train"),
+    data.frame(degree=results[, "Degree"], SSE=results[, "SSE Validation"], dataset="Validation")
+  )
+  
+  ggplot(data=toPlot, aes(x=degree, y=SSE, color=dataset)) +
+    geom_point(size=3) + geom_line(size=2) + ggtitle("RMSE Plot") + theme_bw()
+  
+})
+```
+
+---
+# Визуализация переобучения
+
+&lt;img src="lecture1_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
+
+---
+class: inverse
+
+# Быстрый опросник
+.large[
+- Что такое задача регрессии?
+]
+--
+.large[
+- Что такое линейная регрессия?
+]
+--
+.large[
+- Что такое полиномиальная регрессия ?
+]
+--
+.large[
+- Что такое переобучение ?
+]
+--
+.large[
+- Зачем делать разделение на обучающую (тренировочную) и тестирующую (валидирующую) выборки?
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

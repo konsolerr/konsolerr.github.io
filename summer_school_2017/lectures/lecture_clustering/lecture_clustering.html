@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Кластеризация и понижение размерности</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Konstantin Zaitsev   Summer school 2017" />
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Кластеризация и понижение размерности
+## hclust, k-means, (h)dbscan | PCA, TSNE
+### Konstantin Zaitsev <br/> Summer school 2017
+### 1/08/2017
+
+---
+
+
+
+
+background-image: url(MachineLearningDiagram.png)
+background-size: cover
+  
+---
+
+## Кластеризация
+### (cluster analysis, clustering)
+
+Мотивация: нахождение групп похожих объектов среди множества объектов
+
+Вход:
+- Какое-то количество (лучше больше) исследуемых объектов
+- Мера «похожести» этих объектов
+
+Выход:
+- Группировка этих объектов в классы, что объекты внутри классов «похожи» между собой
+
+---
+
+## Кластеризация: примеры
+
+- Точки на плоскости; похожесть точек, как расстояние между ними
+- Электронные письма; похожесть наборов встречаемых в письмах слов
+- Смешные картинки? (Feature selection)
+- Профили людей в социальных сетях; похожесть как количество общих друзей
+
+---
+
+## Кластеризация: примеры
+
+- Филогенетика: много разных видов, похожесть геномов
+- Изображения микроскопии: feature selection
+- Данные экспрессии: много разных генов, похожесть экспрессии между образцами
+- Данные экспрессии: много образцов, похожесть экспрессии внутри образцов
+
+
+---
+## Кластеризация: какая бывает?
+
+Разная, поэтому надо обзорно знать, что есть
+
+А именно:
+- Hierarchical clustering (Иерархическая кластеризация)
+- K-means (К-средних): каждый кластер представлен средним
+- Density models: важно, что кластеры должны быть плотными (что значит плотный?)
+
+А ещё, что мы сегодня не рассмотрим:
+- Distribution models + EM: каждый кластер моделируется распределением
+- Biclustering: кластеризация идет в пространстве образцов и признаков
+- Кластеризация на графах: помещать в группу плотно уложенные в графе вершины
+- И многое другое
+
+
+---
+
+## Данные экспрессии генов
+
+Хорошим примером данных большой размерности, для которых применяются оба подхода (кластеризация и понижение размерности) является почти любой набор данных экспрессии.
+
+На этой практике мы с вами рассмотрим публично доступный RNA-seq набор данных экспрессии **GSE89225**. В нём 35 образцов, каждый образец -- это либо "Conventional CD4 T cells", либо "Regulatory T cells" из двух тканей "human breast cancer" и "normal breast parenchyma".
+
+---
+
+## Данные экспрессии генов
+
+
+```r
+data &lt;- read.csv("GSE89225_illumina_counts_preprocessed.csv", row.names=1)
+conditions &lt;- read.csv("conditions.csv", row.names=1)
+
+data &lt;- data[, !colnames(data) %in% c("treg_NBP_patient3")]
+conditions &lt;- conditions[!rownames(conditions) %in% c("treg_NBP_patient3"), ]
+
+head(data[, 1:2])
+```
+
+```
+##                 tconv_tumor_patient10 cd177negtreg_tumor_patient10
+## ENSG00000166710              18.34558                     18.26569
+## ENSG00000210082              18.34309                     18.75290
+## ENSG00000251562              18.01381                     17.26533
+## ENSG00000075624              16.65375                     17.17296
+## ENSG00000198804              17.24690                     17.62255
+## ENSG00000198938              16.68540                     17.00703
+```
+---
+
+## Данные экспрессии генов
+
+
+```r
+head(conditions)
+```
+
+```
+##                                            tissue
+## tconv_tumor_patient10        tissue: breast tumor
+## cd177negtreg_tumor_patient10 tissue: breast tumor
+## cd177postreg_tumor_patient10 tissue: breast tumor
+## tconv_tumor_patient1         tissue: breast tumor
+## treg_tumor_patient1          tissue: breast tumor
+## tconv_NBP_patient2                    tissue: NBP
+##                                                            cells
+## tconv_tumor_patient10        cell type: Conventional CD4 T cells
+## cd177negtreg_tumor_patient10       cell type: Regulatory T cells
+## cd177postreg_tumor_patient10       cell type: Regulatory T cells
+## tconv_tumor_patient1         cell type: Conventional CD4 T cells
+## treg_tumor_patient1                cell type: Regulatory T cells
+## tconv_NBP_patient2           cell type: Conventional CD4 T cells
+```
+
+---
+## Кластеризация: какая бывает?
+
+Разная, поэтому надо обзорно знать, что есть
+
+А именно:
+- **Hierarchical clustering (Иерархическая кластеризация)**
+- K-means (К-средних): каждый кластер представлен средним
+- Density models: важно, что кластеры должны быть плотными (что значит плотный?)
+
+&lt;!-- А ещё, что мы сегодня не рассмотрим: --&gt;
+&lt;!-- - Distribution models + EM: каждый кластер моделируется распределением --&gt;
+&lt;!-- - Biclustering: кластеризация идет в пространстве образцов и признаков --&gt;
+&lt;!-- - Кластеризация на графах: помещать в группу плотно уложенные в графе вершины --&gt;
+&lt;!-- - И многое другое --&gt;
+
+---
+
+## Иерархическая кластеризация
+
+Группа алгоритмов «упорядочивания» данных
+
+Визуализация чаще всего с помощью бинарных деревьев (дендограмм)
+
+.callout.tofit[![](example_hclust.png)]
+
+Упорядочивание:
+- Сверху вниз
+- Снизу вверх
+- Стратегии упорядочивания: разные
+
+---
+### Сверху вниз
+- Изначально все объекты находятся в одной группе
+- На основании кого-то критерия все объекты делятся на два класса
+- Повторяем пока в каждой группе не останется по одному элементу
+- Используется крайне редко: большое время работы
+
+--
+
+### Снизу вверх
+- Изначально все объекты находятся в одной группе
+- На основании кого-то критерия все объекты делятся на два класса
+- Повторяем пока в каждой группе не останется по одному элементу
+- Используется крайне редко: большое время работы
+
+---
+
+## Критерии
+
+- Single linkage (сравнение лучшей пары)
+- Average (median) linkage (сравнение расстояние между средними)
+- Complete linkage (сравнение худшей пары)
+- Ward’s method* (склеиваем группы с наименьшей вариацией)
+
+* Ward’s method’у нужно, чтобы расстояния были пропорциональны Euclidean distances
+
+
+---
+
+## Используем евклидово расстояние
+
+
+```r
+dists &lt;- dist(t(data))
+plot(hclust(dists, method="average"))
+```
+
+![](lecture_clustering_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+```r
+# plot(hclust(dists, method="ward.D2"))
+```
+
+---
+
+## Используем корреляцию
+
+
+```r
+cors &lt;- cor(data)
+dists &lt;- 1 - cors
+dists &lt;- as.dist(dists)
+plot(hclust(dists, method="average"))
+```
+
+![](lecture_clustering_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+## Кластеризация: какая бывает?
+
+Разная, поэтому надо обзорно знать, что есть
+
+А именно:
+- Hierarchical clustering (Иерархическая кластеризация)
+- ** K-means (К-средних): каждый кластер представлен средним **
+- Density models: важно, что кластеры должны быть плотными (что значит плотный?)
+
+---
+
+## K-means
+
+- Изначально определяем число кластеров
+- Инициализируем центры кластеров (случайно или нет)
+- Для всех точек нашего множества находим ближайший центр: все точки множества разбились на кластеры
+- Находим новые центры кластеров
+- И по новой
+
+---
+
+## K-means
+
+.tofit[![](K-means_convergence.gif)]
+
+---
+
+# K-means
+
+```r
+library(amap)
+library(pheatmap)
+clustering &lt;- Kmeans(data, 8, iter.max=20000, method="correlation")
+
+toVisualize &lt;- data[order(clustering$cluster), order(conditions[, 2])]
+rowAnnot &lt;- data.frame(cluster=as.factor(clustering$cluster), row.names=names(clustering$cluster))
+png("heatmap_large.png", width=8, height=12, units="in", res=300)
+pheatmap(toVisualize, show_rownames = F, show_colnames = F, cluster_rows = F, cluster_cols = T,
+         annotation_col = conditions, scale = "row", annotation_row = rowAnnot)
+dev.off()
+```
+
+```
+## png 
+##   2
+```
+---
+background-image: url(heatmap_large.png)
+&lt;!-- background-size: 300px 600px --&gt;
+---
+## Кластеризация: какая бывает?
+
+Разная, поэтому надо обзорно знать, что есть
+
+А именно:
+- Hierarchical clustering (Иерархическая кластеризация)
+- K-means (К-средних): каждый кластер представлен средним
+- ** Density models: важно, что кластеры должны быть плотными (что значит плотный?) **
+
+---
+
+## Density models
+
+Идея заключается в том, что кластеры в наших данных скорее всего «плотно уложены», а то что уложено не очень плотно – вполне может оказаться шумом
+
+.callout.tofit2[![](dbscan.svg)]
+
+Яркие представители жанра:
+DBSCAN, OPTICS
+
+
+---
+class: inverse
+
+# Быстрый опросник
+.large[
+- Что такое задача кластеризации?
+]
+--
+.large[
+- Что необходимо знать для кластеризации?
+]
+---
+## Понижение размерности
+
+Понижение размерности (dimensionality reduction) -- процесс в ходе которого мы понижаем количество рассматриваемых признаков путём получения набора главных признаков, описывающих наш набор данных.
+
+--
+
+Понижения размерности можно достичь с помощью:
+
+- Feature selection -- мы выбираем признаки из уже существующих признаков, а остальные выкидываем
+
+--
+- Feature extraction -- мы можем определить ("извлечь") новые признаки на основании существующих
+
+---
+
+## Зачем понижать размерность
+
+--
+.large[
+- Проще визуализировать
+]
+
+--
+.large[
+- Найденные компоненты описывают закономерности в наших данных
+]
+
+--
+.large[
+- Проклятие размерности
+]
+---
+
+## PCA (principal component analysis)
+
+.large[PCA (principal component analysis, метод главных компонент) -- один из основных методов понижения размерности. Из-за способа построения главных компонент, данный метод гарантирует наименьшую потерю информацию.]
+
+--
+
+.large[
+Основная идея алгоритма заключается в том, чтобы последовательно находить компоненты, которые объясняют больше всего вариации
+]
+
+---
+
+## PCA
+.tofit[![](pca_illustration/pca-02.png)]
+---
+count: false
+## PCA
+.tofit[![](pca_illustration/pca-03.png)]
+---
+count: false
+## PCA
+.tofit[![](pca_illustration/pca-04.png)]\
+
+---
+
+## Performing PCA
+
+.large[
+  В нашем датасете 35 образцов, и они все 12000-мерные, очень большая размерность. PCA может помочь нам понизить размреность и визуализировать эти данные.
+]
+
+
+```r
+dataForPCA &lt;- t(data)
+dataForPCA &lt;- scale(dataForPCA)
+
+pcaData &lt;- prcomp(dataForPCA)
+percents &lt;- pcaData$sdev^2 / sum(pcaData$sdev^2)
+toPlot &lt;- dataForPCA %*% pcaData$rotation
+```
+
+---
+## Визуализиурем
+
+
+```r
+library(ggplot2)
+gdata &lt;- data.frame(
+  x=toPlot[, 1],
+  y=toPlot[, 2],
+  tissue=conditions[, 1],
+  cells=conditions[, 2],
+  name=rownames(conditions)
+)
+
+ggplot(data=gdata, aes(x=x, y=y, color=cells, shape=tissue, text=name)) +
+  geom_point(size=3) + theme_bw()  +
+  xlab(paste0("PC", 1, ": ", formatC(100 * percents[1], digits=4), "%")) +
+  ylab(paste0("PC", 2, ": ", formatC(100 * percents[2], digits=4), "%"))
+```
+---
+## Визуализиурем
+
+&lt;img src="lecture_clustering_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
+
+---
+
+## TSNE
+
+- t-distributed stochastic neighbor embedding
+
+--
+
+- Точек много, признаков много, а посмотреть ну очень хочется
+
+--
+
+- Метод был придуман именно для визуализации большого количества многомерных данных
+
+--
+
+- Базовая концепция: хотим сохранять вероятности "соседства" точек между собой
+
+--
+
+- Много точек, много признаков -- single cell RNA-seq
+
+---
+
+## Loading the data
+
+
+```r
+dataSc &lt;- read.csv(gzfile("back_tmp/counts_2000.tsv.gz"), sep="\t", row.names=1)
+dataSc &lt;- dataSc[complete.cases(dataSc), ]
+dataSc[1:5, 1:5]
+```
+
+```
+##               CAGAGAGAGGAGTTGC CGACTTCAGAAGGCCT GATCGATGTCTTTCAT
+## RP11-34P13.7                 0         0.000000                0
+## FO538757.2                   0         0.000000                0
+## AP006222.2                   0         1.201645                0
+## RP4-669L17.10                0         0.000000                0
+## RP5-857K21.4                 0         0.000000                0
+##               TGCCCATAGCGTGTCC ATCTACTAGCTACCGC
+## RP11-34P13.7                 0                0
+## FO538757.2                   0                0
+## AP006222.2                   0                0
+## RP4-669L17.10                0                0
+## RP5-857K21.4                 0                0
+```
+
+---
+## Lets do it
+
+
+```r
+library(Rtsne)
+tsneRes &lt;- Rtsne(t(dataSc), check_duplicates=F, initial_dims = 10)
+toPlot &lt;- data.frame(TSNE1=tsneRes$Y[, 1], TSNE2=tsneRes$Y[, 2])
+ggplot(toPlot, aes(x=TSNE1, y=TSNE2)) + geom_point() +
+  theme_classic()
+```
+
+---
+## Lets do it
+
+&lt;img src="lecture_clustering_files/figure-html/unnamed-chunk-10-1.png" width="100%" /&gt;
+
+---
+## DBSCAN
+
+
+```r
+library(dbscan)
+clustering &lt;- hdbscan(tsneRes$Y, 20)
+clusters &lt;- clustering$cluster
+clusters[clusters == 0] &lt;- NA
+toPlot$cluster &lt;- as.factor(clusters)
+ggplot(toPlot, aes(x=TSNE1, y=TSNE2, color=cluster)) + geom_point() +
+  theme_classic()
+```
+
+---
+## DBSCAN
+
+&lt;img src="lecture_clustering_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
