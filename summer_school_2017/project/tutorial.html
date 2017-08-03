@@ -187,6 +187,46 @@ Call with 'mason READS-TYPE --help' to get detailed help.
 <p>Ожидается, что классификатор должен говорить, является бактерия патогенной или нет, однако имеет смысл разбить данную задачу на две. Для начала стоит написать классификатор отдельных ридов. Мы подаем рид на вход, и говорим откуда это рид пришёл – из патогенной бактерии, или не патогенной бактерии. А затем можно написать классификатор, который бы агреггировал суммарную информацию классифицированных ридов.</p>
 <p>Риды – не очень удобный инструмент классификации, поэтому следует определить некоторые признаки у ридов: мы будем смотреть только на признаки связанные с последовательностями нуклеотидов: вхождения определенных K-mer и Spaced words.</p>
 <p><strong>Описание этих признаков появятся чуть ниже. </strong></p>
+<div id="-k-mer" class="section level3">
+<h3>Встречаемость k-mer</h3>
+<p>Пускай у нас есть рид “ATATGCTATCCG”.</p>
+<p>K-mer – любая возможная подстрока длины k внутри рида. Стоит прочитать статью <a href="https://en.wikipedia.org/wiki/K-mer" class="uri">https://en.wikipedia.org/wiki/K-mer</a>.</p>
+<p>Тогд для нашего рида несложно посчитать встречаемость подстрок:</p>
+<pre><code>## 
+## A C G T 
+## 3 3 2 4</code></pre>
+<pre><code>## 
+## AT CC CG CT GC TA TC TG 
+##  3  1  1  1  1  2  1  1</code></pre>
+<pre><code>## 
+## ATA ATC ATG CCG CTA GCT TAT TCC TGC 
+##   1   1   1   1   1   1   2   1   1</code></pre>
+<p>Вместо самой встречаемости может иметь смысл посчитать “долю” к-меров.</p>
+<pre class="r"><code>st &lt;- &quot;ATATGCTATCCG&quot;
+table(find_kmers(st, 1)) / length(find_kmers(st, 1))</code></pre>
+<pre><code>## 
+##         A         C         G         T 
+## 0.2500000 0.2500000 0.1666667 0.3333333</code></pre>
+<pre class="r"><code>table(find_kmers(st, 2)) / length(find_kmers(st, 2))</code></pre>
+<pre><code>## 
+##         AT         CC         CG         CT         GC         TA 
+## 0.27272727 0.09090909 0.09090909 0.09090909 0.09090909 0.18181818 
+##         TC         TG 
+## 0.09090909 0.09090909</code></pre>
+<pre class="r"><code>table(find_kmers(st, 3)) / length(find_kmers(st, 3))</code></pre>
+<pre><code>## 
+## ATA ATC ATG CCG CTA GCT TAT TCC TGC 
+## 0.1 0.1 0.1 0.1 0.1 0.1 0.2 0.1 0.1</code></pre>
+<p>Но конечно, же, не стоит забывать про k-меры, которые не встретились.</p>
+<p>NB. Важно помнить, что вместе с k-мером стоит также считать комплиментарный k-mer. Так как ДНК у нас двуцепочечная, вы прекрасно знаете, что если у вас встретился k-mer “GAAA”, то на противоположной цепи обязательно есть k-mer “TTTC”. Поэтому эти k-mer всегда нужно считать вместе.</p>
+</div>
+<div id="spaced-words-counts" class="section level3">
+<h3>Spaced words counts</h3>
+<p><strong>From the original paper</strong></p>
+<p><strong>Spaced words</strong> were introduced for the alignment of dissimilar sequences. Thus, their incorporation is useful in the context of novel species discovery. Spaced words denote the occurrence of all <span class="math inline">\(k\)</span>-mers interrupted by <span class="math inline">\((l-k)\)</span> spacers in a word of length <span class="math inline">\(l\)</span>.</p>
+<p>Рассмотрим строку “ATATGCTATCCG” давайте посчитаем spaced words для k = 4, l = 6. Spaced word для kmera <span class="math inline">\(ATAT\)</span> может выглядеть несколькими образами: “ANNTAT”, “ATNNAT”, “ATANNT”, где NN – вставка из двух нуклеотидов, которая имеет любой вид. Именно такие вхождения строки ATAT в подстроки длины 6 и нужно посчитать.</p>
+<p>Вы можете выбрать несколько k и l, и посчитать такие признаки.</p>
+</div>
 </div>
 <div id="-" class="section level2">
 <h2>Оценка проекта</h2>

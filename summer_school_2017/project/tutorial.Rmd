@@ -82,6 +82,50 @@ Call with 'mason READS-TYPE --help' to get detailed help.
 
 **Описание этих признаков появятся чуть ниже. **
 
+### Встречаемость k-mer
+
+Пускай у нас есть рид "ATATGCTATCCG".
+
+K-mer -- любая возможная подстрока длины k внутри рида. Стоит прочитать статью https://en.wikipedia.org/wiki/K-mer.
+
+Тогд для нашего рида несложно посчитать встречаемость подстрок:
+```{r echo=F}
+find_kmers <- function(string, k){
+  n <- nchar(string) - k + 1
+  kmers <- substring(string, 1:n, 1:n + k - 1)
+  return(kmers)
+}
+
+st <- "ATATGCTATCCG"
+table(find_kmers(st, 1))
+table(find_kmers(st, 2))
+table(find_kmers(st, 3))
+```
+
+Вместо самой встречаемости может иметь смысл посчитать "долю" к-меров.
+```{r }
+st <- "ATATGCTATCCG"
+table(find_kmers(st, 1)) / length(find_kmers(st, 1))
+table(find_kmers(st, 2)) / length(find_kmers(st, 2))
+table(find_kmers(st, 3)) / length(find_kmers(st, 3))
+```
+
+Но конечно, же, не стоит забывать про k-меры, которые не встретились.
+
+NB. Важно помнить, что вместе с k-мером стоит также считать комплиментарный k-mer. Так как ДНК у нас двуцепочечная, вы прекрасно знаете, что если у вас встретился k-mer "GAAA", то на противоположной цепи обязательно есть k-mer "TTTC". Поэтому эти k-mer всегда нужно считать вместе.
+
+### Spaced words counts
+
+**From the original paper**
+
+**Spaced words** were introduced for the alignment of dissimilar sequences. Thus, their incorporation
+is useful in the context of novel species discovery. Spaced words denote the occurrence of all $k$-mers interrupted
+by $(l-k)$ spacers in a word of length $l$. 
+
+Рассмотрим строку "ATATGCTATCCG" давайте посчитаем spaced words для k = 4, l = 6. Spaced word для kmera $ATAT$ может выглядеть несколькими образами: "ANNTAT", "ATNNAT", "ATANNT", где NN -- вставка из двух нуклеотидов, которая имеет любой вид. Именно такие вхождения строки ATAT в подстроки длины 6 и нужно посчитать.
+
+Вы можете выбрать несколько k и l, и посчитать такие признаки.
+
 
 ## Оценка проекта
 
