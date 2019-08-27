@@ -1,0 +1,60 @@
+---
+title: "Gene expression 2019: syllabus"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Before we start
+
+In this course, we (Konstantin Zaitsev and Alexander Tkachenko) will try to explain most of the essential things you need to now about gene expression. We will go from explaining ways to capture RNA and measure RNA abundance to discussing how to properly design gene expression study and what the best practices are.
+
+Authors of this course:
+
+1. Konstantin Zaitsev, https://www.researchgate.net/profile/Konstantin_Zaitsev, https://stepik.org/course/512/
+2. Alexander Tkachenko, https://publons.com/researcher/3041889/alexander-tkachenko/, https://stepik.org/course/94/
+
+
+Most of the material updates will be published here.
+
+Disclaimers:
+
+1. All the course materials will be in English
+2. By "gene expression" we almost always mean "RNA expression" if not said otherwise
+
+## Syllabus
+
++ Central dogma of molecular biology, structure of gene, types of RNA, structure of RNA, transcription, reverse transcription, qPCR, FISH
++ Microarray: quantification, normalization, basic analysis
++ RNA-seq: alignment, quantification, QC, normalization, basic analysis
++ Overall quality control: PCA, clustering, outlier detection
++ Overall quality control: batch correction
++ Differential expression (DE): limma for microarray, Deseq2 for RNA-seq
++ Downstream analysis: pathway/gene set enrichment analysis
++ Downstream analysis: gene expression deconvolution
++ Transcriptome assembly, functional annotation
++ Single-cell transcriptomics: Seurat basic analysis
++ Single-cell transcriptomics: Trajectory analysis, RNA velocity, optimal transport
++ Visual data exploration: phantasus, JBR genome browser
++ Experimental design of gene expression study
+
+## Prerequisites
+
+Most of the lessons will be in format of seminars: lectures and practical part with your laptops. Prior the start of the course, you are required to install latest version of R (https://cran.r-project.org/bin/) and Rstudio (https://www.rstudio.com/) to your laptop. Most of the practices we will be working in R and only for several we will require a command line.
+
+## Homeworks 
+
+There will be 4 projects homeworks during this course:
+
+1. Microarray dataset: processing, QC, analysis, DE
+2. RNA-seq dataset: processing (from fastq), QC, analysis, DE, downstream analysis (pathways)
+3. Transcriptome assembly and functional annotation
+4. Single-cell RNA-seq dataset: analysis with Seurat
+
+
+## Below we will put links to slides and other useful links
+
+Nothing here yet, stay tuned
+
