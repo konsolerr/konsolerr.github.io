@@ -1,0 +1,89 @@
+---
+title: "Microarrays"
+subtitle: "and introduction to gene expression studies"
+author: "Kontantin Zaitsev"
+date: "September 9<sup>th</sup>, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["libs/itmo.css", "libs/itmo-fonts.css"]
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: center, middle
+
+# Quantification of RNA
+
+---
+## Why we measure RNA abundance
+
+<img src="dogma.png" width="60%">
+
+<div class="my-footer"><span>Taken from https://www.ncbi.nlm.nih.gov/pubmed/26259698</span></div> 
+
+---
+## Why we measure RNA abundance
+
+<img src="two_correlations.png">
+<div class="my-footer"><span>Taken from https://www.cell.com/cell/pdf/S0092-8674(16)30270-7.pdf</span></div> 
+
+--
+
+* A is very often the case
+* B is almost never the case
+
+---
+## Why we measure RNA abundance
+
+* While proteins are the key players in biological processes, RNA abundance is a good enough proxy for protein abundance
+
+
+* Measuring RNA abundance is **much easier**
+
+
+* Given several conditions and a gene: for <strong class='red'>the same gene</strong> fold change in RNA abundance will inform us aboust fold change in protein level
+
+---
+## Structure of mRNA
+
+* We are mostly interested in mRNA (messgenger RNA), because it is protein coding RNA
+* Estimated 10<sup>5</sup> to 10<sup>6</sup> mRNA molecules per animal cell with high dynamic range for genes: from several copies to 10<sup>4</sup>
+
+<div class="my-footer"><span>https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3129258/
+ and https://bionumbers.hms.harvard.edu/bionumber.aspx?id=111220</span></div> 
+
+<img src="mrna.png">
+
+---
+## Types of RNA
+
+* rRNA - ribosomal RNA: 80% of total cell RNA
+* tRNA - transfer RNA: 15% of the cell RNA
+* mRNA - messenger RNA for protein-coding genes
+* Orther RNAs: miRNA, lncRNA
+
+---
+## Strategies to capture RNA
+
+|Strategy         |	Type of RNA	    | Ribosomal RNA content	 | Unprocessed RNA content	| Genomic DNA content | Isolation method                                             |
+|:----------------|:---------------:|:----------------------:|:------------------------:|:-------------------:|:------------------------------------------------------------:|
+|Total  RNA       |All	            | High                   |High	                    |High	                |   None                                                       |
+|PolyA selection	|Coding           |	Low	                   |Low	                      |Low	                |Hybridization with poly(dT) oligomers                         |
+|rRNA depletion	  |Coding, noncoding|	Low	                   |High	                    |High	                |Removal of oligomers complementary to rRNA                    |
+|RNA capture	    |Targeted	        | Low	                   |Moderate	                |Low	                |Hybridization with probes complementary to desired transcripts|
+
+---
+## Microarray
+
+* Microarray can be considered as RNA capture technique
+* Microarray consists of thousands of probes
+* Probes consist of many oligonucleotides (all of which are the same within the probe)
+* When cDNA hybridizes with complementary oligonucleotides, we detect fluoresence
+
+---
+## Microarray
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/NA_hybrid.svg" width="80%">
