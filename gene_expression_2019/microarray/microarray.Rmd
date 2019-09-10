@@ -5,7 +5,7 @@ author: "Kontantin Zaitsev"
 date: "September 9<sup>th</sup>, 2019"
 output:
   xaringan::moon_reader:
-    css: ["libs/itmo.css", "libs/itmo-fonts.css"]
+    css: ["../libs/itmo.css", "../libs/itmo-fonts.css"]
     nature:
       ratio: "16:9"
       highlightStyle: github
@@ -20,7 +20,7 @@ class: center, middle
 ---
 ## Why we measure RNA abundance
 
-<img src="dogma.png" width="60%">
+<img src="dogma.png" width="55%">
 
 <div class="my-footer"><span>Taken from https://www.ncbi.nlm.nih.gov/pubmed/26259698</span></div> 
 
@@ -45,6 +45,23 @@ class: center, middle
 
 
 * Given several conditions and a gene: for <strong class='red'>the same gene</strong> fold change in RNA abundance will inform us aboust fold change in protein level
+---
+
+## Example study
+
+
+* Usually you have the phenotype, but you don't know why it happens
+* You take samples from several conditions related to you phenotype
+* You try to figure out what is different in your phenotype from the control (or other condition)
+---
+
+## Example study
+
+
+What can be sample:
+
+* Tissue sample: blood draw, biopsy
+* Cells of specific cell type
 
 ---
 ## Structure of mRNA
@@ -86,4 +103,4 @@ class: center, middle
 ---
 ## Microarray
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/NA_hybrid.svg" width="80%">
+<img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/NA_hybrid.svg" width="70%">

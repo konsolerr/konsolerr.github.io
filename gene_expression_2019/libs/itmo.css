@@ -97,7 +97,7 @@ ul {
   list-style: none; /* Remove default bullets */
 }
 
-ul li::before {
+ul > li::before {
   content: "\2022";
   color: #EC0B43; /*
   font-weight: bold; /* If you want it to be bold */

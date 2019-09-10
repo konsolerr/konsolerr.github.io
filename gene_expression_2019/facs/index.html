@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Microarrays</title>
+    <title>Flow cytometry, FACS and CyTOF</title>
     <meta charset="utf-8" />
     <meta name="author" content="Kontantin Zaitsev" />
     <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
@@ -11,105 +11,152 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Microarrays
-## and introduction to gene expression studies
+# Flow cytometry, FACS and CyTOF
 ### Kontantin Zaitsev
 ### September 9<sup>th</sup>, 2019
 
 ---
 
 
+
 class: center, middle
 
-# Quantification of RNA
+# Flow cytometry
 
 ---
-## Why we measure RNA abundance
 
-&lt;img src="dogma.png" width="55%"&gt;
 
-&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.ncbi.nlm.nih.gov/pubmed/26259698&lt;/span&gt;&lt;/div&gt; 
+## Flow cytometry
 
----
-## Why we measure RNA abundance
-
-&lt;img src="two_correlations.png"&gt;
-&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.cell.com/cell/pdf/S0092-8674(16)30270-7.pdf&lt;/span&gt;&lt;/div&gt; 
-
---
-
-* A is very often the case
-* B is almost never the case
+* Flow cytometry and FACS are widely used techniques to capture features of cell phenotype
+* Flow cytometry allows to understand size and granularity of individual cells
+* FACS allows to capture protein expression for several (pre-defined) surface proteins in individual cells
 
 ---
-## Why we measure RNA abundance
 
-* While proteins are the key players in biological processes, RNA abundance is a good enough proxy for protein abundance
+## Flow cytometry
 
+.pull-left[
+* Sheath fluid focuses the cell suspension, causing cells to pass through a laser beam one cell at a time
+* Forward and side scattered light is detected
+]
 
-* Measuring RNA abundance is **much easier**
-
-
-* Given several conditions and a gene: for &lt;strong class='red'&gt;the same gene&lt;/strong&gt; fold change in RNA abundance will inform us aboust fold change in protein level
----
-
-## Example study
-
-
-* Usually you have the phenotype, but you don't know why it happens
-* You take samples from several conditions related to you phenotype
-* You try to figure out what is different in your phenotype from the control (or other condition)
----
-
-## Example study
-
-
-What can be sample:
-
-* Tissue sample: blood draw, biopsy
-* Cells of specific cell type
+.pull-right[
+&lt;img src="flow_cytometry.jpg" width="70%"&gt;
+]
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.abcam.com/protocols/introduction-to-flow-cytometry&lt;/span&gt;&lt;/div&gt; 
 
 ---
-## Structure of mRNA
 
-* We are mostly interested in mRNA (messgenger RNA), because it is protein coding RNA
-* Estimated 10&lt;sup&gt;5&lt;/sup&gt; to 10&lt;sup&gt;6&lt;/sup&gt; mRNA molecules per animal cell with high dynamic range for genes: from several copies to 10&lt;sup&gt;4&lt;/sup&gt;
+## Flow cytometry
 
-&lt;div class="my-footer"&gt;&lt;span&gt;https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3129258/
- and https://bionumbers.hms.harvard.edu/bionumber.aspx?id=111220&lt;/span&gt;&lt;/div&gt; 
+.pull-left[
+Cells or particles passing through the beam scatter light, which is detected as FS and SS
 
-&lt;img src="mrna.png"&gt;
+* FS correlates with cell size and
+* SS is proportional to the granularity of the cells
+]
 
----
-## Types of RNA
+.pull-right[
+&lt;img src="Forward_Scatter_Light.png" width="350"&gt;
+&lt;img src="Side_Scatter_Light.png" width="350"&gt;
+]
 
-* rRNA - ribosomal RNA: 80% of total cell RNA
-* tRNA - transfer RNA: 15% of the cell RNA
-* mRNA - messenger RNA for protein-coding genes
-* Orther RNAs: miRNA, lncRNA
 
----
-## Strategies to capture RNA
-
-|Strategy         |	Type of RNA	    | Ribosomal RNA content	 | Unprocessed RNA content	| Genomic DNA content | Isolation method                                             |
-|:----------------|:---------------:|:----------------------:|:------------------------:|:-------------------:|:------------------------------------------------------------:|
-|Total  RNA       |All	            | High                   |High	                    |High	                |   None                                                       |
-|PolyA selection	|Coding           |	Low	                   |Low	                      |Low	                |Hybridization with poly(dT) oligomers                         |
-|rRNA depletion	  |Coding, noncoding|	Low	                   |High	                    |High	                |Removal of oligomers complementary to rRNA                    |
-|RNA capture	    |Targeted	        | Low	                   |Moderate	                |Low	                |Hybridization with probes complementary to desired transcripts|
+In this manner, cell populations can often be distinguished based on differences in their size and granularity alone.
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.bosterbio.com/protocol-and-troubleshooting/flow-cytometry-principle&lt;/span&gt;&lt;/div&gt; 
 
 ---
-## Microarray
 
-* Microarray can be considered as RNA capture technique
-* Microarray consists of thousands of probes
-* Probes consist of many oligonucleotides (all of which are the same within the probe)
-* When cDNA hybridizes with complementary oligonucleotides, we detect fluoresence
+## Flow cytometry: example
+
+Below are dot plot and contour plot of blood cells flow cytometry.
+
+&lt;img src="dot_plot_example.jpg" height="250"&gt;
+&lt;img src="contour_plot_example.png" height="250"&gt;
+
+Such plot (and density plots) are common for flow cytometry and FACS and allow cell subset identification.
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.bosterbio.com/protocol-and-troubleshooting/flow-cytometry-principle&lt;/span&gt;&lt;/div&gt; 
 
 ---
-## Microarray
 
-&lt;img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/NA_hybrid.svg" width="70%"&gt;
+class: center, middle
+
+# FACS (fluorescence-activated cell sorting)
+
+---
+
+## FACS (fluorescence-activated cell sorting)
+
+* FACS adds another functionality to flow cytometry
+* FACS detects expression of cell surface molecules
+* For FACS we need to design panel of antibodies with specific fluorophores
+
+---
+
+## FACS
+
+&lt;img src="if-cell-surface-ag.jpg" height="400"&gt;
+
+---
+
+## Cell surface molecules
+
+There are many cell surface molecules and ost of them have at least two names:
+
+1. **Functional**: &lt;br&gt; PTPRC (Protein tyrosine phosphatase, receptor type, C) &lt;br&gt; ITGAM (Integrin alpha M)
+2. **Cluster of differentiation**: &lt;br&gt;  CD45, CD11b
+
+Sometimes these genes have just a name of CD nomenclature like CD4 and CD34.
+
+
+---
+
+## Cell surface molecules
+
+Cell surface molecules may be protein complexes: i.e. composed of products of several genes. 
+
+.pull-center[
+&lt;img src="il2r.jpg" width="400"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.sciencedirect.com/topics/immunology-and-microbiology/il-2-receptor&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Cell surface molecules
+
+.pull-left[
+
+* Luckily, we don't need to learn them
+* Takeaway message: there are **many** cell surface molecules, and scientists very often use them to **characterize cell types**
+
+]
+
+.pull-right[
+&lt;img src="cds.png" width="400"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://en.wikipedia.org/wiki/Cluster_of_differentiation&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Antibodies
+
+* An **antibody** (**Ab**), also known as an **immunoglobulin** (**Ig**), is a large, Y-shaped protein produced mainly by plasma cells that is used by the immune system to neutralize pathogens such as pathogenic bacteria and viruses
+* The antibody **recognizes a unique molecule**, called an antigen, and **binds** to it
+* We can engineer antibodies for cell surface molecules
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Definition is taken from https://en.wikipedia.org/wiki/Antibody&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Antibodies
+
+* 
+
+
+---
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
