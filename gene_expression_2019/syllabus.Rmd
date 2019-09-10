@@ -26,8 +26,8 @@ Disclaimers:
 
 ## Syllabus
 
-+ Central dogma of molecular biology, structure of gene, types of RNA, structure of RNA, transcription, reverse transcription, qPCR, FISH
-+ Microarray: quantification, normalization, basic analysis
++ Central dogma of molecular biology, structure of gene, types of RNA, structure of RNA, transcription, reverse transcription, qPCR, FISH, <a href="https://konsolerr.github.io/gene_expression_2019/facs" target="_blank">FACS</a>
++ <a href="https://konsolerr.github.io/gene_expression_2019/microarray" target="_blank">Microarray</a>: quantification, normalization, basic analysis
 + RNA-seq: alignment, quantification, QC, normalization, basic analysis
 + Overall quality control: PCA, clustering, outlier detection
 + Overall quality control: batch correction
