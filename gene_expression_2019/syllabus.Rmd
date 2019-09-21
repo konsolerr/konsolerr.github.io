@@ -56,5 +56,11 @@ There will be 4 projects homeworks during this course:
 
 ## Below we will put links to slides and other useful links
 
-Nothing here yet, stay tuned
+### Lecture materials
+
+1. Lecture 1: <a href="https://konsolerr.github.io/gene_expression_2019/intro" target="_blank">introduction</a> and <a href="https://konsolerr.github.io/gene_expression_2019/facs" target="_blank">FACS</a>
+
+### Homeworks
+
+Nothing here yet. Lucky you :)
 

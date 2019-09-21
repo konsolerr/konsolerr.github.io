@@ -119,3 +119,11 @@ ul > li::before {
   background-image: url(title_16_9.svg);
   background-size: cover;
 }
+
+.small {
+  font-size: 24px;
+}
+
+.tiny {
+  font-size: 20px;
+}

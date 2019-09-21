@@ -1,5 +1,5 @@
 ---
-title: "Flow cytometry, FACS and CyTOF"
+title: "Flow cytometry and FACS"
 author: "Kontantin Zaitsev"
 date: "September 9<sup>th</sup>, 2019"
 output:
@@ -111,7 +111,7 @@ Sometimes these genes have just a name of CD nomenclature like CD4 and CD34.
 
 Cell surface molecules may be protein complexes: i.e. composed of products of several genes. 
 
-.pull-center[
+.center[
 <img src="il2r.jpg" width="400">
 ]
 
@@ -147,8 +147,140 @@ Cell surface molecules may be protein complexes: i.e. composed of products of se
 
 ## Antibodies
 
-* 
+* We can attach fluorophores of different colors to antibodies to figure measure the expression of surface markers in individual cells
+
+.center[
+<img src="fluo.png" width="450">
+]
 
 
 ---
+
+## Fluorophores
+
+* There are many fluoroscent molecules (fluorophores)
+* These fluorescent molecules are excited by laser light at specific wavelengths and then emit light (fluoresce) at another wavelength
+* By conjugating (pre-attaching) them to primary antibodies, we can create conjugated antibodies that allow for flow cytometry analysis
+
+.center[
+<img src="cell.jpg" width="200">
+]
+
+---
+
+## Fluorophores
+
+.center[
+<img src="fluos.png" width="700">
+]
+
+<div class="my-footer"><span>taken from https://en.wikipedia.org/wiki/Fluorophore</span></div> 
+---
+
+## Important properties of fluorophores
+
+.tiny[
+* **Maximum Excitation Wavelength (λex)** – The peak wavelength in the excitation (absorption) spectra, measured in nanometers (nm)
+* **Maximum Emission Wavelength (λem)** – The peak wavelength in the emission spectra, measured in nanometers (nm)
+* **Extinction Coefficient (ε max )** – (also called molar absorptivity) The capacity for the fluorochrome to absorb light at a given wavelength, usually measured at the maximum excitation wavelength with the units M −1 cm −1
+* **Fluorescence Quantum Yield** (Φf) – The number of photons emitted per absorbed photon. A high quantum yield is important, and this number ranges between 0 and 1
+* **Brightness** – The fluorescence output per fluorophore measured. Fluorophores with high brightness values can be used to detect lower-abundance targets. Calculated as the product of the extinction coefficient (at the relevant excitation wavelength) and the fluorescence quantum yield divided by 1000, with the units M −1 cm −1
+]
+
+---
+
+## Quick reminder about photon energy
+
+$$ E = \frac{hc}{\lambda} $$
+Where
+* $h$ is Planck constant
+* $c$ is the speed of light (in vacuum)
+* $\lambda$ is the photon wavelength
+
+**Energy** of emitted photon **is always lower** than the energy of absorbed photon, so **wavelength** of emitted photon **is greater** than the wavelaength of absorbed photon. 
+
+---
+
+## Flow cytometry with fluorescence
+
+.pull-left[
+
+* So we have cell labeled with antibodies
+* Antibodies for different surface molecules have different fluorophores
+* **For each cell** we detect **forward scatter**, **side scatter** and **fluorescence**
+
+]
+
+.pull-right[
+<img src="facs_mech.png" width="300">
+]
+
+---
+
+## FACS
+
+* Unfortunately, emission light spectra overlap between similar colors
+* We are limited to **7-10** antibodies per FACS experiment
+
+.center[
+<img src="spectra.jpeg" width="600">
+]
+
+<div class="my-footer"><span>taken from https://www.biolegend.com/en-us/multicolor-staining</span></div> 
+
+---
+
+## FACS
+
+.pull-left[
+
+When you are only given 4 flurophores, how to chose to which antibodies to conjugate?
+
+* Basic rule: lower average expression -> greater fluorohpore brightness
+
+]
+.pull-right[
+<img src="4_color_flow_panel.png" width="400">
+]
+
+<div class="my-footer"><span>taken from https://www.bosterbio.com/protocol-and-troubleshooting/flow-cytometry-optimization/fluorescent-conjugates</span></div> 
+
+---
+
+## FACS
+
+
+.center[
+<img src="total_scheme.png" width="700">
+]
+
+
+---
+
+## FACS: sorting cells
+
+.pull-left[
+
+* We can charge droplets with cells based on their fluorescence
+* We can put magnets that will pull differently droplets with different fluorescence into different flasks
+* That's called sorting
+
+]
+
+.pull-right[
+<img src="sorting.png" width="350">
+]
+
+---
+## Lets interpret some FACS plots
+
+* With this knowledge about FACS and how FACS plots look like it should be much easier for you to read and look at different biological papers (especially immunological)
+* Let's open Figure 1 from https://www.nature.com/articles/s41590-019-0449-3.pdf
+* https://konsolerr.github.io/gene_expression_2019/facs/10.1038@s41590-019-0449-3.pdf
+
+---
+
+class: center, middle
+
+# Any questions ?
 
