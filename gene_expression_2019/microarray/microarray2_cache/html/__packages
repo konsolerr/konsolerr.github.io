@@ -1,0 +1,7 @@
+base
+BiocGenerics
+Biobase
+GEOquery
+ggplot2
+reshape2
+limma

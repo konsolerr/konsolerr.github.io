@@ -1,0 +1,12 @@
+base
+affxparser
+BiocGenerics
+Biobase
+GEOquery
+affy
+mouse4302cdf
+S4Vectors
+IRanges
+AnnotationDbi
+org.Mm.eg.db
+mouse4302.db
