@@ -534,6 +534,6 @@ $$t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s^2_{X_1} + s^2_{X_2}}{n}}}$$
 ---
 ## eBayes
 
-https://konsolerr.github.io/gene_epxression_2019/microarray/smyth2004.pdf
+https://konsolerr.github.io/gene_expression_2019/microarray/smyth2004.pdf
 
 * Since we calculate DE for many-many genes we can infer additional sample size from aggregating their deviations too
