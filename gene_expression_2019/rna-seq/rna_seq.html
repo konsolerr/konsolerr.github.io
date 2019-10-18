@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>(m)RNA sequencing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kontantin Zaitsev" />
+    <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
+    <link rel="stylesheet" href="../libs/itmo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# (m)RNA sequencing
+### Kontantin Zaitsev
+### October 17th<sup>th</sup>, 2019
+
+---
+
+
+class: center, middle
+
+# (m)RNA sequencing
+
+---
+
+## Why we measure RNA abundance
+
+&lt;img src="dogma.png" width="55%"&gt;
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.ncbi.nlm.nih.gov/pubmed/26259698&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Gene structure
+
+.center[
+&lt;img src="gene_structure.jpg" width="70%"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from http://nitro.biosci.arizona.edu/courses/EEB600A-2003/lectures/lecture24/lecture24.html&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Gene structure: translation
+
+.center[
+&lt;img src="translation.png" width="90%"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.ncbi.nlm.nih.gov/pubmed/23810193&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+
+## Gene structure: translation
+
+.center[
+&lt;img src="translation.png" width="90%"&gt;
+]
+
+.center[
+&lt;img src="mrna.png" width="90%"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.ncbi.nlm.nih.gov/pubmed/23810193&lt;/span&gt;&lt;/div&gt; 
+
+---
+## Some genes are simple
+
+.center[
+&lt;img src="cd14.png" width="90%"&gt;
+]
+
+---
+
+## Many genes have multiple isoforms
+
+.center[
+&lt;img src="irf1.png" width="90%"&gt;
+]
+
+---
+
+
+## Most of the RNA is ribosomal RNA
+
+.center[
+&lt;img src="rrna.png" width="65%"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from http://hpst.cz/sites/default/files/attachments/5991-5938en.pdf&lt;/span&gt;&lt;/div&gt; 
+---
+
+
+## Strategies to capture RNA
+
+|Strategy         |	Type of RNA	    | Ribosomal RNA content	 | Unprocessed RNA content	| Genomic DNA content | Isolation method                                             |
+|:----------------|:---------------:|:----------------------:|:------------------------:|:-------------------:|:------------------------------------------------------------:|
+|Total  RNA       |All	            | High                   |High	                    |High	                |   None                                                       |
+|PolyA selection	|Coding           |	Low	                   |Low	                      |Low	                |Hybridization with poly(dT) oligomers                         |
+|rRNA depletion	  |Coding, noncoding|	Low	                   |High	                    |High	                |Removal of oligomers complementary to rRNA                    |
+|RNA capture	    |Targeted	        | Low	                   |Moderate	                |Low	                |Hybridization with probes complementary to desired transcripts|
+
+---
+
+## Comparison
+
+.center[
+&lt;img src="isolation_comparison.png" width="60%"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://bmcgenomics.biomedcentral.com/track/pdf/10.1186/1471-2164-15-419&lt;/span&gt;&lt;/div&gt; 
+---
+
+## What is RNA-seq
+
+.center[
+&lt;img src="rna_seq.png" width="100%"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.biostat.wisc.edu/bmi776/lectures/rnaseq.pdf&lt;/span&gt;&lt;/div&gt; 
+---
+
+## RNA-seq
+
+RNA-seq can be done very differently:
+
+* 3' RNA-seq is good for measuring expression
+* Full-length (paired-end) RNA-seq is good for detecting isoforms
+* You can target specific sequences
+
+Depending on what you want to do protocol steps and their order (such as fragmentation) might vary
+
+
+---
+
+## RNA-seq for gene expression
+
+.center[
+&lt;img src="3prime.png" width="65%"&gt;
+]
+
+
+---
+
+## Traditional 3' RNA-seq pipeline
+
+.center[
+&lt;img src="3prime_pipeline.png" width="65%"&gt;
+]
+
+
+---
+
+## Traditional 3' RNA-seq pipeline
+
+Once RNA is fragmented
+
+.center[
+&lt;img src="library_prep.png" width="70%"&gt;
+]
+
+
+---
+
+## 3' vs full-length RNA-seq
+
+
+.center[
+&lt;img src="3_vs_full.png" width="50%"&gt;
+]
+
+---
+
+class: center, middle
+
+# Any questions so far?
+
+---
+
+## Processing RNA-seq: two cases
+
+* Model organism with a good reference genome (human, mouse, arabidopsis, yiest)
+* Non-model organism :(
+
+.center[
+&lt;img src="alien.jpg" width="20%"&gt;
+]
+
+
+
+---
+
+## Raw files after sequencing:
+
+* Fastq files
+*
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

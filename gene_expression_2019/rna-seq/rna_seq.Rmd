@@ -1,0 +1,225 @@
+---
+title: "(m)RNA sequencing"
+author: "Kontantin Zaitsev"
+date: "October 17th<sup>th</sup>, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["../libs/itmo.css", "../libs/itmo-fonts.css"]
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: center, middle
+
+# (m)RNA sequencing
+
+---
+
+## Why we measure RNA abundance
+
+<img src="dogma.png" width="55%">
+
+<div class="my-footer"><span>Taken from https://www.ncbi.nlm.nih.gov/pubmed/26259698</span></div> 
+
+---
+
+## Gene structure
+
+.center[
+<img src="gene_structure.jpg" width="70%">
+]
+
+
+<div class="my-footer"><span>Taken from http://nitro.biosci.arizona.edu/courses/EEB600A-2003/lectures/lecture24/lecture24.html</span></div> 
+
+---
+
+## Gene structure: translation
+
+.center[
+<img src="translation.png" width="90%">
+]
+
+
+<div class="my-footer"><span>Taken from https://www.ncbi.nlm.nih.gov/pubmed/23810193</span></div> 
+
+---
+
+
+## Gene structure: translation
+
+.center[
+<img src="translation.png" width="90%">
+]
+
+.center[
+<img src="mrna.png" width="90%">
+]
+
+
+<div class="my-footer"><span>Taken from https://www.ncbi.nlm.nih.gov/pubmed/23810193</span></div> 
+
+---
+## Some genes are simple
+
+.center[
+<img src="cd14.png" width="90%">
+]
+
+---
+
+## Many genes have multiple isoforms
+
+.center[
+<img src="irf1.png" width="90%">
+]
+
+---
+
+
+## Most of the RNA is ribosomal RNA
+
+.center[
+<img src="rrna.png" width="65%">
+]
+
+
+<div class="my-footer"><span>Taken from http://hpst.cz/sites/default/files/attachments/5991-5938en.pdf</span></div> 
+---
+
+
+## Strategies to capture RNA
+
+|Strategy         |	Type of RNA	    | Ribosomal RNA content	 | Unprocessed RNA content	| Genomic DNA content | Isolation method                                             |
+|:----------------|:---------------:|:----------------------:|:------------------------:|:-------------------:|:------------------------------------------------------------:|
+|Total  RNA       |All	            | High                   |High	                    |High	                |   None                                                       |
+|PolyA selection	|Coding           |	Low	                   |Low	                      |Low	                |Hybridization with poly(dT) oligomers                         |
+|rRNA depletion	  |Coding, noncoding|	Low	                   |High	                    |High	                |Removal of oligomers complementary to rRNA                    |
+|RNA capture	    |Targeted	        | Low	                   |Moderate	                |Low	                |Hybridization with probes complementary to desired transcripts|
+
+---
+
+## Comparison
+
+.center[
+<img src="isolation_comparison.png" width="60%">
+]
+
+
+<div class="my-footer"><span>Taken from https://bmcgenomics.biomedcentral.com/track/pdf/10.1186/1471-2164-15-419</span></div> 
+---
+
+## What is RNA-seq
+
+.center[
+<img src="rna_seq.png" width="100%">
+]
+
+
+<div class="my-footer"><span>Taken from https://www.biostat.wisc.edu/bmi776/lectures/rnaseq.pdf</span></div> 
+---
+
+## RNA-seq
+
+RNA-seq can be done very differently:
+
+* 3' RNA-seq is good for measuring expression
+* Full-length (paired-end) RNA-seq is good for detecting isoforms
+* You can target specific sequences
+
+Depending on what you want to do protocol steps and their order (such as fragmentation) might vary
+
+
+---
+
+## RNA-seq for gene expression
+
+.center[
+<img src="3prime.png" width="65%">
+]
+
+
+---
+
+## Traditional 3' RNA-seq pipeline
+
+.center[
+<img src="3prime_pipeline.png" width="65%">
+]
+
+
+---
+
+## Traditional 3' RNA-seq pipeline
+
+Once RNA is fragmented
+
+.center[
+<img src="library_prep.png" width="70%">
+]
+
+
+---
+
+## 3' vs full-length RNA-seq
+
+
+.center[
+<img src="3_vs_full.png" width="50%">
+]
+
+---
+
+class: center, middle
+
+# Any questions so far?
+
+---
+
+## Processing RNA-seq: two cases
+
+* Model organism with a good reference genome (human, mouse, arabidopsis, yiest)
+* Non-model organism :(
+
+.center[
+<img src="alien.jpg" width="20%">
+]
+
+
+
+---
+
+## Basic RNA-seq analysis pipeline
+
+* Alignment: raw reads (fastq) + reference genome -> bam
+* Quantification: bam (aligned reads) + reference genome -> expression table
+* Secondary analysis: well, that part you know already
+
+---
+
+## Refernce genomes
+
+* Human: chr1-chr22, chrX, chrY, chrM
+  * 3235 Mb, 20412 genes
+* Mouse: Chr1-chr19, chrX, chrY, chrM
+  * 2318 Mb, 23,139 genes
+
+* Assembly is mostly complete: but not 100%, there are unplaced scffolds and gaps
+* There are pseudogenes, lncRNA, rRNA and other stuff in a genome, which are usually present in the genome annotation
+
+---
+
+## Popular genome assemblies
+
+* Human: chr1-chr22, chrX, chrY, chrM
+  * 3235 Mb, 20412 genes
+* Mouse: Chr1-chr19, chrX, chrY, chrM
+  * 2318 Mb, 23,139 genes
+
+* Assembly is mostly complete: but not 100%, there are unplaced scffolds and gaps
+* There are pseudogenes, lncRNA, rRNA and other stuff in a genome, which are usually present in the genome annotation
+
+---
