@@ -63,7 +63,13 @@ There will be 4 projects homeworks during this course:
 3. Lecture 3: Microarrays <a href="https://konsolerr.github.io/gene_expression_2019/microarray/microarray.html" target="_blank">part 1</a> and <a href="https://konsolerr.github.io/gene_expression_2019/microarray/microarray2.html" target="_blank">part 2</a>
 4. Lecture 4: Secondary analysis <a href="https://konsolerr.github.io/gene_expression_2019/secondary_analysis" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2019/secondary_analysis/secondary_analysis.zip" target="_blank">materials</a>
 
-### Homeworks
+### Homework 1 
 
-Nothing here yet. Lucky you :)
+The first homework is to analyze a microarray gene expression dataset. All the datasets will be available by GEO id, so you can find them at GEO omnibus and also use `GEOquery::getGEO("GSEXXXXX")` to get the expression data into R session.
+
+Basically you needed to perform basic steps for a dataset: normalize and make sense of the PCA plot. Then you need to disgn differential exression to address the general question for your homework. Once you perform DE I want you to highlight genes that are different and perform pathway enrichment.
+
+Datasets IDs are listed in the table below:
+
+https://docs.google.com/spreadsheets/d/15tEZ3fADDdxzIxdBfFhAozQUMb-chAjX14qtdRJKtP8/edit?usp=sharing
 
