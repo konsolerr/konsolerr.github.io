@@ -4,8 +4,8 @@
     <title>(m)RNA sequencing</title>
     <meta charset="utf-8" />
     <meta name="author" content="Kontantin Zaitsev" />
-    <link rel="stylesheet" href="..\libs\itmo.css" type="text/css" />
-    <link rel="stylesheet" href="..\libs\itmo-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
+    <link rel="stylesheet" href="../libs/itmo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -254,14 +254,501 @@ Usually reference is just two files:
 
 ---
 
-## Alignment
+## Sequence Fasta files
 
-Usually reference is just two files:
-
-* Sequence fasta file
-* GTF/GFF annotation
+```
+[kzaytsev@login02 hg38]$ head -4 GRCh38.primary_assembly.genome.fa
+&gt;chr1 1
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+[kzaytsev@login02 hg38]$ head -500 GRCh38.primary_assembly.genome.fa | tail -4
+GGCTCCTCCGGGCAGCCCTCGCCCGGGGTGCGCCCCGGGGCAGGACCCCCAGCCCACGCC
+CAGGGCCCGCCCCTGCCCTCCAGCCCTACGCCTTGACCCGCTTTCCTGCGTCTCTCAGCC
+TACCTGACCTTGTCTTTACCTCTGTGGGCAGCTCCCTTGTGATCTGCTTAGTTCCCACCC
+CCCTTTAAGAATTCAATAGAGAAGCCAGACGCAAAACTACAGATATCGTATGAGTCCAGT
+```
 
 ---
+
+## GTF Annotation file
+
+
+```
+[kzaytsev@login02 hg38]$ head gencode.v28.primary_assembly.annotation.gtf
+##description: evidence-based annotation of the human genome (GRCh38), version 28 (Ensembl 92)
+##provider: GENCODE
+##contact: gencode-help@ebi.ac.uk
+##format: gtf
+##date: 2018-03-23
+chr1    HAVANA  gene    11869   14409   .       +       .       gene_id "ENSG00000223972.5"; gene_type "transcribed_unprocessed_pseudogene"; gene_name "DDX11L1"; level 2; havana_gene "OTTHUMG00000000961.2";
+chr1    HAVANA  transcript      11869   14409   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000456328.2"; gene_type "transcribed_unprocessed_pseudogene"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_name "RP11-34P13.1-002"; level 2; transcript_support_level "1"; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+chr1    HAVANA  exon    11869   12227   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000456328.2"; gene_type "transcribed_unprocessed_pseudogene"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_name "RP11-34P13.1-002"; exon_number 1; exon_id "ENSE00002234944.1"; level 2; transcript_support_level "1"; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+chr1    HAVANA  exon    12613   12721   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000456328.2"; gene_type "transcribed_unprocessed_pseudogene"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_name "RP11-34P13.1-002"; exon_number 2; exon_id "ENSE00003582793.1"; level 2; transcript_support_level "1"; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+chr1    HAVANA  exon    13221   14409   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000456328.2"; gene_type "transcribed_unprocessed_pseudogene"; gene_name "DDX11L1"; transcript_type "processed_transcript"; transcript_name "RP11-34P13.1-002"; exon_number 3; exon_id "ENSE00002312635.1"; level 2; transcript_support_level "1"; tag "basic"; havana_gene "OTTHUMG00000000961.2"; havana_transcript "OTTHUMT00000362751.1";
+```
+---
+
+## GTF Annotation file
+
+.center[
+&lt;img src="gtf.png" width="100%"&gt;
+]
+
+
+---
+
+
+## Fastq files
+
+Raw sequencing files are FastQ files files
+
+```
+[kzaytsev@login02 askembefore]$ zcat foam_01_TACAGAC.fq.gz | head -12
+@J00136:207:HLNWCBBXX:2:1101:1194:1068 1:N:0:NACAGAC
+NGGGCGGATACAGAGAATAGCTTTTAAAGTGTTCTATGTTCCCAGGGGCA
++
+#AAFFJJJJJJJJFJJFJJJJJJFFJJJF&lt;JJ-FFF&lt;-&lt;FFJJFJJJJJF
+@J00136:207:HLNWCBBXX:2:1101:1215:1068 1:N:0:NACAGAC
+NTGCTCATCCTGGCTTACGTCATTGGGTGTGTGTTCGTGTGGGAAAAGGG
++
+#&lt;-A&lt;AFAJ&lt;&lt;&lt;FJJFJFF-FA7AFJF-7-7-&lt;--&lt;&lt;-&lt;JJ-7A-&lt;7A-A
+@J00136:207:HLNWCBBXX:2:1101:1357:1068 1:N:0:NACAGAC
+NGTGGCTCTGGAGGGCGTAGGCCACTTCTTCCGCGAAGTGGCCGAGGAGA
++
+#AAFFFFJJFJFJJJAFJJ&lt;FFJFJJJ&lt;&lt;FJJ&lt;JJJF-&lt;AAFJFJ-JJJJ
+```
+
+---
+
+## Fastq files
+
+Raw sequencing files are FastQ files files:
+
+* Header: instrument name, run number, flowcell ID, lane number, tile number, X coord, Y coord. Read number, Y-filtered/N-not, control number, sometimes demultiplex barcode.
+* Sequence
+* +
+* Quality string
+
+
+```
+[kzaytsev@login02 askembefore]$ zcat foam_01_TACAGAC.fq.gz | head -4
+@J00136:207:HLNWCBBXX:2:1101:1194:1068 1:N:0:NACAGAC
+NGGGCGGATACAGAGAATAGCTTTTAAAGTGTTCTATGTTCCCAGGGGCA
++
+#AAFFJJJJJJJJFJJFJJJJJJFFJJJF&lt;JJ-FFF&lt;-&lt;FFJJFJJJJJF
+```
+---
+
+
+## Alignment
+
+.pull-left[Alignment:
+* Bowtie/Bowtie2
+* Hisat/Hisat2
+* STAR
+
+Counting:
+* featureCounts
+* htseq
+* mmquant
+* RSEM
+]
+
+.pull-right[
+&lt;img src="gene_mapping.png" width="80%"&gt;
+]
+
+---
+
+## Alignment
+
+Most of the aligners align to genome, not transcriptome:
+
+* Allows us to identify intergenic reads, dna reads and other weird stuff
+
+Alignment will produce SAM/BAM file:
+
+* Contains mapping of every read (or read pair)
+
+---
+
+## Alignment
+
+Read name, bitwise flag, sequence name (CHROMOSOME), mapping position, mapping quality, CIGAR String and other stuff
+
+Might differ from aligner to aligner, read specification
+
+```
+[kzaytsev@login02 askembefore]$ samtools view total_foam.bam | head -4
+K00193:243:HN5TKBBXX:6:1109:8937:17368  16      1       3013057 255     98M     *       0       0       GTGATTTATTCTTCTGTATCTGGTTAGTGTTTATTGATTTAACTCATCCATACTACTTAGGTCTTCCATATGTCTTTGGTCTATATGTCTGTTTTTGT JJJJAAFJFJFFFFJJFJJJJJJFJJJJJJJJFJJJ&lt;FFJJJJJJJJFJJJJFJJJJJJJJFJJJJJJJJJJFJJJJJJJJJJJJFJJFJJJJFFF&lt;A       NH:i:1  HI:i:1  AS:i:96 nM:i:0  RE:A:I  CR:Z:TACCTATTCAGCAACT   CY:Z:AAFFFJJJJJJJJJJJ   CB:Z:TACCTATTCAGCAACT-1     UR:Z:AGTCAATCAT UY:Z:JJJJJJJJJJ UB:Z:AGTCAATCAT BC:Z:CTGCGGCT   QT:Z:AAAFFFJJ   RG:Z:M_FN-Ao_FC-Ao_FC:MissingLibrary:1:HN5TKBBXX:6
+K00193:243:HN5TKBBXX:6:2101:9831:28094  16      1       3013057 255     98M     *       0       0       GTGANTTATTCTTCTGTATCTGGTTAGTGTTTATTGATTTAACTCATCCATACTACTTAGGTCTTCCATATGTCTTTGGTCTATATGTCTGTTTTTGT JJJJ#FJJJJJJJJFFF7JJJJJJJJJJJJJJFJJJJJJJJFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJFJJJJFFF&lt;A       NH:i:1  HI:i:1  AS:i:95 nM:i:0  RE:A:I  CR:Z:TACCTATTCAGCAACT   CY:Z:AAFFFJJJJJJJJJJJ   CB:Z:TACCTATTCAGCAACT-1     UR:Z:AGTCAATCAT UY:Z:JJJJJJJJJJ UB:Z:AGTCAATCAT BC:Z:AGAAACTC   QT:Z:AAFFFJJJ   RG:Z:M_FN-Ao_FC-Ao_FC:MissingLibrary:1:HN5TKBBXX:6
+K00193:243:HN5TKBBXX:6:2101:9475:28885  16      1       3013057 255     98M     *       0       0       GTGANTTATTCTTCTGTATCTGGTTAGTGTTTATTGATTTAACTCATCCATACTACTTAGGTCTTCCATATGTCTTTGGTCTATATGTCTGTTTTTGT JJJA#JJJJJJJJFFJF7JJJJFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJFFF&lt;A       NH:i:1  HI:i:1  AS:i:95 nM:i:0  RE:A:I  CR:Z:TACCTATTCAGCAACT   CY:Z:AAFFFJJJJJJJJJJJ   CB:Z:TACCTATTCAGCAACT-1     UR:Z:AGTCAATCAT UY:Z:JJJJJJJJJJ UB:Z:AGTCAATCAT BC:Z:AGAAACTC   QT:Z:AAFFFJJJ   RG:Z:M_FN-Ao_FC-Ao_FC:MissingLibrary:1:HN5TKBBXX:6
+K00193:243:HN5TKBBXX:6:2204:2443:3723   272     1       3014816 0       7S91M   *       0       0       CCCCATCCCCCCCCCCCCAATCCCCTCCCCCCCCGCTCGCCCTCTTTGGCCCTGGCGTTCCCCTGTACTGGGGCTTATAACGTTTGCTCGTCCTATGG 77-&lt;A7-7-7-A777F77--&lt;7--A7-A7----7--77-AJJJAJJJJFFFJJJF7FF77--FA&lt;&lt;7AJFAF&lt;7-7-&lt;---A&lt;AAF7--FF&lt;&lt;--F&lt;A       NH:i:5  HI:i:1  AS:i:69 nM:i:10 RE:A:I  CR:Z:GTCGGGTGTCTAAACC   CY:Z:AAAFAAA&lt;-AAFJJJJ   CB:Z:GTCGGGTGTCTAAACC-1     UR:Z:GTGACCGTCT UY:Z:77AAJJA-77 UB:Z:GTGACCGTCT BC:Z:AGAAACTC   QT:Z:AAAFFJ&lt;F   RG:Z:M_FN-Ao_FC-Ao_FC:MissingLibrary:1:HN5TKBBXX:6
+```
+
+.center[
+&lt;img src="alignment_screen.png" width="100%"&gt;
+]
+
+---
+
+## Samtools: working with alignment files
+
+If you need to work with alignment files, you most likely will work with samtools:
+
+* `samtools view`
+* `samtools sort`
+* `samtools index`
+
+---
+
+## Read coverage
+
+Once we have bam file (usually sorted and indexed) we can create coverage tracks to be visualized in genomve browser. We prefer bigwig format
+
+* Usual thing to use in this case is https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
+
+---
+
+## Quality controls
+
+* FastQ files: FastQC
+* Alignment: (RSeQC) http://rseqc.sourceforge.net/
+  * infer_experiment.py
+  * read_distribution.py
+  * geneBody_coverage.py
+* Picard CollectRnaSeqMetrics
+* MultiQC to generate summary report for all these tools
+
+---
+
+## Libraries:
+
+* Paired-end, single-end
+* Stranded, Unstranded
+* 3', 5', full-length
+
+---
+
+## Quantification (counting): featureCounts
+
+.pull-left[
+* For stranded experiment we can identify which of two genes is expressed if they are on opposite strands
+* For non-stranded - no
+* Different mappers act differently with multimapped or ambiguous reads
+]
+
+.pull-right[
+&lt;img src="mapping_happens.png" width="100%"&gt;
+]
+
+---
+
+## Kallisto: pseudoaligner
+
+.pull-left[
+* Pseudoalligner: we biuld T-DBG (transcriptome de Bruijn graph) with relatively small k
+* We calculate *k-equivalence* classes
+* We hash mapping of k-mers to classes 
+* No bam
+* Super fast
+]
+
+.pull-right[
+&lt;img src="kallisto.png" width="80%"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.ncbi.nlm.nih.gov/pubmed/27043002&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Kallisto: pseudoaligner
+
+.pull-left[
+* Pseudoalligner: we biuld T-DBG (transcriptome de Bruijn graph) with relatively small k
+* We calculate *k-equivalence* classes
+* We hash mapping of k-mers to classes 
+* No bam
+* **Super fast**
+]
+
+.pull-right[
+&lt;img src="super_fast.png" width="100%"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://www.ncbi.nlm.nih.gov/pubmed/27043002&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Once we have counts with table
+
+Analysis in R is all the same but done with DESeq2 package:
+* Different normalizations for RNA-seq
+* Different statistical model for counts (negative binomial distributions)
+
+---
+
+## Deseq2 installing
+
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
+if (!requireNamespace("ggrepel", quietly = TRUE)) install.packages("ggrepel")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr")
+if (!requireNamespace("DESeq2", quietly = TRUE)) BiocManager::install("DESeq2")
+```
+
+```
+## Warning: replacing previous import 'Biobase::dims' by 'BiocGenerics::dims'
+## when loading 'DESeq2'
+```
+
+```
+## Warning: replacing previous import 'BiocGenerics::dims' by 'Biobase::dims'
+## when loading 'SummarizedExperiment'
+```
+
+```
+## Warning: replacing previous import 'Biobase::dims' by 'DelayedArray::dims'
+## when loading 'SummarizedExperiment'
+```
+
+```
+## Warning: replacing previous import 'BiocGenerics::dims' by 'Biobase::dims'
+## when loading 'AnnotationDbi'
+```
+
+```r
+if (!requireNamespace("apeglm", quietly = TRUE)) BiocManager::install("apeglm")
+if (!requireNamespace("org.Mm.eg.db", quietly = TRUE)) BiocManager::install("org.Mm.eg.db")
+```
+
+---
+## Deseq2 examples:
+
+
+```r
+library(ggplot2)
+library(DESeq2)
+library(apeglm)
+library(ggrepel)
+library(dplyr)
+library(org.Mm.eg.db)
+
+
+countFiles &lt;- list.files("GSE116239_RAW", full.names = T)
+countFiles
+```
+
+```
+## [1] "GSE116239_RAW/GSM3215429_foam_01_gene_counts.txt"    
+## [2] "GSE116239_RAW/GSM3215430_foam_02_gene_counts.txt"    
+## [3] "GSE116239_RAW/GSM3215431_foam_03_gene_counts.txt"    
+## [4] "GSE116239_RAW/GSM3215432_non_foam_01_gene_counts.txt"
+## [5] "GSE116239_RAW/GSM3215433_non_foam_02_gene_counts.txt"
+## [6] "GSE116239_RAW/GSM3215434_non_foam_03_gene_counts.txt"
+```
+
+---
+
+## Deseq2 examples:
+
+
+```r
+counts &lt;- lapply(countFiles, function(countsFile) {
+  read.table(countsFile, sep="\t", header=1, row.names = 1, stringsAsFactors = F, comment.char = "")
+})
+
+head(counts[[1]])
+```
+
+```
+##                              Chr
+## ENSMUSG00000090025             1
+## ENSMUSG00000064842             1
+## ENSMUSG00000051951 1;1;1;1;1;1;1
+## ENSMUSG00000089699           1;1
+## ENSMUSG00000088333             1
+## ENSMUSG00000025900       1;1;1;1
+##                                                                      Start
+## ENSMUSG00000090025                                                 3054233
+## ENSMUSG00000064842                                                 3102016
+## ENSMUSG00000051951 3205901;3206523;3213439;3213609;3214482;3421702;3670552
+## ENSMUSG00000089699                                         3466587;3513405
+## ENSMUSG00000088333                                                 3783876
+## ENSMUSG00000025900                         4343507;4351910;4352202;4360200
+##                                                                        End
+## ENSMUSG00000090025                                                 3054733
+## ENSMUSG00000064842                                                 3102125
+## ENSMUSG00000051951 3207317;3207317;3215632;3216344;3216968;3421901;3671498
+## ENSMUSG00000089699                                         3466687;3513553
+## ENSMUSG00000088333                                                 3783933
+## ENSMUSG00000025900                         4350091;4352081;4352837;4360314
+##                           Strand Length Count CPM RPKM
+## ENSMUSG00000090025             +    501     0   0    0
+## ENSMUSG00000064842             +    110     0   0    0
+## ENSMUSG00000051951 -;-;-;-;-;-;-   6094     0   0    0
+## ENSMUSG00000089699           +;+    250     0   0    0
+## ENSMUSG00000088333             -     58     0   0    0
+## ENSMUSG00000025900       -;-;-;-   7508     0   0    0
+```
+
+---
+
+## Deseq2 examples:
+
+
+```r
+counts &lt;- lapply(counts, function(countsTable) countsTable[, "Count", drop=F])
+counts &lt;- do.call(cbind, counts)
+colnames(counts) &lt;- gsub(".*(GSM\\d+).*", "\\1", countFiles)
+head(counts)
+```
+
+```
+##                    GSM3215429 GSM3215430 GSM3215431 GSM3215432 GSM3215433
+## ENSMUSG00000090025          0          0          0          2          0
+## ENSMUSG00000064842          0          0          0          0          0
+## ENSMUSG00000051951          0          0          0          4          0
+## ENSMUSG00000089699          0          0          0          0          0
+## ENSMUSG00000088333          0          0          0          0          0
+## ENSMUSG00000025900          0          2          0          2          1
+##                    GSM3215434
+## ENSMUSG00000090025          0
+## ENSMUSG00000064842          0
+## ENSMUSG00000051951          1
+## ENSMUSG00000089699          0
+## ENSMUSG00000088333          0
+## ENSMUSG00000025900          0
+```
+
+---
+## Deseq2 examples:
+
+
+```r
+coldata &lt;- data.frame(
+  gsm=gsub(".*(GSM\\d+).*", "\\1", countFiles),
+  foam=gsub(".*(GSM\\d+)_(foam|non_foam).*", "\\2", countFiles),
+  row.names =gsub(".*(GSM\\d+).*", "\\1", countFiles)
+)
+
+coldata
+```
+
+```
+##                   gsm     foam
+## GSM3215429 GSM3215429     foam
+## GSM3215430 GSM3215430     foam
+## GSM3215431 GSM3215431     foam
+## GSM3215432 GSM3215432 non_foam
+## GSM3215433 GSM3215433 non_foam
+## GSM3215434 GSM3215434 non_foam
+```
+
+---
+## Deseq2 examples:
+
+
+```r
+# only keeping genes that have at least 10 reads
+dds &lt;- DESeqDataSetFromMatrix(countData = counts[rowSums(counts) &gt; 10, ],
+                              colData = coldata,
+                              design= ~ foam)
+dds &lt;- DESeq(dds)
+resultsNames(dds) # lists the coefficients
+```
+
+```
+## [1] "Intercept"             "foam_non_foam_vs_foam"
+```
+
+---
+
+## Deseq2 examples: PCA
+
+
+```r
+vst &lt;- varianceStabilizingTransformation(dds)
+plotPCA(vst, intgroup=c("foam"))
+```
+
+![](rna_seq_files/figure-html/unnamed-chunk-7-1.svg)&lt;!-- --&gt;
+
+---
+
+## Deseq2 examples: DE
+
+
+```r
+res &lt;- lfcShrink(dds, coef="foam_non_foam_vs_foam", type="apeglm")
+head(res)
+```
+
+```
+## log2 fold change (MAP): foam non foam vs foam 
+## Wald test p-value: foam non foam vs foam 
+## DataFrame with 6 rows and 5 columns
+##                            baseMean     log2FoldChange             lfcSE
+##                           &lt;numeric&gt;          &lt;numeric&gt;         &lt;numeric&gt;
+## ENSMUSG00000033845 1629.91001175395 0.0502838220059052 0.225461641531377
+## ENSMUSG00000025903 3061.43086086289  0.159813096443698 0.236935250147389
+## ENSMUSG00000033813 394.351792127588   0.31655293597863 0.269558298175241
+## ENSMUSG00000002459 1.83530589830321 0.0200497397422168 0.461238380073334
+## ENSMUSG00000033793 4859.39402478023 -0.746925559927414 0.210676287320447
+## ENSMUSG00000025905 2.77100462535767  0.080718772758347 0.468554198610183
+##                                 pvalue                padj
+##                              &lt;numeric&gt;           &lt;numeric&gt;
+## ENSMUSG00000033845   0.801100278721749    0.93816842581275
+## ENSMUSG00000025903   0.436676571726109    0.73917319518941
+## ENSMUSG00000033813   0.156188811426281   0.437259942043564
+## ENSMUSG00000002459   0.770906519840627                  NA
+## ENSMUSG00000033793 0.00010327585747645 0.00229010353760331
+## ENSMUSG00000025905   0.345656765706641                  NA
+```
+
+---
+
+## Mapping genes
+
+
+```r
+keytypes(org.Mm.eg.db)
+```
+
+```
+##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT" 
+##  [5] "ENSEMBLTRANS" "ENTREZID"     "ENZYME"       "EVIDENCE"    
+##  [9] "EVIDENCEALL"  "GENENAME"     "GO"           "GOALL"       
+## [13] "IPI"          "MGI"          "ONTOLOGY"     "ONTOLOGYALL" 
+## [17] "PATH"         "PFAM"         "PMID"         "PROSITE"     
+## [21] "REFSEQ"       "SYMBOL"       "UNIGENE"      "UNIPROT"
+```
+
+```r
+res$Gene.symbol &lt;- mapIds(org.Mm.eg.db, rownames(res), column="SYMBOL", "ENSEMBL")
+```
+
+---
+
+## Deseq2 examples: volcano
+
+
+```r
+res &lt;- as.data.frame(res)
+ggplot(res, aes(x=log2FoldChange, y=-log10(padj), color=padj &lt; 0.05)) +
+  geom_point() + theme_bw() + scale_color_manual(values=c("black", "red")) +
+  geom_text_repel(data=res %&gt;% dplyr::filter(padj &lt; 1e-20), aes(label=Gene.symbol, color=NULL))
+```
+
+![](rna_seq_files/figure-html/unnamed-chunk-10-1.svg)&lt;!-- --&gt;
+
+---
+class: center, middle
+
+# Questions?
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
