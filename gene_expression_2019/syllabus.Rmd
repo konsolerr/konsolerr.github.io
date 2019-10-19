@@ -62,6 +62,7 @@ There will be 4 projects homeworks during this course:
 2. Lecture 2: <a href="https://konsolerr.github.io/gene_expression_2019/transcription/transcription.pdf" target="_blank">transcription</a>
 3. Lecture 3: Microarrays <a href="https://konsolerr.github.io/gene_expression_2019/microarray/microarray.html" target="_blank">part 1</a> and <a href="https://konsolerr.github.io/gene_expression_2019/microarray/microarray2.html" target="_blank">part 2</a>
 4. Lecture 4: Secondary analysis <a href="https://konsolerr.github.io/gene_expression_2019/secondary_analysis" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2019/secondary_analysis/secondary_analysis.zip" target="_blank">materials</a>
+4. Lecture 5: RNA-seq <a href="https://konsolerr.github.io/gene_expression_2019/rna-seq" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2019/rna-seq/rna_seq_materials.zip" target="_blank">materials</a>
 
 ### Homework 1 
 
