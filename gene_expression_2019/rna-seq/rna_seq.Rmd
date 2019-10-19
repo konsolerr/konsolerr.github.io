@@ -202,11 +202,10 @@ class: center, middle
 
 ## Refernce genomes
 
-* Human: chr1-chr22, chrX, chrY, chrM
+* Human: chr1-chr22, chrX, chrY, chrM: 
   * 3235 Mb, 20412 genes
-* Mouse: Chr1-chr19, chrX, chrY, chrM
+* Mouse: Chr1-chr19, chrX, chrY, chrM: 
   * 2318 Mb, 23,139 genes
-
 * Assembly is mostly complete: but not 100%, there are unplaced scffolds and gaps
 * There are pseudogenes, lncRNA, rRNA and other stuff in a genome, which are usually present in the genome annotation
 
@@ -214,12 +213,46 @@ class: center, middle
 
 ## Popular genome assemblies
 
-* Human: chr1-chr22, chrX, chrY, chrM
-  * 3235 Mb, 20412 genes
-* Mouse: Chr1-chr19, chrX, chrY, chrM
-  * 2318 Mb, 23,139 genes
+* Human:
+  * UCSC notation (hg19, hg38)
+  * Genome reference consortium notation (major: GRCh37, minor: GRCh38.p7)
+  * 1000 genomes notation (b37)
+* Mouse - same (mm10, GRCm37)
 
-* Assembly is mostly complete: but not 100%, there are unplaced scffolds and gaps
-* There are pseudogenes, lncRNA, rRNA and other stuff in a genome, which are usually present in the genome annotation
+---
+
+## Gencode: my personal preference
+
+* https://www.gencodegenes.org/
+* I usually use primary assembly
+.center[
+<img src="primary.png" width="100%">
+]
+
+---
+
+## Gencode: my personal preference
+
+.center[
+<img src="release_history.png" width="100%">
+]
+
+---
+
+## What is reference
+
+Usually reference is just two files:
+
+* Sequence fasta file
+* GTF/GFF annotation
+
+---
+
+## Alignment
+
+Usually reference is just two files:
+
+* Sequence fasta file
+* GTF/GFF annotation
 
 ---

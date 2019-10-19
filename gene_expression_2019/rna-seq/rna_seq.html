@@ -4,8 +4,8 @@
     <title>(m)RNA sequencing</title>
     <meta charset="utf-8" />
     <meta name="author" content="Kontantin Zaitsev" />
-    <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
-    <link rel="stylesheet" href="../libs/itmo-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="..\libs\itmo.css" type="text/css" />
+    <link rel="stylesheet" href="..\libs\itmo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -198,10 +198,70 @@ class: center, middle
 
 ---
 
-## Raw files after sequencing:
+## Basic RNA-seq analysis pipeline
 
-* Fastq files
-*
+* Alignment: raw reads (fastq) + reference genome -&gt; bam
+* Quantification: bam (aligned reads) + reference genome -&gt; expression table
+* Secondary analysis: well, that part you know already
+
+---
+
+## Refernce genomes
+
+* Human: chr1-chr22, chrX, chrY, chrM: 
+  * 3235 Mb, 20412 genes
+* Mouse: Chr1-chr19, chrX, chrY, chrM: 
+  * 2318 Mb, 23,139 genes
+* Assembly is mostly complete: but not 100%, there are unplaced scffolds and gaps
+* There are pseudogenes, lncRNA, rRNA and other stuff in a genome, which are usually present in the genome annotation
+
+---
+
+## Popular genome assemblies
+
+* Human:
+  * UCSC notation (hg19, hg38)
+  * Genome reference consortium notation (major: GRCh37, minor: GRCh38.p7)
+  * 1000 genomes notation (b37)
+* Mouse - same (mm10, GRCm37)
+
+---
+
+## Gencode: my personal preference
+
+* https://www.gencodegenes.org/
+* I usually use primary assembly
+.center[
+&lt;img src="primary.png" width="100%"&gt;
+]
+
+---
+
+## Gencode: my personal preference
+
+.center[
+&lt;img src="release_history.png" width="100%"&gt;
+]
+
+---
+
+## What is reference
+
+Usually reference is just two files:
+
+* Sequence fasta file
+* GTF/GFF annotation
+
+---
+
+## Alignment
+
+Usually reference is just two files:
+
+* Sequence fasta file
+* GTF/GFF annotation
+
+---
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
