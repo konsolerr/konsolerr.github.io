@@ -574,7 +574,7 @@ resultsNames(dds) # lists the coefficients
 
 ## Deseq2 examples: PCA
 
-```{r fig.show = 'hold', fig.width=3, fig.height=3, fig.fullwidth=T, dev='svg'}
+```{r fig.show = 'hold', fig.width=6, fig.height=4, fig.fullwidth=T, dev='svg'}
 
 vst <- varianceStabilizingTransformation(dds)
 plotPCA(vst, intgroup=c("foam"))
