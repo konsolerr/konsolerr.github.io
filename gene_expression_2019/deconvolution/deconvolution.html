@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Introduction to gene expression deconvolution algorithms</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kontantin Zaitsev" />
+    <link rel="stylesheet" href="..\libs\itmo.css" type="text/css" />
+    <link rel="stylesheet" href="..\libs\itmo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to gene expression deconvolution algorithms
+### Kontantin Zaitsev
+### Novemver 9<sup>th</sup>, 2019
+
+---
+
+
+class: center, middle
+
+# Gene expression deconvolution
+
+---
+
+### Different cell types have different epxression profiles
+
+&lt;img src="deconvolution-05.png" width="88%"&gt;
+
+---
+
+## Different problem
+
+Recover cell type signatures and cell type proportions from gene expression data of mixed samples
+
+&lt;img src="deconvolution-01.png" width="100%"&gt;
+
+---
+
+## Where we can use gene expression deconvolution algorithms
+
+* Blood datasets
+* Tumor environments \ survival analysis
+* Contamination detection
+* Immune cell type infiltration
+
+
+---
+
+## Linear mixing model
+
+&lt;img src="deconvolution-02.png" width="100%"&gt;
+
+---
+
+## Gene expression deconvolution problem
+
+&lt;img src="deconvolution-03.png" width="100%"&gt;
+
+
+---
+
+## Formally
+
+* Given observed gene expression matrix `\(n \times m\)` where `\(n\)` is the number of genes and `\(m\)` is the number of samples
+* Find such matrices `\(W (n \times k)\)` and `\(H (k \times m)\)` that
+$$ X \approx W \times H; X, W, H \geq 0 $$
+* (Optionally) `\(H\)` obeys sum-to-one constraint:
+$$ \forall j \sum\_{i=1}^{k}H\_{i,j} = 1 $$
+* (Sum of proportions in each sample equals 1)
+
+---
+
+## Formally
+
+* Formally speaking, gene expression deconvolution probles is a subset of NMF problem (non-negative matrix factorization)
+* However, we require matrix factor to have be "biologically meaningfull": matrix `\(W\)` must inform us about the expression of genes in pure cell types and matrix `\(H\)` must inform us about the proportions of these pure cell types in mixed samples
+
+---
+
+## Signature genes
+
+&lt;img src="deconvolution-04.png" width="100%"&gt;
+
+---
+
+## Deconvolution algorithms
+
+* Complete deconvolution algorithms (we know nothing but matrix)
+* Partial deconvolution algorithms (we have additional information about the problem)
+
+What can be additional information:
+* Either `\(W\)` or `\(H\)`, (or subset of `\(W\)` or `\(H\)`)
+* **Signature genes** for relevant for cell types in the mixture
+
+
+---
+
+## Deconvolution algorithms
+
+* **Partial deconvolution algorithms** are more or less well-studies
+* **Complrete deconvolution algorithms**: that's were stuff is getting complicated
+
+---
+
+## Current algorithms
+
+* If we know any of matrices `\(H\)` or `\(W\)`, then we can use some form of NNLS (non-negative least squares)
+* If we know signature genes: we can easily use DSA (digital sorting algorithm)
+* If we know a part of `\(W\)` then we could use other supervised algorithms:
+
+.small[
+* **TIMER** (linear least square regression)
+* **CIBERSORT** (nu support vector regression)
+* **EPIC** (constrained least square regression)
+* **xCell** (ssGSEA, single-sample gene set enrichment analysis)
+* and many others...
+]
+
+---
+
+## Non-negative least squares
+
+* NNLS methods are one way or another involved in gene expression deconvolution problem
+* Given we know `\(X\)` and we know `\(W\)` (for exampled we measures expression in pure/sorted cell subpopulations) how can we know matrix `\(H\)` for proporitons?
+
+Fast combinatorial non-negative least squares (FCNNLS) will minimize
+
+.small[
+$$ \min\_{H} || W \times H - X ||\_F,\ \ H \geq 0 $$
+$$ || A - B ||\_F = \sum\_{i=1}^{n} \sum\_{j=1}^{m} (A\_{i,j} - B\_{i,j})^2 $$
+]
+
+---
+## GSE19830
+
+* Benchmark dataset for gene expression deconvolution algorithms
+* Mixture of 3 tissues: liver, brain and lung
+* mRNA abundance from pure and mixed tissue samples was measures using microarray
+
+.center[
+&lt;img src="deconvolution-02.png" width="70%"&gt;
+]
+
+---
+
+## Let's do it
+
+
+```r
+library(GEOquery)
+```
+
+```
+## Warning: package 'GEOquery' was built under R version 3.5.2
+```
+
+```
+## Loading required package: Biobase
+```
+
+```
+## Loading required package: BiocGenerics
+```
+
+```
+## Loading required package: parallel
+```
+
+```
+## 
+## Attaching package: 'BiocGenerics'
+```
+
+```
+## The following objects are masked from 'package:parallel':
+## 
+##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+##     clusterExport, clusterMap, parApply, parCapply, parLapply,
+##     parLapplyLB, parRapply, parSapply, parSapplyLB
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     IQR, mad, sd, var, xtabs
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     anyDuplicated, append, as.data.frame, basename, cbind,
+##     colMeans, colnames, colSums, dirname, do.call, duplicated,
+##     eval, evalq, Filter, Find, get, grep, grepl, intersect,
+##     is.unsorted, lapply, lengths, Map, mapply, match, mget, order,
+##     paste, pmax, pmax.int, pmin, pmin.int, Position, rank, rbind,
+##     Reduce, rowMeans, rownames, rowSums, sapply, setdiff, sort,
+##     table, tapply, union, unique, unsplit, which, which.max,
+##     which.min
+```
+
+```
+## Welcome to Bioconductor
+## 
+##     Vignettes contain introductory material; view with
+##     'browseVignettes()'. To cite Bioconductor, see
+##     'citation("Biobase")', and for packages 'citation("pkgname")'.
+```
+
+```
+## Setting options('download.file.method.GEOquery'='auto')
+```
+
+```
+## Setting options('GEOquery.inmemory.gpl'=FALSE)
+```
+
+---
+
+## How to find cell-type specific markers
+
+* Differential expression
+* But first make sure dataset is log-normalized
+* Yes, limma DE: log-scale expression
+* Yes, deconvolution: linear-scale expression
+
+---
+
+## Now the markers
+
+* To find cell type-specific markers we have to perform DE one tissue against others
+* We have to do it for all tissues
+
+---
+
+## DSA algorithm
+
+* "Digital sorting of complex tissues cell type-specific gene signature profiles", Zhong et al, BMC Bionformatics 2013
+* Algorithm requires list of cell type-specific genes for each tissue/cell type
+* Idea behind the algortihm: cell type-specific signatures will form close-to-diagonal matrix `\(W\)` which can be used to identify proportions, and then to identify the rest of `\(W\)`
+* Basically, signature genes define subset of `\(W\)`
+
+---
+
+## Visually in R
+
+---
+
+## DSA algorithm:
+
+* As you can see, expression profile of marker genes is somewhat similar to proportions
+* We can average thes expression profiles to generate pseudo-proportions
+* We can then use pseudo-proportions to calculate real proportions (using sum-to-one constraint)
+* Then, we can calculate signature matrix
+
+---
+
+## Lets run DSA algorithm
+
+---
+
+## Comparing proportions
+
+---
+
+## Comparing expression of pure cell types
+
+---
+
+## But this is where the magic ends
+
+* GSE19830 is a benchmark dataset and was designed to perform nicely: tissures are transcriptionally are very different one form another
+* When it comes to real data things are getting noisy and complicated
+
+---
+
+## Realistic scenarios
+
+* Cell types are not "THAT" different from one to another as brain is different from lung, or brain is different from liver
+* Blood cells are very-very different from neurons, for example
+* Lymphocytes are very different from monocytes
+* B cell are different from T cells
+* CD4+ T helper cells are different from CD8+ T killer cells
+* CD4+ T regulatory cells are slightly different from CD4+ effector T cells??
+* These changes getting smaller and smaller and much harder to dissect
+
+---
+
+## Specialized algorithms: CIBERSORT
+
+* CIBERSORT, https://cibersort.stanford.edu/, blood deconvolution
+
+Their reference matrix LM22 describes how different genes are expressed across 22 immune cell types, and then they use nu-support vector regression algorithm to figure out the proportions.
+
+(you can find LM22 in the files and use it yourself)
+
+However, LM22 was designed for one microarray platform (HGU133A) and is not suitable for RNA-seq data and also for other microarray platforms
+
+---
+## Specialized algorithms: TIMER
+
+* Tumor Immune Estimation Resource (http://cistrome.org/TIMER/)
+* "TIMER is a web resource for systematical evaluations of the clinical impact of different immune cells in diverse cancer types"
+* Calculates “scores” (instead of proportions) for immune cell types in the mixture. Was trained using TCGA cancer datasets
+
+---
+
+## Limitations of supervised/partial deconvolution methods
+
+* You are either limited to platform or/and tissue you study
+* You might have to identify marker genes yourself
+* You have to know all the cell types that are present in your sample before you do the deconvolution
+
+---
+
+## Complete deconvolution problem
+
+* General NMF (non-negative matrix factorization) approaches; there are methods that for given matrix `\(X (n \times m)\)` and given `\(k\)` can estimate such matrices `\(W (n \times k)\)` and `\(H(k \times m)\)` that `\(X \approx W \times H\)`, where `\(k\)` is the number of cell types, `\(n\)` is the number of genes and `\(m\)` is the number of samples
+
+General NMF, however, has several problems:
+* No quarantee that this factorization is biologically relevant
+* Algorithm can find one of many approximations
+* How to estimate number of cell types `\(k\)`
+
+---
+
+## LinSeed
+
+* LinSeed (linear subspace identification for gene expresion deconvolution)
+* Developed by cool guys in our lab (me)
+* We try to estimate cell type number
+* We find signature genes
+* We deconvolve (sometimes even without gene sigantures)
+
+---
+
+## Idea behind algorithm
+
+* Miss me? I am a linear model from slide 6
+
+.center[
+&lt;img src="deconvolution-02.png" width="100%"&gt;
+]
+
+---
+
+## Linear subspace
+
+.center[
+&lt;img src="linseed1.png" width="100%"&gt;
+]
+
+---
+
+## 4 cell types will make a tetrahedron
+
+.center[
+&lt;img src="linseed2.png" width="100%"&gt;
+]
+
+---
+## Conclusions
+
+* The bright future is ahead of us: soon we will be able to deconvolve any dataset
+* With rapid grow of single-cell RNA-seq technologies it will be much easier to obtain cell type-specific signatures
+* Partial deconvolution methods are well-studies and accurate, however, usage of every method relies on additional information about your dataset
+* Complete deconvolution methods are also being developed and they already show  a lot of insights that were only possible because of unbiased approach
+
+---
+
+class: center, middle
+
+# Questions?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
