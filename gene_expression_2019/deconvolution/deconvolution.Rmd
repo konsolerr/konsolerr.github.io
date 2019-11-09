@@ -75,7 +75,7 @@ $$ \forall j \sum\_{i=1}^{k}H\_{i,j} = 1 $$
 
 ## Signature genes
 
-<img src="deconvolution-04.png" width="100%">
+<img src="deconvolution-04.png" width="90%">
 
 ---
 
@@ -139,15 +139,114 @@ $$ || A - B ||\_F = \sum\_{i=1}^{n} \sum\_{j=1}^{m} (A\_{i,j} - B\_{i,j})^2 $$
 
 ---
 
+## All libraries for today
+
+```{r message=F, warning=F}
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("GEOquery", quietly = TRUE)) BiocManager::install("GEOquery")
+if (!requireNamespace("Biobase", quietly = TRUE)) BiocManager::install("Biobase")
+if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
+if (!requireNamespace("reshape2", quietly = TRUE)) install.packages("reshape2")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr")
+if (!requireNamespace("limma", quietly = TRUE)) BiocManager::install("limma")
+if (!requireNamespace("pheatmap", quietly = TRUE)) install.packages("pheatmap")
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
+if (!requireNamespace("linseed", quietly = TRUE)) devtools::install_github("https://github.com/ctlab/LinSeed")
+
+library(GEOquery)
+library(Biobase)
+library(limma)
+library(dplyr)
+library(pheatmap)
+library(linseed)
+library(ggplot2)
+library(reshape2)
+
+```
+
+
+---
 ## Let's do it
 
-```{r }
-library(GEOquery)
+```{r ,warning=FALSE, message=FALSE, cache=TRUE}
+
+
+gse19830 <- getGEO("GSE19830", AnnotGPL = TRUE)[[1]]
+head(pData(gse19830)[, c("geo_accession", "characteristics_ch1")])
+
+```
+
+---
+## Let's parse proportions
+
+```{r ,warning=FALSE, message=FALSE}
+
+pdata <- pData(gse19830)
+proportionsCharacter <- pdata$characteristics_ch1
+proportions <- data.frame(
+  liver=as.numeric(gsub(".* (\\d+) % Liver.*", "\\1", proportionsCharacter)),
+  brain=as.numeric(gsub(".* (\\d+) % Brain.*", "\\1", proportionsCharacter)),
+  lung=as.numeric(gsub(".* (\\d+) % Lung.*", "\\1", proportionsCharacter)),
+  row.names=rownames(pdata)
+)
+
+
+
+```
+---
+## Let's parse proportions
+
+```{r ,warning=FALSE, message=FALSE}
+
+head(proportions)
+
+```
+
+---
+## Let's parse proportions
+
+```{r ,warning=FALSE, message=FALSE}
+
+head(exprs(gse19830)[, 1:5])
 
 ```
 
 ---
 
+## Usual microarray prep
+
+```{r }
+
+fData(gse19830) <- fData(gse19830)[, c("ID", "Gene symbol", "Gene ID")]
+head(fData(gse19830))
+
+```
+
+---
+
+## Quantile and collapsing IDs
+
+```{r }
+
+exprs(gse19830) <- normalizeBetweenArrays(exprs(gse19830), method="quantile")
+
+```
+
+---
+## Moving to gene expression
+
+```{r }
+gse19830 <- gse19830[!grepl("///", fData(gse19830)$`Gene symbol`), ]
+gse19830 <- gse19830[fData(gse19830)$`Gene symbol` != "", ]
+
+fData(gse19830)$mean_expression <- apply(exprs(gse19830), 1, mean)
+gse19830 <- gse19830[order(fData(gse19830)$mean_expression, decreasing = TRUE), ]
+gse19830 <- gse19830[!duplicated(fData(gse19830)$`Gene ID`), ]
+gse19830 <- gse19830[seq_len(12000), ]
+dim(gse19830)
+```
+
+---
 ## How to find cell-type specific markers
 
 * Differential expression
@@ -164,16 +263,106 @@ library(GEOquery)
 
 ---
 
+## Now the markers: 
+
+```{r }
+pure <- gse19830[, 1:9]
+pureProportions <- proportions[1:9, ]
+pData(pure)$Liver <- c("NonLiver", "Liver")[as.numeric(pureProportions$liver == 100) + 1]
+pData(pure)$Brain <- c("NonBrain", "Brain")[as.numeric(pureProportions$brain == 100) + 1]
+pData(pure)$Lung <- c("NonLung", "Lung")[as.numeric(pureProportions$lung == 100) + 1]
+```
+
+---
+
+## Now the markers: limma, liver
+
+```{r }
+liver.model <- model.matrix(~0 + Liver, data=pData(pure))
+fit <- lmFit(pure, liver.model)
+
+fit2 <- contrasts.fit(fit, makeContrasts(LiverLiver - LiverNonLiver, levels=liver.model))
+fit2 <- eBayes(fit2, trend = T)
+
+de <- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+```
+---
+
+## Results
+
+```{r }
+head(de)
+```
+
+---
+
+## Heatmap in pure samples
+
+```{r warning=FALSE, message=FALSE}
+
+
+markers.liver <- de %>% filter(adj.P.Val < 0.01) %>% top_n(50, logFC)
+head(markers.liver)
+
+```
+
+---
+
+## Heatmap in pure samples
+
+```{r fig.height=3, fig.fullwidth=T, dev='svg', message=F}
+markers.liver <- markers.liver %>% pull(ID)
+pheatmap(pure[markers.liver, ], scale = "row", cluster_rows = F, cluster_cols = F)
+```
+
+---
+
+## Lets do the same for other tissues: Brain
+
+```{r }
+brain.model <- model.matrix(~0 + Brain, data=pData(pure))
+fit <- lmFit(pure, brain.model)
+
+fit2 <- contrasts.fit(fit, makeContrasts(BrainBrain - BrainNonBrain, levels=brain.model))
+fit2 <- eBayes(fit2, trend = T)
+
+de <- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+markers.brain <- de %>% filter(adj.P.Val < 0.01) %>% top_n(50, logFC)
+markers.brain <- markers.brain %>% pull(ID)
+```
+
+---
+
+## Lets do the same for other tissues: Lung
+
+```{r }
+lung.model <- model.matrix(~0 + Lung, data=pData(pure))
+fit <- lmFit(pure, lung.model)
+
+fit2 <- contrasts.fit(fit, makeContrasts(LungLung - LungNonLung, levels=lung.model))
+fit2 <- eBayes(fit2, trend = T)
+
+de <- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+markers.lung <- de %>% filter(adj.P.Val < 0.01) %>% top_n(50, logFC)
+markers.lung <- markers.lung %>% pull(ID)
+```
+
+---
+
+## Lets look at the markers
+
+```{r fig.height=3, fig.fullwidth=T, dev='svg', message=F}
+
+pheatmap(pure[c(markers.liver, markers.brain, markers.lung), ], scale = "row", cluster_rows = F, cluster_cols = F)
+```
+
+---
 ## DSA algorithm
 
 * "Digital sorting of complex tissues cell type-specific gene signature profiles", Zhong et al, BMC Bionformatics 2013
 * Algorithm requires list of cell type-specific genes for each tissue/cell type
 * Idea behind the algortihm: cell type-specific signatures will form close-to-diagonal matrix $W$ which can be used to identify proportions, and then to identify the rest of $W$
 * Basically, signature genes define subset of $W$
-
----
-
-## Visually in R
 
 ---
 
@@ -186,15 +375,111 @@ library(GEOquery)
 
 ---
 
-## Lets run DSA algorithm
+## Visually
+
+```{r fig.height=3, fig.fullwidth=T, dev='svg', message=F}
+pheatmap(t(proportions), cluster_rows = F, cluster_cols = F)
+```
+
+---
+
+## Visually
+
+```{r fig.height=3, fig.fullwidth=T, dev='svg', message=F}
+pheatmap(2^exprs(gse19830)[c(markers.liver[1:3], markers.brain[1:3], markers.lung[1:3]), ], scale="row", cluster_rows = F, cluster_cols = F)
+```
+
+---
+
+## Only mixed samples
+
+```{r fig.height=2.5, fig.fullwidth=T, dev='svg', message=F}
+mix <- exprs(gse19830)[, 10:42]
+mix <- 2^mix # going to linear scale
+markers <- list(
+  liver=markers.liver,
+  brain=markers.brain,
+  lung=markers.lung
+)
+hist(mix[, 1])
+
+```
+
+---
+
+## Running DSA
+
+```{r }
+
+dsaResults <- linseed:::fastDSA(mix, markers)
+head(dsaResults$W)
+```
+
+---
+
+## Running DSA
+
+```{r }
+
+head(dsaResults$H[, 1:6])
+```
 
 ---
 
 ## Comparing proportions
 
+```{r }
+
+actual <- as.matrix(proportions[10:42, ]) / 100
+predicted <- t(dsaResults$H)
+props <- data.frame(
+  Actual=as.numeric(actual),
+  Predicted=as.numeric(predicted),
+  Tissue=c(rep("liver", ncol(mix)), rep("brain", ncol(mix)), rep("lung", ncol(mix)))
+)
+head(props)
+
+```
+
+---
+## Comparing proportions
+
+```{r fig.height=3, fig.fullwidth=T, dev='svg', message=F}
+ggplot(data=props, aes(x=Actual, y=Predicted, color=Tissue)) +
+  geom_point() + geom_abline(slope=1, intercept = 0, lty=2) +
+  facet_grid(~Tissue) + theme_bw() + theme(aspect.ratio = 1)
+
+```
 ---
 
-## Comparing expression of pure cell types
+## Comparing expression in pure samples
+
+```{r }
+# fancy plots: basis
+actualBasis <- cbind(
+  2^rowMeans(exprs(pure)[, 1:3]),
+  2^rowMeans(exprs(pure)[, 4:6]),
+  2^rowMeans(exprs(pure)[, 7:9])
+)
+colnames(actualBasis) <- c("Liver", "Brain", "Lung")
+predictedBasis <- dsaResults$W
+
+plotData <- data.frame(
+  Actual=as.numeric(actualBasis),
+  Predicted=as.numeric(predictedBasis),
+  Tissue=c(rep("Liver", nrow(exprs(pure))), rep("Brain", nrow(exprs(pure))), rep("Lung", nrow(exprs(pure))))
+)
+```
+
+---
+## Comparing expression in pure samples
+  
+```{r fig.height=3, fig.fullwidth=T, dev='svg', message=FALSE, warning=FALSE}
+ggplot(data=plotData, aes(x=Actual, y=Predicted)) + 
+  geom_hex(bins=100) + theme_bw() + facet_grid(~Tissue) +
+  geom_abline(slope=1, intercept = 0, lty=2) + scale_x_log10() + scale_y_log10() +
+  theme(aspect.ratio = 1)
+```
 
 ---
 

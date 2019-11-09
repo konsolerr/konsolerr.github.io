@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Introduction to gene expression deconvolution algorithms</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kontantin Zaitsev" />
+    <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
+    <link rel="stylesheet" href="../libs/itmo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to gene expression deconvolution algorithms
+### Kontantin Zaitsev
+### Novemver 9<sup>th</sup>, 2019
+
+---
+
+
+class: center, middle
+
+# Gene expression deconvolution
+
+---
+
+### Different cell types have different epxression profiles
+
+&lt;img src="deconvolution-05.png" width="88%"&gt;
+
+---
+
+## Different problem
+
+Recover cell type signatures and cell type proportions from gene expression data of mixed samples
+
+&lt;img src="deconvolution-01.png" width="100%"&gt;
+
+---
+
+## Where we can use gene expression deconvolution algorithms
+
+* Blood datasets
+* Tumor environments \ survival analysis
+* Contamination detection
+* Immune cell type infiltration
+
+
+---
+
+## Linear mixing model
+
+&lt;img src="deconvolution-02.png" width="100%"&gt;
+
+---
+
+## Gene expression deconvolution problem
+
+&lt;img src="deconvolution-03.png" width="100%"&gt;
+
+
+---
+
+## Formally
+
+* Given observed gene expression matrix `\(n \times m\)` where `\(n\)` is the number of genes and `\(m\)` is the number of samples
+* Find such matrices `\(W (n \times k)\)` and `\(H (k \times m)\)` that
+$$ X \approx W \times H; X, W, H \geq 0 $$
+* (Optionally) `\(H\)` obeys sum-to-one constraint:
+$$ \forall j \sum\_{i=1}^{k}H\_{i,j} = 1 $$
+* (Sum of proportions in each sample equals 1)
+
+---
+
+## Formally
+
+* Formally speaking, gene expression deconvolution probles is a subset of NMF problem (non-negative matrix factorization)
+* However, we require matrix factor to have be "biologically meaningfull": matrix `\(W\)` must inform us about the expression of genes in pure cell types and matrix `\(H\)` must inform us about the proportions of these pure cell types in mixed samples
+
+---
+
+## Signature genes
+
+&lt;img src="deconvolution-04.png" width="90%"&gt;
+
+---
+
+## Deconvolution algorithms
+
+* Complete deconvolution algorithms (we know nothing but matrix)
+* Partial deconvolution algorithms (we have additional information about the problem)
+
+What can be additional information:
+* Either `\(W\)` or `\(H\)`, (or subset of `\(W\)` or `\(H\)`)
+* **Signature genes** for relevant for cell types in the mixture
+
+
+---
+
+## Deconvolution algorithms
+
+* **Partial deconvolution algorithms** are more or less well-studies
+* **Complrete deconvolution algorithms**: that's were stuff is getting complicated
+
+---
+
+## Current algorithms
+
+* If we know any of matrices `\(H\)` or `\(W\)`, then we can use some form of NNLS (non-negative least squares)
+* If we know signature genes: we can easily use DSA (digital sorting algorithm)
+* If we know a part of `\(W\)` then we could use other supervised algorithms:
+
+.small[
+* **TIMER** (linear least square regression)
+* **CIBERSORT** (nu support vector regression)
+* **EPIC** (constrained least square regression)
+* **xCell** (ssGSEA, single-sample gene set enrichment analysis)
+* and many others...
+]
+
+---
+
+## Non-negative least squares
+
+* NNLS methods are one way or another involved in gene expression deconvolution problem
+* Given we know `\(X\)` and we know `\(W\)` (for exampled we measures expression in pure/sorted cell subpopulations) how can we know matrix `\(H\)` for proporitons?
+
+Fast combinatorial non-negative least squares (FCNNLS) will minimize
+
+.small[
+$$ \min\_{H} || W \times H - X ||\_F,\ \ H \geq 0 $$
+$$ || A - B ||\_F = \sum\_{i=1}^{n} \sum\_{j=1}^{m} (A\_{i,j} - B\_{i,j})^2 $$
+]
+
+---
+## GSE19830
+
+* Benchmark dataset for gene expression deconvolution algorithms
+* Mixture of 3 tissues: liver, brain and lung
+* mRNA abundance from pure and mixed tissue samples was measures using microarray
+
+.center[
+&lt;img src="deconvolution-02.png" width="70%"&gt;
+]
+
+---
+
+## All libraries for today
+
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("GEOquery", quietly = TRUE)) BiocManager::install("GEOquery")
+if (!requireNamespace("Biobase", quietly = TRUE)) BiocManager::install("Biobase")
+if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
+if (!requireNamespace("reshape2", quietly = TRUE)) install.packages("reshape2")
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr")
+if (!requireNamespace("limma", quietly = TRUE)) BiocManager::install("limma")
+if (!requireNamespace("pheatmap", quietly = TRUE)) install.packages("pheatmap")
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
+if (!requireNamespace("linseed", quietly = TRUE)) devtools::install_github("https://github.com/ctlab/LinSeed")
+
+library(GEOquery)
+library(Biobase)
+library(limma)
+library(dplyr)
+library(pheatmap)
+library(linseed)
+library(ggplot2)
+library(reshape2)
+```
+
+
+---
+## Let's do it
+
+
+```r
+gse19830 &lt;- getGEO("GSE19830", AnnotGPL = TRUE)[[1]]
+head(pData(gse19830)[, c("geo_accession", "characteristics_ch1")])
+```
+
+```
+##           geo_accession                        characteristics_ch1
+## GSM495209     GSM495209 tissue: 100 % Liver / 0 % Brain / 0 % Lung
+## GSM495210     GSM495210 tissue: 100 % Liver / 0 % Brain / 0 % Lung
+## GSM495211     GSM495211 tissue: 100 % Liver / 0 % Brain / 0 % Lung
+## GSM495212     GSM495212 tissue: 0 % Liver / 100 % Brain / 0 % Lung
+## GSM495213     GSM495213 tissue: 0 % Liver / 100 % Brain / 0 % Lung
+## GSM495214     GSM495214 tissue: 0 % Liver / 100 % Brain / 0 % Lung
+```
+
+---
+## Let's parse proportions
+
+
+```r
+pdata &lt;- pData(gse19830)
+proportionsCharacter &lt;- pdata$characteristics_ch1
+proportions &lt;- data.frame(
+  liver=as.numeric(gsub(".* (\\d+) % Liver.*", "\\1", proportionsCharacter)),
+  brain=as.numeric(gsub(".* (\\d+) % Brain.*", "\\1", proportionsCharacter)),
+  lung=as.numeric(gsub(".* (\\d+) % Lung.*", "\\1", proportionsCharacter)),
+  row.names=rownames(pdata)
+)
+```
+---
+## Let's parse proportions
+
+
+```r
+head(proportions)
+```
+
+```
+##           liver brain lung
+## GSM495209   100     0    0
+## GSM495210   100     0    0
+## GSM495211   100     0    0
+## GSM495212     0   100    0
+## GSM495213     0   100    0
+## GSM495214     0   100    0
+```
+
+---
+## Let's parse proportions
+
+
+```r
+head(exprs(gse19830)[, 1:5])
+```
+
+```
+##            GSM495209 GSM495210 GSM495211 GSM495212 GSM495213
+## 1367452_at  9.708805  9.699480  9.722403 10.692062 10.768543
+## 1367453_at  9.440922  9.447787  9.366185  9.638798  9.708867
+## 1367454_at 10.065387  9.875977  9.980733  8.979478  9.068793
+## 1367455_at 10.772701 10.806368 10.799123 10.077569 10.069213
+## 1367456_at 10.872740 10.947153 10.883944 10.191303 10.203609
+## 1367457_at  8.519881  8.500473  8.381525  9.043163  9.082561
+```
+
+---
+
+## Usual microarray prep
+
+
+```r
+fData(gse19830) &lt;- fData(gse19830)[, c("ID", "Gene symbol", "Gene ID")]
+head(fData(gse19830))
+```
+
+```
+##                    ID     Gene symbol        Gene ID
+## 1367452_at 1367452_at           Sumo2         690244
+## 1367453_at 1367453_at           Cdc37         114562
+## 1367454_at 1367454_at           Copb2          60384
+## 1367455_at 1367455_at             Vcp         116643
+## 1367456_at 1367456_at Ube2d2///Ube2d3 641452///81920
+## 1367457_at 1367457_at           Becn1         114558
+```
+
+---
+
+## Quantile and collapsing IDs
+
+
+```r
+exprs(gse19830) &lt;- normalizeBetweenArrays(exprs(gse19830), method="quantile")
+```
+
+---
+## Moving to gene expression
+
+
+```r
+gse19830 &lt;- gse19830[!grepl("///", fData(gse19830)$`Gene symbol`), ]
+gse19830 &lt;- gse19830[fData(gse19830)$`Gene symbol` != "", ]
+
+fData(gse19830)$mean_expression &lt;- apply(exprs(gse19830), 1, mean)
+gse19830 &lt;- gse19830[order(fData(gse19830)$mean_expression, decreasing = TRUE), ]
+gse19830 &lt;- gse19830[!duplicated(fData(gse19830)$`Gene ID`), ]
+gse19830 &lt;- gse19830[seq_len(12000), ]
+dim(gse19830)
+```
+
+```
+## Features  Samples 
+##    12000       42
+```
+
+---
+## How to find cell-type specific markers
+
+* Differential expression
+* But first make sure dataset is log-normalized
+* Yes, limma DE: log-scale expression
+* Yes, deconvolution: linear-scale expression
+
+---
+
+## Now the markers
+
+* To find cell type-specific markers we have to perform DE one tissue against others
+* We have to do it for all tissues
+
+---
+
+## Now the markers: 
+
+
+```r
+pure &lt;- gse19830[, 1:9]
+pureProportions &lt;- proportions[1:9, ]
+pData(pure)$Liver &lt;- c("NonLiver", "Liver")[as.numeric(pureProportions$liver == 100) + 1]
+pData(pure)$Brain &lt;- c("NonBrain", "Brain")[as.numeric(pureProportions$brain == 100) + 1]
+pData(pure)$Lung &lt;- c("NonLung", "Lung")[as.numeric(pureProportions$lung == 100) + 1]
+```
+
+---
+
+## Now the markers: limma, liver
+
+
+```r
+liver.model &lt;- model.matrix(~0 + Liver, data=pData(pure))
+fit &lt;- lmFit(pure, liver.model)
+
+fit2 &lt;- contrasts.fit(fit, makeContrasts(LiverLiver - LiverNonLiver, levels=liver.model))
+fit2 &lt;- eBayes(fit2, trend = T)
+
+de &lt;- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+```
+---
+
+## Results
+
+
+```r
+head(de)
+```
+
+```
+##                    ID Gene.symbol Gene.ID mean_expression    logFC
+## 1387672_at 1387672_at        Gnmt   25134       10.258102 6.843954
+## 1370359_at 1370359_at       Amy1a   24203        9.698725 8.362035
+## 1370387_at 1370387_at      Cyp3a9  171352       10.533690 5.815090
+## 1367647_at 1367647_at    Serpina1   24648       12.190740 6.683879
+## 1373337_at 1373337_at       Grhpr  680021       10.021771 4.077657
+## 1390591_at 1390591_at     Slc17a3  266730        7.986090 7.626936
+##             AveExpr        t      P.Value    adj.P.Val        B
+## 1387672_at 7.558784 69.44072 1.010586e-12 2.343244e-09 18.20819
+## 1370359_at 6.049920 69.32211 1.024933e-12 2.343244e-09 18.20091
+## 1370387_at 8.252952 69.04600 1.059224e-12 2.343244e-09 18.18387
+## 1367647_at 9.007060 67.50518 1.275865e-12 2.343244e-09 18.08616
+## 1373337_at 8.645954 67.46232 1.282563e-12 2.343244e-09 18.08338
+## 1390591_at 5.189204 66.26934 1.485817e-12 2.343244e-09 18.00443
+```
+
+---
+
+## Heatmap in pure samples
+
+
+```r
+markers.liver &lt;- de %&gt;% filter(adj.P.Val &lt; 0.01) %&gt;% top_n(50, logFC)
+head(markers.liver)
+```
+
+```
+##           ID Gene.symbol Gene.ID mean_expression    logFC  AveExpr
+## 1 1370359_at       Amy1a   24203        9.698725 8.362035 6.049920
+## 2 1369701_at        Lipc   24538        8.773901 7.807279 5.694095
+## 3 1387949_at     Cyp2c22  171518        9.573340 8.197398 6.271688
+## 4 1380104_at          F9   24946       10.091450 7.947228 6.714411
+## 5 1393403_at     Angptl3  502970        9.134767 8.109480 5.816086
+## 6 1387314_at     Sult1b1   64305        9.555973 8.705531 5.826437
+##          t      P.Value    adj.P.Val        B
+## 1 69.32211 1.024933e-12 2.343244e-09 18.20091
+## 2 65.95152 1.545891e-12 2.343244e-09 17.98291
+## 3 64.93347 1.757433e-12 2.343244e-09 17.91253
+## 4 63.89328 2.007689e-12 2.409227e-09 17.83830
+## 5 62.42038 2.433271e-12 2.654477e-09 17.72899
+## 6 53.87281 8.188696e-12 3.941782e-09 16.98147
+```
+
+---
+
+## Heatmap in pure samples
+
+
+```r
+markers.liver &lt;- markers.liver %&gt;% pull(ID)
+pheatmap(pure[markers.liver, ], scale = "row", cluster_rows = F, cluster_cols = F)
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-13-1.svg)&lt;!-- --&gt;
+
+---
+
+## Lets do the same for other tissues: Brain
+
+
+```r
+brain.model &lt;- model.matrix(~0 + Brain, data=pData(pure))
+fit &lt;- lmFit(pure, brain.model)
+
+fit2 &lt;- contrasts.fit(fit, makeContrasts(BrainBrain - BrainNonBrain, levels=brain.model))
+fit2 &lt;- eBayes(fit2, trend = T)
+
+de &lt;- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+markers.brain &lt;- de %&gt;% filter(adj.P.Val &lt; 0.01) %&gt;% top_n(50, logFC)
+markers.brain &lt;- markers.brain %&gt;% pull(ID)
+```
+
+---
+
+## Lets do the same for other tissues: Lung
+
+
+```r
+lung.model &lt;- model.matrix(~0 + Lung, data=pData(pure))
+fit &lt;- lmFit(pure, lung.model)
+
+fit2 &lt;- contrasts.fit(fit, makeContrasts(LungLung - LungNonLung, levels=lung.model))
+fit2 &lt;- eBayes(fit2, trend = T)
+
+de &lt;- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+markers.lung &lt;- de %&gt;% filter(adj.P.Val &lt; 0.01) %&gt;% top_n(50, logFC)
+markers.lung &lt;- markers.lung %&gt;% pull(ID)
+```
+
+---
+
+## Lets look at the markers
+
+
+```r
+pheatmap(pure[c(markers.liver, markers.brain, markers.lung), ], scale = "row", cluster_rows = F, cluster_cols = F)
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-16-1.svg)&lt;!-- --&gt;
+
+---
+## DSA algorithm
+
+* "Digital sorting of complex tissues cell type-specific gene signature profiles", Zhong et al, BMC Bionformatics 2013
+* Algorithm requires list of cell type-specific genes for each tissue/cell type
+* Idea behind the algortihm: cell type-specific signatures will form close-to-diagonal matrix `\(W\)` which can be used to identify proportions, and then to identify the rest of `\(W\)`
+* Basically, signature genes define subset of `\(W\)`
+
+---
+
+## DSA algorithm:
+
+* As you can see, expression profile of marker genes is somewhat similar to proportions
+* We can average thes expression profiles to generate pseudo-proportions
+* We can then use pseudo-proportions to calculate real proportions (using sum-to-one constraint)
+* Then, we can calculate signature matrix
+
+---
+
+## Visually
+
+
+```r
+pheatmap(t(proportions), cluster_rows = F, cluster_cols = F)
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-17-1.svg)&lt;!-- --&gt;
+
+---
+
+## Visually
+
+
+```r
+pheatmap(2^exprs(gse19830)[c(markers.liver[1:3], markers.brain[1:3], markers.lung[1:3]), ], scale="row", cluster_rows = F, cluster_cols = F)
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-18-1.svg)&lt;!-- --&gt;
+
+---
+
+## Only mixed samples
+
+
+```r
+mix &lt;- exprs(gse19830)[, 10:42]
+mix &lt;- 2^mix # going to linear scale
+markers &lt;- list(
+  liver=markers.liver,
+  brain=markers.brain,
+  lung=markers.lung
+)
+hist(mix[, 1])
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-19-1.svg)&lt;!-- --&gt;
+
+---
+
+## Running DSA
+
+
+```r
+dsaResults &lt;- linseed:::fastDSA(mix, markers)
+head(dsaResults$W)
+```
+
+```
+##                  [,1]     [,2]     [,3]
+## 1389956_a_at 13807.93 15064.47 17960.97
+## 1375107_at   14166.35 14600.87 13883.36
+## 1375651_at   13052.02 15432.70 10591.34
+## 1375340_at   11161.69 15386.99 10014.83
+## 1388159_at   10878.31 15245.20 10454.23
+## 1367555_at   20188.60 20188.60 20188.60
+```
+
+---
+
+## Running DSA
+
+
+```r
+head(dsaResults$H[, 1:6])
+```
+
+```
+##       GSM495218  GSM495219  GSM495220  GSM495221  GSM495222  GSM495223
+## [1,] 0.07193147 0.07561161 0.07637038 0.55899841 0.55789060 0.55520090
+## [2,] 0.28548288 0.28675693 0.28524166 0.08621573 0.08560105 0.08242523
+## [3,] 0.60037339 0.59850318 0.60323475 0.30747369 0.30685098 0.30591938
+```
+
+---
+
+## Comparing proportions
+
+
+```r
+actual &lt;- as.matrix(proportions[10:42, ]) / 100
+predicted &lt;- t(dsaResults$H)
+props &lt;- data.frame(
+  Actual=as.numeric(actual),
+  Predicted=as.numeric(predicted),
+  Tissue=c(rep("liver", ncol(mix)), rep("brain", ncol(mix)), rep("lung", ncol(mix)))
+)
+head(props)
+```
+
+```
+##   Actual  Predicted Tissue
+## 1   0.05 0.07193147  liver
+## 2   0.05 0.07561161  liver
+## 3   0.05 0.07637038  liver
+## 4   0.70 0.55899841  liver
+## 5   0.70 0.55789060  liver
+## 6   0.70 0.55520090  liver
+```
+
+---
+## Comparing proportions
+
+
+```r
+ggplot(data=props, aes(x=Actual, y=Predicted, color=Tissue)) +
+  geom_point() + geom_abline(slope=1, intercept = 0, lty=2) +
+  facet_grid(~Tissue) + theme_bw() + theme(aspect.ratio = 1)
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-23-1.svg)&lt;!-- --&gt;
+---
+
+## Comparing expression in pure samples
+
+
+```r
+# fancy plots: basis
+actualBasis &lt;- cbind(
+  2^rowMeans(exprs(pure)[, 1:3]),
+  2^rowMeans(exprs(pure)[, 4:6]),
+  2^rowMeans(exprs(pure)[, 7:9])
+)
+colnames(actualBasis) &lt;- c("Liver", "Brain", "Lung")
+predictedBasis &lt;- dsaResults$W
+
+plotData &lt;- data.frame(
+  Actual=as.numeric(actualBasis),
+  Predicted=as.numeric(predictedBasis),
+  Tissue=c(rep("Liver", nrow(exprs(pure))), rep("Brain", nrow(exprs(pure))), rep("Lung", nrow(exprs(pure))))
+)
+```
+
+---
+## Comparing expression in pure samples
+  
+
+```r
+ggplot(data=plotData, aes(x=Actual, y=Predicted)) + 
+  geom_hex(bins=100) + theme_bw() + facet_grid(~Tissue) +
+  geom_abline(slope=1, intercept = 0, lty=2) + scale_x_log10() + scale_y_log10() +
+  theme(aspect.ratio = 1)
+```
+
+![](deconvolution_files/figure-html/unnamed-chunk-25-1.svg)&lt;!-- --&gt;
+
+---
+
+## But this is where the magic ends
+
+* GSE19830 is a benchmark dataset and was designed to perform nicely: tissures are transcriptionally are very different one form another
+* When it comes to real data things are getting noisy and complicated
+
+---
+
+## Realistic scenarios
+
+* Cell types are not "THAT" different from one to another as brain is different from lung, or brain is different from liver
+* Blood cells are very-very different from neurons, for example
+* Lymphocytes are very different from monocytes
+* B cell are different from T cells
+* CD4+ T helper cells are different from CD8+ T killer cells
+* CD4+ T regulatory cells are slightly different from CD4+ effector T cells??
+* These changes getting smaller and smaller and much harder to dissect
+
+---
+
+## Specialized algorithms: CIBERSORT
+
+* CIBERSORT, https://cibersort.stanford.edu/, blood deconvolution
+
+Their reference matrix LM22 describes how different genes are expressed across 22 immune cell types, and then they use nu-support vector regression algorithm to figure out the proportions.
+
+(you can find LM22 in the files and use it yourself)
+
+However, LM22 was designed for one microarray platform (HGU133A) and is not suitable for RNA-seq data and also for other microarray platforms
+
+---
+## Specialized algorithms: TIMER
+
+* Tumor Immune Estimation Resource (http://cistrome.org/TIMER/)
+* "TIMER is a web resource for systematical evaluations of the clinical impact of different immune cells in diverse cancer types"
+* Calculates “scores” (instead of proportions) for immune cell types in the mixture. Was trained using TCGA cancer datasets
+
+---
+
+## Limitations of supervised/partial deconvolution methods
+
+* You are either limited to platform or/and tissue you study
+* You might have to identify marker genes yourself
+* You have to know all the cell types that are present in your sample before you do the deconvolution
+
+---
+
+## Complete deconvolution problem
+
+* General NMF (non-negative matrix factorization) approaches; there are methods that for given matrix `\(X (n \times m)\)` and given `\(k\)` can estimate such matrices `\(W (n \times k)\)` and `\(H(k \times m)\)` that `\(X \approx W \times H\)`, where `\(k\)` is the number of cell types, `\(n\)` is the number of genes and `\(m\)` is the number of samples
+
+General NMF, however, has several problems:
+* No quarantee that this factorization is biologically relevant
+* Algorithm can find one of many approximations
+* How to estimate number of cell types `\(k\)`
+
+---
+
+## LinSeed
+
+* LinSeed (linear subspace identification for gene expresion deconvolution)
+* Developed by cool guys in our lab (me)
+* We try to estimate cell type number
+* We find signature genes
+* We deconvolve (sometimes even without gene sigantures)
+
+---
+
+## Idea behind algorithm
+
+* Miss me? I am a linear model from slide 6
+
+.center[
+&lt;img src="deconvolution-02.png" width="100%"&gt;
+]
+
+---
+
+## Linear subspace
+
+.center[
+&lt;img src="linseed1.png" width="100%"&gt;
+]
+
+---
+
+## 4 cell types will make a tetrahedron
+
+.center[
+&lt;img src="linseed2.png" width="100%"&gt;
+]
+
+---
+## Conclusions
+
+* The bright future is ahead of us: soon we will be able to deconvolve any dataset
+* With rapid grow of single-cell RNA-seq technologies it will be much easier to obtain cell type-specific signatures
+* Partial deconvolution methods are well-studies and accurate, however, usage of every method relies on additional information about your dataset
+* Complete deconvolution methods are also being developed and they already show  a lot of insights that were only possible because of unbiased approach
+
+---
+
+class: center, middle
+
+# Questions?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
