@@ -70,8 +70,10 @@ There will be 4 projects homeworks during this course:
 
 Random materials:
 
-1. Box-plot link will be here
-2. Materials about SVD and PCA will be here
+1. Good chapter on SVD: <a href="https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/book-chapter-4.pdf" target="_blank">https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/book-chapter-4.pdf</a>
+2. Good interactive material "Understanding UMAP": <a href="https://pair-code.github.io/understanding-umap/" target="_blank">https://pair-code.github.io/understanding-umap/</a>
+
+
 
 ### Homework 1 
 
