@@ -72,7 +72,8 @@ Random materials:
 
 1. Good chapter on SVD: <a href="https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/book-chapter-4.pdf" target="_blank">https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/book-chapter-4.pdf</a>
 2. Good interactive material "Understanding UMAP": <a href="https://pair-code.github.io/understanding-umap/" target="_blank">https://pair-code.github.io/understanding-umap/</a>
-
+3. How much scRNA-seq library prep costs: https://satijalab.org/costpercell
+4. About distributions behind box plots: https://www.autodeskresearch.com/node/3699
 
 
 ### Homework 1 
@@ -84,4 +85,23 @@ Basically you needed to perform basic steps for a dataset: normalize and make se
 Datasets IDs are listed in the table below:
 
 https://docs.google.com/spreadsheets/d/15tEZ3fADDdxzIxdBfFhAozQUMb-chAjX14qtdRJKtP8/edit?usp=sharing
+
+### Homework 2
+
+In the second homework you will be given a small transcirptome to assemble. You can use either your laptop (if it is powerfull enough) or a computational cluster that was set up for you. You can also use any other online tools (like galaxy or gVolante). To pass this homework you must present your results and possibly compare to paper results.
+
+Datasets are:
+
+1. Liu N, Zhang G, Xu S, Mao W et al. Comparative Transcriptomic Analyses of Vegetable and Grain Pea (Pisum sativum L.) Seed Development. Front Plant Sci 2015;6:1039. PMID: 26635856 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72573 https://www.ncbi.nlm.nih.gov/sra?term=SRP063052
+2. Rai A, Yamazaki M, Takahashi H, Nakamura M et al. RNA-seq Transcriptome Analysis of Panax japonicus, and Its Comparison with Other Panax Species to Identify Potential Genes Involved in the Saponins Biosynthesis. Front Plant Sci 2016;7:481. PMID: 27148308 https://www.ncbi.nlm.nih.gov/sra?term=SRP071142 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE78893
+
+Analysis
+
+* Run Trimmomatic (http://www.usadellab.org/cms/?page=trimmomatic) to filter low-quality reads
+* Run Trinity (https://github.com/trinityrnaseq/trinityrnaseq/wiki)/rnaSPAdes (http://cab.spbu.ru/software/rnaspades/) to assemble the transcriptome
+* Run BUSCO (https://busco.ezlab.org/) and TransRate (https://hibberdlab.com/transrate/index.html) to assess the transcriptome
+* Optional: run cd-hit-est (http://weizhongli-lab.org/cd-hit/) to collapse similar transcripts
+* Annotate with blast+ (ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/) using Uniprot SwissProt (can be downloaded here https://www.uniprot.org/downloads) as a reference
+
+More details about datasets and cluster access are at https://docs.google.com/spreadsheets/d/15tEZ3fADDdxzIxdBfFhAozQUMb-chAjX14qtdRJKtP8/edit#gid=1796960723
 
