@@ -105,3 +105,20 @@ Analysis
 
 More details about datasets and cluster access are at https://docs.google.com/spreadsheets/d/15tEZ3fADDdxzIxdBfFhAozQUMb-chAjX14qtdRJKtP8/edit#gid=1796960723
 
+### Homework 3
+
+For third homework you will need to chose one of recent scRNA-seq datasets and perform basic analysis:
+
+1) Preprocessing: filtering out bad cells and normalization
+2) UMAP + clustering
+3) Marker selection  for clusters
+
+I recommend using code snippets from the lecture or usual seurat tutorial at https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html
+
+Dataset suggestions (you can analyze any dataset you want, these are just some suggestions):
+
+1. Transcriptome Analysis Reveals Nonfoamy Rather Than Foamy Plaque Macrophages Are Proinflammatory in Atherosclerotic Murine Models, https://www.ahajournals.org/doi/pdf/10.1161/CIRCRESAHA.118.312804. Link to the dataset: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3215435
+2. Suppressing miR-21 activity in tumor-associated macrophages promotes an antitumor immune response, https://www.jci.org/articles/view/127125. Link to the dataset: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE118931
+3. Coopted temporal patterning governs cellular hierarchy, heterogeneity and metabolism in Drosophila neuroblast tumors, https://elifesciences.org/articles/50375. Link to the dataset: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3161971
+
+You will pass this homework by presenting results and comparing with the publication.
