@@ -77,7 +77,7 @@ Random materials:
 4. About distributions behind box plots: https://www.autodeskresearch.com/node/3699
 
 
-### Homework 1 
+### Homework 1: deadline december 7th
 
 The first homework is to analyze a microarray gene expression dataset. All the datasets will be available by GEO id, so you can find them at GEO omnibus and also use `GEOquery::getGEO("GSEXXXXX")` to get the expression data into R session.
 
@@ -87,7 +87,7 @@ Datasets IDs are listed in the table below:
 
 https://docs.google.com/spreadsheets/d/15tEZ3fADDdxzIxdBfFhAozQUMb-chAjX14qtdRJKtP8/edit?usp=sharing
 
-### Homework 2
+### Homework 2: deadline december 14th
 
 In the second homework you will be given a small transcirptome to assemble. You can use either your laptop (if it is powerfull enough) or a computational cluster that was set up for you. You can also use any other online tools (like galaxy or gVolante). To pass this homework you must present your results and possibly compare to paper results.
 
@@ -106,7 +106,7 @@ Analysis
 
 More details about datasets and cluster access are at https://docs.google.com/spreadsheets/d/15tEZ3fADDdxzIxdBfFhAozQUMb-chAjX14qtdRJKtP8/edit#gid=1796960723
 
-### Homework 3
+### Homework 3: deadline december 14th
 
 For third homework you will need to chose one of recent scRNA-seq datasets and perform basic analysis:
 
