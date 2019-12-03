@@ -1,0 +1,23 @@
+---
+title: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## NGS data analysis intensive: scRNA-seq analysis
+
+This page is dedicated to materials for NGS data analysis intensive 2019
+
+Make sure you open the slides on your laptops:
+
+1. Introduction to single-cell RNA-seq analysis: <a href="https://konsolerr.github.io/sc_intensive_2019/scrna_seq_intro" target="_blank">slides</a> and <a href="https://konsolerr.github.io/sc_intensive_2019/scrna_seq_intro/materials.zip" target="_blank">materials</a>.
+2. Single-cell explorer to visuale scRNA-seq data: <a href="https://konsolerr.github.io/sc_intensive_2019/sce.pdf" target="_blank">slides</a>
+3. Trajectory analyis in scRNA-seq data: <a href="https://konsolerr.github.io/sc_intensive_2019/trajectory.pdf" target="_blank">slides</a>
+
+
+Make sure to contact me, if you have any questions.
+
+Konstantin Zaitsev, kzaitsev\@itmo.ru
