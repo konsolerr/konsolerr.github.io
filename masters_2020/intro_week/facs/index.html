@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Flow cytometry and FACS</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kontantin Zaitsev" />
+    <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
+    <link rel="stylesheet" href="../libs/itmo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Flow cytometry and FACS
+### Kontantin Zaitsev
+### September 9<sup>th</sup>, 2019
+
+---
+
+
+
+class: center, middle
+
+# Flow cytometry
+
+---
+
+
+## Flow cytometry
+
+* Flow cytometry and FACS are widely used techniques to capture features of cell phenotype
+* Flow cytometry allows to understand size and granularity of individual cells
+* FACS allows to capture protein expression for several (pre-defined) surface proteins in individual cells
+
+---
+
+## Flow cytometry
+
+.pull-left[
+* Sheath fluid focuses the cell suspension, causing cells to pass through a laser beam one cell at a time
+* Forward and side scattered light is detected
+]
+
+.pull-right[
+&lt;img src="flow_cytometry.jpg" width="70%"&gt;
+]
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.abcam.com/protocols/introduction-to-flow-cytometry&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Flow cytometry
+
+.pull-left[
+Cells or particles passing through the beam scatter light, which is detected as FS and SS
+
+* FS correlates with cell size and
+* SS is proportional to the granularity of the cells
+]
+
+.pull-right[
+&lt;img src="Forward_Scatter_Light.png" width="350"&gt;
+&lt;img src="Side_Scatter_Light.png" width="350"&gt;
+]
+
+
+In this manner, cell populations can often be distinguished based on differences in their size and granularity alone.
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.bosterbio.com/protocol-and-troubleshooting/flow-cytometry-principle&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Flow cytometry: example
+
+Below are dot plot and contour plot of blood cells flow cytometry.
+
+&lt;img src="dot_plot_example.jpg" height="250"&gt;
+&lt;img src="contour_plot_example.png" height="250"&gt;
+
+Such plot (and density plots) are common for flow cytometry and FACS and allow cell subset identification.
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.bosterbio.com/protocol-and-troubleshooting/flow-cytometry-principle&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+class: center, middle
+
+# FACS (fluorescence-activated cell sorting)
+
+---
+
+## FACS (fluorescence-activated cell sorting)
+
+* FACS adds another functionality to flow cytometry
+* FACS detects expression of cell surface molecules
+* For FACS we need to design panel of antibodies with specific fluorophores
+
+---
+
+## FACS
+
+&lt;img src="if-cell-surface-ag.jpg" height="400"&gt;
+
+---
+
+## Cell surface molecules
+
+There are many cell surface molecules and ost of them have at least two names:
+
+1. **Functional**: &lt;br&gt; PTPRC (Protein tyrosine phosphatase, receptor type, C) &lt;br&gt; ITGAM (Integrin alpha M)
+2. **Cluster of differentiation**: &lt;br&gt;  CD45, CD11b
+
+Sometimes these genes have just a name of CD nomenclature like CD4 and CD34.
+
+
+---
+
+## Cell surface molecules
+
+Cell surface molecules may be protein complexes: i.e. composed of products of several genes. 
+
+.center[
+&lt;img src="il2r.jpg" width="400"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.sciencedirect.com/topics/immunology-and-microbiology/il-2-receptor&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Cell surface molecules
+
+.pull-left[
+
+* Luckily, we don't need to learn them
+* Takeaway message: there are **many** cell surface molecules, and scientists very often use them to **characterize cell types**
+
+]
+
+.pull-right[
+&lt;img src="cds.png" width="400"&gt;
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://en.wikipedia.org/wiki/Cluster_of_differentiation&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Antibodies
+
+* An **antibody** (**Ab**), also known as an **immunoglobulin** (**Ig**), is a large, Y-shaped protein produced mainly by plasma cells that is used by the immune system to neutralize pathogens such as pathogenic bacteria and viruses
+* The antibody **recognizes a unique molecule**, called an antigen, and **binds** to it
+* We can engineer antibodies for cell surface molecules
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Definition is taken from https://en.wikipedia.org/wiki/Antibody&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Antibodies
+
+* We can attach fluorophores of different colors to antibodies to figure measure the expression of surface markers in individual cells
+
+.center[
+&lt;img src="fluo.png" width="450"&gt;
+]
+
+
+---
+
+## Fluorophores
+
+* There are many fluoroscent molecules (fluorophores)
+* These fluorescent molecules are excited by laser light at specific wavelengths and then emit light (fluoresce) at another wavelength
+* By conjugating (pre-attaching) them to primary antibodies, we can create conjugated antibodies that allow for flow cytometry analysis
+
+.center[
+&lt;img src="cell.jpg" width="200"&gt;
+]
+
+---
+
+## Fluorophores
+
+.center[
+&lt;img src="fluos.png" width="700"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://en.wikipedia.org/wiki/Fluorophore&lt;/span&gt;&lt;/div&gt; 
+---
+
+## Important properties of fluorophores
+
+.tiny[
+* **Maximum Excitation Wavelength (λex)** – The peak wavelength in the excitation (absorption) spectra, measured in nanometers (nm)
+* **Maximum Emission Wavelength (λem)** – The peak wavelength in the emission spectra, measured in nanometers (nm)
+* **Extinction Coefficient (ε max )** – (also called molar absorptivity) The capacity for the fluorochrome to absorb light at a given wavelength, usually measured at the maximum excitation wavelength with the units M −1 cm −1
+* **Fluorescence Quantum Yield** (Φf) – The number of photons emitted per absorbed photon. A high quantum yield is important, and this number ranges between 0 and 1
+* **Brightness** – The fluorescence output per fluorophore measured. Fluorophores with high brightness values can be used to detect lower-abundance targets. Calculated as the product of the extinction coefficient (at the relevant excitation wavelength) and the fluorescence quantum yield divided by 1000, with the units M −1 cm −1
+]
+
+---
+
+## Quick reminder about photon energy
+
+$$ E = \frac{hc}{\lambda} $$
+Where
+* `\(h\)` is Planck constant
+* `\(c\)` is the speed of light (in vacuum)
+* `\(\lambda\)` is the photon wavelength
+
+**Energy** of emitted photon **is always lower** than the energy of absorbed photon, so **wavelength** of emitted photon **is greater** than the wavelaength of absorbed photon. 
+
+---
+
+## Flow cytometry with fluorescence
+
+.pull-left[
+
+* So we have cell labeled with antibodies
+* Antibodies for different surface molecules have different fluorophores
+* **For each cell** we detect **forward scatter**, **side scatter** and **fluorescence**
+
+]
+
+.pull-right[
+&lt;img src="facs_mech.png" width="300"&gt;
+]
+
+---
+
+## FACS
+
+* Unfortunately, emission light spectra overlap between similar colors
+* We are limited to **7-10** antibodies per FACS experiment
+
+.center[
+&lt;img src="spectra.jpeg" width="600"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.biolegend.com/en-us/multicolor-staining&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## FACS
+
+.pull-left[
+
+When you are only given 4 flurophores, how to chose to which antibodies to conjugate?
+
+* Basic rule: lower average expression -&gt; greater fluorohpore brightness
+
+]
+.pull-right[
+&lt;img src="4_color_flow_panel.png" width="400"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.bosterbio.com/protocol-and-troubleshooting/flow-cytometry-optimization/fluorescent-conjugates&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## FACS
+
+
+.center[
+&lt;img src="total_scheme.png" width="700"&gt;
+]
+
+
+---
+
+## FACS: sorting cells
+
+.pull-left[
+
+* We can charge droplets with cells based on their fluorescence
+* We can put magnets that will pull differently droplets with different fluorescence into different flasks
+* That's called sorting
+
+]
+
+.pull-right[
+&lt;img src="sorting.png" width="350"&gt;
+]
+
+---
+## Lets interpret some FACS plots
+
+* With this knowledge about FACS and how FACS plots look like it should be much easier for you to read and look at different biological papers (especially immunological)
+* Let's open Figure 1 from https://www.nature.com/articles/s41590-019-0449-3.pdf
+* https://konsolerr.github.io/gene_expression_2019/facs/10.1038@s41590-019-0449-3.pdf
+
+---
+
+class: center, middle
+
+# Any questions ?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
