@@ -1,0 +1,22 @@
+---
+title: "Day3: outline"
+author: "Konstantin Zaitsev"
+date: "2/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Outline of day 3
+
+Below is the structure of Day 3:
+
+
+* FACS: <a href="https://konsolerr.github.io/masters_2020/intro_week/facs/" target="_blank">slides</a>
+* Intro to single-cell RNA-seq: <a href="https://konsolerr.github.io/masters_2020/intro_week/scRNA-seq/" target="_blank">slides</a> 
+* Visual exploration of scRNA-seq data:
+<a href="https://konsolerr.github.io/masters_2020/intro_week/visual_analysis_masters.pdf" target="_blank">slides</a> 
+* Extras: <a href="https://konsolerr.github.io/masters_2020/intro_week/extras_masters.pdf" target="_blank">slides</a> 
+* Trajectory analysis: <a href="https://konsolerr.github.io/masters_2020/intro_week/trajectory_masters.pdf" target="_blank">slides</a> 
