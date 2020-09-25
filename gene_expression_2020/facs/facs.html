@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Flow cytometry and FACS</title>
     <meta charset="utf-8" />
     <meta name="author" content="Kontantin Zaitsev" />
-    <link rel="stylesheet" href="../libs/itmo.css" type="text/css" />
-    <link rel="stylesheet" href="../libs/itmo-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="..\libs\itmo.css" type="text/css" />
+    <link rel="stylesheet" href="..\libs\itmo-fonts.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -103,7 +103,7 @@ class: center, middle
 
 ## Cell surface molecules
 
-There are many cell surface molecules and ost of them have at least two names:
+There are many cell surface molecules and most of them have at least two names:
 
 1. **Functional**: &lt;br&gt; PTPRC (Protein tyrosine phosphatase, receptor type, C) &lt;br&gt; ITGAM (Integrin alpha M)
 2. **Cluster of differentiation**: &lt;br&gt;  CD45, CD11b
@@ -203,7 +203,7 @@ Where
 * `\(c\)` is the speed of light (in vacuum)
 * `\(\lambda\)` is the photon wavelength
 
-**Energy** of emitted photon **is always lower** than the energy of absorbed photon, so **wavelength** of emitted photon **is greater** than the wavelaength of absorbed photon. 
+**Energy** of emitted photon **is always lower** than the energy of absorbed photon, so **wavelength** of emitted photon **is greater** than the wavelength of absorbed photon. 
 
 ---
 
@@ -281,9 +281,29 @@ When you are only given 4 flurophores, how to chose to which antibodies to conju
 ## Lets interpret some FACS plots
 
 * With this knowledge about FACS and how FACS plots look like it should be much easier for you to read and look at different biological papers (especially immunological)
-* Let's open Figure 1 from https://www.nature.com/articles/s41590-019-0449-3.pdf
-* https://konsolerr.github.io/gene_expression_2019/facs/10.1038@s41590-019-0449-3.pdf
+* Let's open Figure 1 from https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0039416&amp;type=printable
 
+---
+
+## Gating 
+
+* Gating is selecting an area on the scatter plot generated during the flow experiment that decides which cells you continue to analyze and which cells you don’t.
+
+.center[
+&lt;img src="gating_example.png" width="700"&gt;
+]
+
+---
+
+## Gating
+
+* Often you will see numbers around gates: these are percentages of cell within the gate (from all cells on the plot)
+
+.center[
+&lt;img src="gating_example_2.png" width="250"&gt;
+]
+
+&lt;div class="my-footer"&gt;&lt;span&gt;taken from https://www.sciencedirect.com/science/article/pii/S1074761315000801?via%3Dihub&lt;/span&gt;&lt;/div&gt; 
 ---
 
 class: center, middle
@@ -337,6 +357,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -354,17 +400,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {

@@ -44,6 +44,8 @@ Disclaimers:
 
 Most of the lessons will be in format of seminars: lectures and practical part with your laptops. Prior the start of the course, you are required to install latest version of R (https://cran.r-project.org/bin/) and Rstudio (https://www.rstudio.com/) to your laptop. Most of the practices we will be working in R and only for several we will require a command line.
 
+**N.B.** all the code on the slides is built with R v.4.0.2. Usage of some of the packages might differ from version to version, so you might have to run the code differently if you are using different version of R.
+
 ## Homeworks 
 
 There will be 4 projects homeworks during this course:
