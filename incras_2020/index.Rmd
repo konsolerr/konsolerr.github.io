@@ -1,0 +1,25 @@
+---
+title: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Введение в анализ данных scRNA-seq
+
+Эта страница посвящена материалам для семинара в рамках школы молодых учёных 15 октября 2020  ИНЦ РАН 2020.
+
+Пожалуйста, убедитесь, что мы можете открыть слайды у себя на ноутбуках:
+
+1. Введение в анализ данных single-cell RNA-seq: <a href="https://konsolerr.github.io/incras_2020/scrna_seq_intro" target="_blank">слайды</a> and <a href="https://konsolerr.github.io/incras_2020/scrna_seq_intro/materials.zip" target="_blank">материалы</a>.
+2. scNavigator для визуализации данных scRNA-seq: <a href="https://konsolerr.github.io/incras_2020/sce.pdf" target="_blank">слайды</a>
+3. Анализ траекторий по данным scRNA-seq: <a href="https://konsolerr.github.io/incras_2020/trajectory.pdf" target="_blank">слайды</a>
+
+
+Если есть какие-либо вопросы, всегда можно связаться со мной:
+
+Константин Зайцев, kzaitsev\@itmo.ru  
+https://www.researchgate.net/profile/Konstantin_Zaitsev  
+\@askmebefore (VK, TG)
