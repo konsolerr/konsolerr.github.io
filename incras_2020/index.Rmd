@@ -21,5 +21,5 @@ knitr::opts_chunk$set(echo = TRUE)
 Если есть какие-либо вопросы, всегда можно связаться со мной:
 
 Константин Зайцев, kzaitsev\@itmo.ru  
-https://www.researchgate.net/profile/Konstantin_Zaitsev  
+<a href="https://www.researchgate.net/profile/Konstantin_Zaitsev" target="_blank">https://www.researchgate.net/profile/Konstantin_Zaitsev</a>  
 \@askmebefore (VK, TG)
