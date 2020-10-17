@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Microarrays-2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Kontantin Zaitsev" />
+    <link rel="stylesheet" href="..\libs\itmo.css" type="text/css" />
+    <link rel="stylesheet" href="..\libs\itmo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Microarrays-2
+## and introduction to gene expression studies
+### Kontantin Zaitsev
+### October 17<sup>th</sup>, 2020
+
+---
+
+
+class: center, middle
+
+# Microarrays
+
+---
+
+## Installing libraries for today
+
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("GEOquery", quietly = TRUE)) BiocManager::install("GEOquery")
+if (!requireNamespace("Biobase", quietly = TRUE)) BiocManager::install("Biobase")
+if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
+if (!requireNamespace("reshape2", quietly = TRUE)) install.packages("reshape2")
+if (!requireNamespace("limma", quietly = TRUE)) BiocManager::install("limma")
+if (!requireNamespace("MASS", quietly = TRUE)) install.packages("MASS")
+
+library(GEOquery)
+library(Biobase)
+library(ggplot2)
+library(reshape2)
+library(limma)
+library(MASS)
+```
+
+---
+## GSE53986
+
+Link to the dataset
+
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE53986
+
+
+
+---
+
+
+
+## Loading the dataset
+
+
+```r
+GSE53986 &lt;- getGEO("GSE53986", AnnotGPL = TRUE)[[1]]
+```
+
+```
+## Warning: 64 parsing failures.
+##   row             col           expected    actual         file
+## 45038 Platform_SPOTID 1/0/T/F/TRUE/FALSE --Control literal data
+## 45039 Platform_SPOTID 1/0/T/F/TRUE/FALSE --Control literal data
+## 45040 Platform_SPOTID 1/0/T/F/TRUE/FALSE --Control literal data
+## 45041 Platform_SPOTID 1/0/T/F/TRUE/FALSE --Control literal data
+## 45042 Platform_SPOTID 1/0/T/F/TRUE/FALSE --Control literal data
+## ..... ............... .................. ......... ............
+## See problems(...) for more details.
+```
+
+---
+
+## fData and pData
+
+* fData -- feature data,  probe annotation
+* pData -- phenotypcal data, sample annotaiton
+
+Lets filter these objects and only keep things we need
+
+---
+
+## Filtering pdata
+.tiny[
+
+```r
+colnames(pData(GSE53986))
+```
+
+```
+##  [1] "title"                   "geo_accession"          
+##  [3] "status"                  "submission_date"        
+##  [5] "last_update_date"        "type"                   
+##  [7] "channel_count"           "source_name_ch1"        
+##  [9] "organism_ch1"            "characteristics_ch1"    
+## [11] "characteristics_ch1.1"   "characteristics_ch1.2"  
+## [13] "characteristics_ch1.3"   "treatment_protocol_ch1" 
+## [15] "molecule_ch1"            "extract_protocol_ch1"   
+## [17] "label_ch1"               "label_protocol_ch1"     
+## [19] "taxid_ch1"               "hyb_protocol"           
+## [21] "scan_protocol"           "description"            
+## [23] "data_processing"         "platform_id"            
+## [25] "contact_name"            "contact_email"          
+## [27] "contact_department"      "contact_institute"      
+## [29] "contact_address"         "contact_city"           
+## [31] "contact_state"           "contact_zip/postal_code"
+## [33] "contact_country"         "supplementary_file"     
+## [35] "supplementary_file.1"    "data_row_count"         
+## [37] "cell type:ch1"           "strain:ch1"             
+## [39] "tissue:ch1"              "treatment:ch1"
+```
+]
+
+
+---
+
+## Filtering pdata
+
+This one is relatively straightforward
+
+
+```r
+pData(GSE53986)$rep &lt;- gsub(".*, (\\d)$", "rep \\1", pData(GSE53986)$title)
+pData(GSE53986) &lt;- pData(GSE53986)[, c("cell type:ch1", "treatment:ch1", "rep")]
+
+colnames(pData(GSE53986)) &lt;- c("Cell", "Treatment", "Replicate")
+head(pData(GSE53986))
+```
+
+```
+##                   Cell Treatment Replicate
+## GSM1304836 macrophages Untreated     rep 1
+## GSM1304837 macrophages Untreated     rep 2
+## GSM1304838 macrophages Untreated     rep 3
+## GSM1304839 macrophages Untreated     rep 4
+## GSM1304840 macrophages      IFNg     rep 1
+## GSM1304841 macrophages      IFNg     rep 2
+```
+
+---
+
+## Treatment is actually two variables
+
+* LPS: yes or no ?
+* IFNg: yes or no ?
+
+
+```r
+pData(GSE53986)$LPS &lt;- as.factor(c("no", "yes")[grepl("LPS", pData(GSE53986)$Treatment) + 1])
+pData(GSE53986)$IFNg &lt;- as.factor(c("no", "yes")[grepl("IFNg", pData(GSE53986)$Treatment) + 1])
+head(pData(GSE53986))
+```
+
+```
+##                   Cell Treatment Replicate LPS IFNg
+## GSM1304836 macrophages Untreated     rep 1  no   no
+## GSM1304837 macrophages Untreated     rep 2  no   no
+## GSM1304838 macrophages Untreated     rep 3  no   no
+## GSM1304839 macrophages Untreated     rep 4  no   no
+## GSM1304840 macrophages      IFNg     rep 1  no  yes
+## GSM1304841 macrophages      IFNg     rep 2  no  yes
+```
+
+---
+
+## Filtering fdata
+
+What do we want to keep?
+
+
+```r
+colnames(fData(GSE53986))
+```
+
+```
+##  [1] "ID"                    "Gene title"            "Gene symbol"          
+##  [4] "Gene ID"               "UniGene title"         "UniGene symbol"       
+##  [7] "UniGene ID"            "Nucleotide Title"      "GI"                   
+## [10] "GenBank Accession"     "Platform_CLONEID"      "Platform_ORF"         
+## [13] "Platform_SPOTID"       "Chromosome location"   "Chromosome annotation"
+## [16] "GO:Function"           "GO:Process"            "GO:Component"         
+## [19] "GO:Function ID"        "GO:Process ID"         "GO:Component ID"
+```
+
+---
+
+## Gene IDs: we are doomed
+
+* **Gene symbol** - something meaningfull
+* **Entrez ID** - https://www.ncbi.nlm.nih.gov/gene/ENTREZ_ID
+* **ENSEMBL** -- just ENSEMBL, when you do RNA-seq, these IDs will show up
+* RefSeq ID
+* And many more
+
+(I wanted to make a meme first, but gene id conversion is not funny at all)
+
+---
+
+## Filtering fdata
+
+Lets keep ID, symbol, and entrez id
+
+
+```r
+fData(GSE53986) &lt;- fData(GSE53986)[, c("ID", "Gene symbol", "Gene ID")]
+head(fData(GSE53986))
+```
+
+```
+##                        ID Gene symbol Gene ID
+## 1415670_at     1415670_at       Copg1   54161
+## 1415671_at     1415671_at    Atp6v0d1   11972
+## 1415672_at     1415672_at      Golga7   57437
+## 1415673_at     1415673_at        Psph  100678
+## 1415674_a_at 1415674_a_at     Trappc4   60409
+## 1415675_at     1415675_at        Dpm2   13481
+```
+
+---
+
+## Entrez ID
+
+Entrez ID: https://www.ncbi.nlm.nih.gov/gene/11972
+
+.center[
+  &lt;img src="./entrez.png" width="90%"&gt;
+]
+
+---
+
+## Figuring out expression space
+
+* Expression levels for each gene/probe can be in different space: linear and logarithmical space.
+* Usually we determine that by looking at values (especially) maximum values
+* If maximum value is &lt; 25 we think it is in log-space
+* If it is &gt; 1000 we think it is in linear space
+* (If it is somewhere in between we are usually confused)
+
+---
+
+## Figuring out expression space
+
+
+```r
+ggplot(data=data.frame(expression=exprs(GSE53986)[, 1]),
+       aes(x=expression)) +
+  geom_histogram()
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-8-1.svg)&lt;!-- --&gt;
+
+---
+
+## Figuring out expression space
+
+
+```r
+ggplot(data=data.frame(expression_log2=log2(exprs(GSE53986)[, 1])),
+       aes(x=expression_log2)) +
+  geom_histogram()
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-9-1.svg)&lt;!-- --&gt;
+
+---
+
+## Observations
+
+* In microarray we don't have true "zeroes"
+
+
+```r
+min(exprs(GSE53986))
+```
+
+```
+## [1] 0.0504764
+```
+* This means that even for non-expressed probes we detect some light intensity (background fluorescence)
+* In log-scale distribution of expression values usually looks "more normal"
+
+---
+
+## About expression space
+
+* Most of gene expression studies are done in log-space (we believe that error is normally distributed in log-space)
+* There are some exceptions (like gene expression deconvolution, usually is done in linear space)
+
+
+---
+
+## Comparing distributions between samples
+
+
+```r
+twoSamples &lt;- melt(exprs(GSE53986[, 1:2]))
+twoSamples$value &lt;- log2(twoSamples$value)
+
+ggplot(data=twoSamples, aes(x=value)) +
+  facet_grid(~Var2) + geom_histogram()
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-11-1.svg)&lt;!-- --&gt;
+---
+
+## Comparing distributions between samples
+
+
+```r
+colSums(exprs(GSE53986))
+```
+
+```
+## GSM1304836 GSM1304837 GSM1304838 GSM1304839 GSM1304840 GSM1304841 GSM1304842 
+##   37659811   36279980   36594262   37287761   38065764   37197250   37053647 
+## GSM1304843 GSM1304844 GSM1304845 GSM1304846 GSM1304847 GSM1304848 GSM1304849 
+##   37809973   38944367   37762536   38382410   38066863   40343734   38449235 
+## GSM1304850 GSM1304851 
+##   37963322   38348897
+```
+
+---
+
+## Quantile normalization
+
+* Distributions are similar yet different
+* Better safe than sorry: we apply quantile normalization anyway
+* https://en.wikipedia.org/wiki/Quantile_normalization
+
+---
+
+## Quantile normalization
+
+
+```r
+exprs(GSE53986) &lt;- normalizeBetweenArrays(log2(exprs(GSE53986)+1), method="quantile")
+twoSamples &lt;- melt(exprs(GSE53986[, 1:2]))
+
+ggplot(data=twoSamples, aes(x=value)) +
+  facet_grid(~Var2) + geom_histogram()
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-13-1.svg)&lt;!-- --&gt;
+
+---
+
+## Moving to gene expression
+
+* We were mostly looking at "probe-level" expression
+* We would like to move to gene-level expression
+* But what can happen to a probe?
+
+---
+
+## Moving to gene expression
+
+Please run 
+
+
+```r
+head(fData(GSE53986), 1000)
+```
+
+---
+
+## Moving to gene expression
+
+* Let's remove **probes that map to several genes** (they are not measuring anything specific)
+* Let's remove **probes that don't map to any gene** (they are not measuring anything useful)
+* If several probes are mapped to the same gene we only take the probe with the highest average expression
+* Let's only keep 12000 top expressed genes
+
+
+---
+## Moving to gene expression
+
+
+```r
+GSE53986 &lt;- GSE53986[!grepl("///", fData(GSE53986)$`Gene symbol`), ]
+GSE53986 &lt;- GSE53986[fData(GSE53986)$`Gene symbol` != "", ]
+
+fData(GSE53986)$mean_expression &lt;- apply(exprs(GSE53986), 1, mean)
+GSE53986 &lt;- GSE53986[order(fData(GSE53986)$mean_expression, decreasing = TRUE), ]
+GSE53986 &lt;- GSE53986[!duplicated(fData(GSE53986)$`Gene ID`), ]
+GSE53986 &lt;- GSE53986[seq_len(12000), ]
+dim(GSE53986)
+```
+
+```
+## Features  Samples 
+##    12000       16
+```
+
+---
+
+## Whoray
+
+* This matrix is finally something that we can analyze
+* Let's do a PCA first and see how our samples are grouped
+
+---
+
+## PCA plot
+
+
+```r
+pcas &lt;- prcomp(t(exprs(GSE53986)), scale. = T)
+plotData &lt;- cbind(pcas$x[, 1:2], pData(GSE53986))
+ggplot(plotData, aes(x=PC1, y=PC2, color=Treatment)) +
+  geom_point() + theme_bw() + theme(aspect.ratio = 1)
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-16-1.svg)&lt;!-- --&gt;
+
+---
+
+## PCA plot: figuring out outliers
+
+
+```r
+ggplot(plotData, aes(x=PC1, y=PC2, color=Treatment)) +
+  geom_point() +
+  geom_text(aes(label=rownames(plotData))) + theme_bw() + theme(aspect.ratio = 1)
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-17-1.svg)&lt;!-- --&gt;
+
+---
+
+## Variance expained:
+
+Usually we show variance explained by components
+
+$$ Var = \sigma^2 $$
+
+prcomp calculates standard deviation
+
+---
+
+## Variance explained
+
+
+```r
+variance &lt;- pcas$sdev^2
+ggplot(data=data.frame(component=1:16, variance=variance),
+       aes(x=component, y=variance)) +
+  geom_point() + geom_line() + theme_bw()
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-18-1.svg)&lt;!-- --&gt;
+
+---
+
+## Variance explained: ratio
+
+
+```r
+variance &lt;- variance / sum(variance)
+ggplot(data=data.frame(component=1:16, percent=variance * 100),
+       aes(x=component, y=percent)) +
+  geom_point() + geom_line() + theme_bw()
+```
+
+![](microarray2_files/figure-html/unnamed-chunk-19-1.svg)&lt;!-- --&gt;
+
+---
+
+## Differential expression
+
+
+```r
+GSE53986.design &lt;- model.matrix(~0+LPS+IFNg, data=pData(GSE53986))
+colnames(GSE53986.design) &lt;- c("LPSno", "LPSyes", "IFNgyes")
+
+fit &lt;- lmFit(GSE53986, GSE53986.design)
+
+fit2 &lt;- contrasts.fit(fit, makeContrasts(LPSyes - LPSno, levels=GSE53986.design))
+fit2 &lt;- eBayes(fit2, trend = T)
+
+de &lt;- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+```
+
+---
+
+## Differential expression
+
+
+```r
+head(de)
+```
+
+```
+##                        ID Gene.symbol Gene.ID mean_expression     logFC
+## 1451798_at     1451798_at       Il1rn   16181       11.466005  6.124229
+## 1425108_a_at 1425108_a_at       Smagp  207818        8.905815 -3.682222
+## 1417929_at     1417929_at      Slc7a8   50934       10.479486  2.439961
+## 1449450_at     1449450_at       Ptges   64292        9.088678  5.952733
+## 1448383_at     1448383_at       Mmp14   17387       10.563933  4.226017
+## 1448943_at     1448943_at        Nrp1   18186       12.419261 -2.643480
+##                AveExpr         t      P.Value    adj.P.Val        B
+## 1451798_at   11.466005  46.26084 2.169233e-18 2.603079e-14 30.56039
+## 1425108_a_at  8.905815 -31.01801 1.171783e-15 4.647690e-12 25.65817
+## 1417929_at   10.479486  30.51092 1.516912e-15 4.647690e-12 25.43673
+## 1449450_at    9.088678  30.46986 1.549230e-15 4.647690e-12 25.41858
+## 1448383_at   10.563933  24.75733 3.948709e-14 7.906856e-11 22.53306
+## 1448943_at   12.419261 -24.75542 3.953428e-14 7.906856e-11 22.53197
+```
+
+---
+## Differential expression
+
+
+```r
+GSE53986.design &lt;- model.matrix(~0+IFNg+LPS, data=pData(GSE53986))
+colnames(GSE53986.design) &lt;- c("IFNgno", "IFNgyes", "LPSyes")
+
+fit &lt;- lmFit(GSE53986, GSE53986.design)
+
+fit2 &lt;- contrasts.fit(fit, makeContrasts(IFNgyes-IFNgno, levels=GSE53986.design))
+fit2 &lt;- eBayes(fit2, trend = T)
+
+de &lt;- topTable(fit2, adjust.method="BH", number=Inf, sort.by = "P")
+```
+
+---
+
+## Differential expression
+
+
+```r
+head(de)
+```
+
+```
+##                        ID   Gene.symbol Gene.ID mean_expression      logFC
+## 1416885_at     1416885_at 1110038F14Rik  117171       10.602243  1.9542492
+## 1424923_at     1424923_at     Serpina3g   20715       10.736369  7.3961047
+## 1418365_at     1418365_at          Ctsh   13036       14.306448  0.7162221
+## 1452841_at     1452841_at        Pgm2l1   70974        8.554203 -1.4008196
+## 1434001_at     1434001_at         Ttc9c   70387       11.375812  1.1517297
+## 1448436_a_at 1448436_a_at          Irf1   16362       13.188103  2.5510339
+##                AveExpr         t      P.Value    adj.P.Val        B
+## 1416885_at   10.602243  21.91268 2.612449e-13 3.134939e-09 20.16824
+## 1424923_at   10.736369  20.64211 6.554097e-13 3.932458e-09 19.38979
+## 1418365_at   14.306448  16.47712 2.029656e-11 5.597360e-08 16.34144
+## 1452841_at    8.554203 -16.40801 2.162405e-11 5.597360e-08 16.28332
+## 1434001_at   11.375812  16.17347 2.685972e-11 5.597360e-08 16.08397
+## 1448436_a_at 13.188103  16.12935 2.798680e-11 5.597360e-08 16.04610
+```
+
+
+---
+
+## Let's dig a bit into theory
+&lt;span class="red"&gt; Spoiler alert: i am just a prorammer / bioinformatician :) You might want to consult a proper statistician &lt;/span&gt;
+
+.center[
+  &lt;img src="./programmer.jpg" width="35%"&gt;
+]
+
+---
+
+## Simple t-test
+
+* DE is about comparing means of several groups
+* Let's know forget about previous dataset
+* Lets assume we have 3 A samples and 3 B samples
+* We would like to compare A vs B
+
+---
+
+## Comparing means: T-test
+
+We could simply use T-test to test if means are different.
+
+We have equal size samples, equal error variance. Good.
+
+`$$t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s^2_{X_1} + s^2_{X_2}}{n}}}$$` 
+
+and degrees of freedom for testing are
+
+$$ d.f. = 2n - 2 $$
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Taken from https://en.wikipedia.org/wiki/Student%27s_t-test&lt;/span&gt;&lt;/div&gt;
+
+---
+
+## Simple t-test
+
+* Even for true different (4 vs 7 with sd=1 error) genes we couldn't get P significant T-test p value
+* Can we somehow empower T-test ?
+
+---
+
+## eBayes
+
+* Empirical Bayes Statistics for Differential Expression
+
+`$$t = \frac{\bar{X_1} - \bar{X_2}}{\sqrt{\frac{s^2_{X_1} + s^2_{X_2}}{n}}}$$` 
+
+* Idea is that deviations depend on `\(n\)`, t-statistic depends on `\(n\)` and degrees of freedom depend on `\(n\)`
+
+---
+## eBayes
+
+https://konsolerr.github.io/gene_expression_2019/microarray/smyth2004.pdf
+
+* Since we calculate DE for many-many genes we can infer additional sample size from aggregating their deviations too
+
+
+---
+
+## Linear models
+
+The most simple linear models are:
+
+$$ y = kx + b $$
+
+* We know both `\(y\)` and `\(x\)` and we try to predict `\(k\)` and `\(b\)`
+* Usually both `\(x\)` and `\(y\)` are numeric
+
+---
+
+## Linear models: x can be factor
+
+Let's look at expression of gene il1rn
+
+
+&lt;a href="https://www.codecogs.com/eqnedit.php?latex=\LARGE&amp;space;y&amp;space;=&amp;space;k_{pos}&amp;space;x_{pos}&amp;space;&amp;plus;&amp;space;k_{neg}&amp;space;x_{neg}" target="_blank"&gt;&lt;img src="https://latex.codecogs.com/svg.latex?\LARGE&amp;space;y&amp;space;=&amp;space;k_{pos}&amp;space;x_{pos}&amp;space;&amp;plus;&amp;space;k_{neg}&amp;space;x_{neg}" title="\LARGE y = k_{pos} x_{pos} + k_{neg} x_{neg}" /&gt;&lt;/a&gt;
+
+where 
+* `\(x_{pos} = 1\)` and `\(x_{neg} = 0\)` if sample is LPS treated
+* `\(x_{pos} = 0\)` and `\(x_{neg} = 1\)` if sample is not LPS treated.
+
+
+---
+## Linear models: LPS
+
+
+```r
+lps_model &lt;- model.matrix(~0 + LPS, data = pData(GSE53986))
+colnames(lps_model) &lt;- c("LPS_no", "LPS_yes")
+lps_model
+```
+
+```
+##            LPS_no LPS_yes
+## GSM1304836      1       0
+## GSM1304837      1       0
+## GSM1304838      1       0
+## GSM1304839      1       0
+## GSM1304840      1       0
+## GSM1304841      1       0
+## GSM1304842      1       0
+## GSM1304843      1       0
+## GSM1304844      0       1
+## GSM1304845      0       1
+## GSM1304846      0       1
+## GSM1304847      0       1
+## GSM1304848      0       1
+## GSM1304849      0       1
+## GSM1304850      0       1
+## GSM1304851      0       1
+## attr(,"assign")
+## [1] 1 1
+## attr(,"contrasts")
+## attr(,"contrasts")$LPS
+## [1] "contr.treatment"
+```
+
+---
+
+## Linear models fitting: 
+
+
+```r
+## il1rn
+exprs(GSE53986)["1451798_at", ]
+```
+
+```
+## GSM1304836 GSM1304837 GSM1304838 GSM1304839 GSM1304840 GSM1304841 GSM1304842 
+##   7.929269   8.732146   7.954122   8.725655   8.145366   8.848276   8.423970 
+## GSM1304843 GSM1304844 GSM1304845 GSM1304846 GSM1304847 GSM1304848 GSM1304849 
+##   8.472322  14.746783  14.396357  14.350585  14.323557  14.714466  14.641115 
+## GSM1304850 GSM1304851 
+##  14.515346  14.536751
+```
+
+```r
+linear_fit &lt;- lm.fit(lps_model, exprs(GSE53986)["1451798_at", ])
+linear_fit$coef
+```
+
+```
+##    LPS_no   LPS_yes 
+##  8.403891 14.528120
+```
+
+---
+
+## Linear models: 
+
+We can model expression of il1rn gene as:
+
+$ il1rn = 8.403891 $ if sample is not LPS treated
+
+$ il1rn = 14.528120 $ if sample is LPS treated
+
+---
+
+## Linear models: IFNg
+
+
+```r
+ifng_model &lt;- model.matrix(~0 + IFNg, data = pData(GSE53986))
+colnames(ifng_model) &lt;- c("ifng_no", "ifng_yes")
+ifng_model
+```
+
+```
+##            ifng_no ifng_yes
+## GSM1304836       1        0
+## GSM1304837       1        0
+## GSM1304838       1        0
+## GSM1304839       1        0
+## GSM1304840       0        1
+## GSM1304841       0        1
+## GSM1304842       0        1
+## GSM1304843       0        1
+## GSM1304844       1        0
+## GSM1304845       1        0
+## GSM1304846       1        0
+## GSM1304847       1        0
+## GSM1304848       0        1
+## GSM1304849       0        1
+## GSM1304850       0        1
+## GSM1304851       0        1
+## attr(,"assign")
+## [1] 1 1
+## attr(,"contrasts")
+## attr(,"contrasts")$IFNg
+## [1] "contr.treatment"
+```
+---
+
+## Linear models fitting: 
+
+
+```r
+## il1rn
+exprs(GSE53986)["1451798_at", ]
+```
+
+```
+## GSM1304836 GSM1304837 GSM1304838 GSM1304839 GSM1304840 GSM1304841 GSM1304842 
+##   7.929269   8.732146   7.954122   8.725655   8.145366   8.848276   8.423970 
+## GSM1304843 GSM1304844 GSM1304845 GSM1304846 GSM1304847 GSM1304848 GSM1304849 
+##   8.472322  14.746783  14.396357  14.350585  14.323557  14.714466  14.641115 
+## GSM1304850 GSM1304851 
+##  14.515346  14.536751
+```
+
+```r
+linear_fit &lt;- lm.fit(ifng_model, exprs(GSE53986)["1451798_at", ])
+linear_fit$coef
+```
+
+```
+##  ifng_no ifng_yes 
+## 11.39481 11.53720
+```
+
+---
+
+## Linear models fitting: 
+
+
+```r
+## Serpina3g
+exprs(GSE53986)["1424923_at", ]
+```
+
+```
+## GSM1304836 GSM1304837 GSM1304838 GSM1304839 GSM1304840 GSM1304841 GSM1304842 
+##   5.821650   6.152506   5.801431   6.390757  14.348418  14.584230  14.586855 
+## GSM1304843 GSM1304844 GSM1304845 GSM1304846 GSM1304847 GSM1304848 GSM1304849 
+##  14.574690   9.536362   7.457662   7.698846   7.447317  14.298942  14.282307 
+## GSM1304850 GSM1304851 
+##  14.417255  14.382673
+```
+
+```r
+linear_fit &lt;- lm.fit(ifng_model, exprs(GSE53986)["1424923_at", ])
+linear_fit$coef
+```
+
+```
+##   ifng_no  ifng_yes 
+##  7.038316 14.434421
+```
+---
+
+## Linear models: LPS + Ifng
+
+
+```r
+treatment_model &lt;- model.matrix(~0 + LPS + IFNg, data = pData(GSE53986))
+colnames(treatment_model) &lt;- c("LPS_no", "LPS_yes", "IFNg_yes")
+treatment_model
+```
+
+```
+##            LPS_no LPS_yes IFNg_yes
+## GSM1304836      1       0        0
+## GSM1304837      1       0        0
+## GSM1304838      1       0        0
+## GSM1304839      1       0        0
+## GSM1304840      1       0        1
+## GSM1304841      1       0        1
+## GSM1304842      1       0        1
+## GSM1304843      1       0        1
+## GSM1304844      0       1        0
+## GSM1304845      0       1        0
+## GSM1304846      0       1        0
+## GSM1304847      0       1        0
+## GSM1304848      0       1        1
+## GSM1304849      0       1        1
+## GSM1304850      0       1        1
+## GSM1304851      0       1        1
+## attr(,"assign")
+## [1] 1 1 2
+## attr(,"contrasts")
+## attr(,"contrasts")$LPS
+## [1] "contr.treatment"
+## 
+## attr(,"contrasts")$IFNg
+## [1] "contr.treatment"
+```
+
+---
+
+## Linear models: 
+
+
+```r
+## il1rn
+exprs(GSE53986)["1451798_at", ]
+```
+
+```
+## GSM1304836 GSM1304837 GSM1304838 GSM1304839 GSM1304840 GSM1304841 GSM1304842 
+##   7.929269   8.732146   7.954122   8.725655   8.145366   8.848276   8.423970 
+## GSM1304843 GSM1304844 GSM1304845 GSM1304846 GSM1304847 GSM1304848 GSM1304849 
+##   8.472322  14.746783  14.396357  14.350585  14.323557  14.714466  14.641115 
+## GSM1304850 GSM1304851 
+##  14.515346  14.536751
+```
+
+```r
+linear_fit &lt;- lm.fit(treatment_model, exprs(GSE53986)["1451798_at", ])
+linear_fit$coef
+```
+
+```
+##     LPS_no    LPS_yes   IFNg_yes 
+##  8.3326947 14.4569238  0.1423923
+```
+
+---
+
+## Linear models: 
+
+
+```r
+# serpina3g
+exprs(GSE53986)["1424923_at", ]
+```
+
+```
+## GSM1304836 GSM1304837 GSM1304838 GSM1304839 GSM1304840 GSM1304841 GSM1304842 
+##   5.821650   6.152506   5.801431   6.390757  14.348418  14.584230  14.586855 
+## GSM1304843 GSM1304844 GSM1304845 GSM1304846 GSM1304847 GSM1304848 GSM1304849 
+##  14.574690   9.536362   7.457662   7.698846   7.447317  14.298942  14.282307 
+## GSM1304850 GSM1304851 
+##  14.417255  14.382673
+```
+
+```r
+linear_fit &lt;- lm.fit(treatment_model, exprs(GSE53986)["1424923_at", ])
+linear_fit$coef
+```
+
+```
+##   LPS_no  LPS_yes IFNg_yes 
+## 6.584515 7.492118 7.396105
+```
+
+---
+
+## Linear models: LPS + Ifng
+
+* Including several variables in the design allows us to calculate effects for each variable
+* First variable is usually a target for differential expression
+* Only the first variable will have both 0/1 effect calculated
+
+---
+
+
+## Linear models: treatment_model
+
+
+```r
+linear_fit &lt;- lm.fit(treatment_model, exprs(GSE53986)["1451798_at", ])
+linear_fit$coef
+```
+
+```
+##     LPS_no    LPS_yes   IFNg_yes 
+##  8.3326947 14.4569238  0.1423923
+```
+
+```r
+linear_fit &lt;- lm.fit(treatment_model, exprs(GSE53986)["1424923_at", ])
+linear_fit$coef
+```
+
+```
+##   LPS_no  LPS_yes IFNg_yes 
+## 6.584515 7.492118 7.396105
+```
+
+---
+
+## Linear models: full model with 1
+
+
+```r
+full_model &lt;- model.matrix(~1 + LPS + IFNg, data = pData(GSE53986))
+colnames(full_model) &lt;- c("Intercept", "LPS_yes", "IFNg_yes")
+full_model
+```
+
+```
+##            Intercept LPS_yes IFNg_yes
+## GSM1304836         1       0        0
+## GSM1304837         1       0        0
+## GSM1304838         1       0        0
+## GSM1304839         1       0        0
+## GSM1304840         1       0        1
+## GSM1304841         1       0        1
+## GSM1304842         1       0        1
+## GSM1304843         1       0        1
+## GSM1304844         1       1        0
+## GSM1304845         1       1        0
+## GSM1304846         1       1        0
+## GSM1304847         1       1        0
+## GSM1304848         1       1        1
+## GSM1304849         1       1        1
+## GSM1304850         1       1        1
+## GSM1304851         1       1        1
+## attr(,"assign")
+## [1] 0 1 2
+## attr(,"contrasts")
+## attr(,"contrasts")$LPS
+## [1] "contr.treatment"
+## 
+## attr(,"contrasts")$IFNg
+## [1] "contr.treatment"
+```
+
+---
+
+## Linear models: full model with 1
+
+
+```r
+linear_fit &lt;- lm.fit(full_model, exprs(GSE53986)["1451798_at", ])
+linear_fit$coef
+```
+
+```
+## Intercept   LPS_yes  IFNg_yes 
+## 8.3326947 6.1242291 0.1423923
+```
+
+```r
+linear_fit &lt;- lm.fit(full_model, exprs(GSE53986)["1424923_at", ])
+linear_fit$coef
+```
+
+```
+## Intercept   LPS_yes  IFNg_yes 
+##  6.584515  0.907603  7.396105
+```
+
+---
+
+## Linear models
+
+* Linear models are usefull for calculating effects of variables
+* ` ~ 0 + Annotation1 + Annotation2 ... ` will calculate means for both factors in Annotation1, and calculate effects for other annotations (excluding Annotation1)
+* ` ~ 1 + Annotation1 + Annotation2 ... ` will calculate means for one the Annotation1 factors, and calculate effects for all annotations (including remaining factor in Annotation1)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
