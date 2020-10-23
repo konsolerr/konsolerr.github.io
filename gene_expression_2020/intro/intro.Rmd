@@ -1,6 +1,6 @@
 ---
 title: "Introduction to gene expression"
-author: "Kontantin Zaitsev"
+author: "Konstantin Zaitsev"
 date: "September 26<sup>th</sup>, 2020"
 output:
   xaringan::moon_reader:

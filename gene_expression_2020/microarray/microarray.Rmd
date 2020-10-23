@@ -1,7 +1,7 @@
 ---
 title: "Microarrays"
 subtitle: "and introduction to gene expression studies"
-author: "Kontantin Zaitsev"
+author: "Konstantin Zaitsev"
 date: "October 17<sup>th</sup>, 2020"
 output:
   xaringan::moon_reader:
