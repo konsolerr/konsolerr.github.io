@@ -248,9 +248,9 @@ PCA (principal component analysis):
 
 ## PCA: exploring the variance
 
-.center[
-<img src="http://www.nlpca.org/fig_pca_principal_component_analysis.png" />
-]
+<img src="fig_pca_principal_component_analysis.png" width="90%">
+
+<div class="my-footer"><span>Taken from http://www.nlpca.org/fig_pca_principal_component_analysis.png</span></div> 
 
 
 ---
@@ -324,7 +324,7 @@ pheatmap(exprs(gse129260)[c(PC2GenesDown, PC2GenesUp), ],
 
 ---
 
-## Can we remove unwanted sources of variance ?
+## Can we remove unwanted variance ?
 
 In our experiment we wanted to get variance from Treatment + Cell type
 
