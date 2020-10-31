@@ -82,6 +82,7 @@ The first homework is to analyze a microarray gene expression dataset. All the d
 
 Basically you needed to perform basic steps for a dataset: normalize and make sense of the PCA plot. Then you need to design differential expression to address the general question for your homework. Once you perform DE I want you to highlight genes that are different and perform pathway enrichment.
 
-Datasets IDs are listed in the table below:
+Datasets IDs are listed in the table b
 
-https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing
+<a href="https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing" target="_blank">https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing</a>
+
