@@ -76,4 +76,12 @@ Random materials:
 
 ## Homeworks
 
-Will be posted below when announced
+### Homework 1: deadline November 21st
+
+The first homework is to analyze a microarray gene expression dataset. All the datasets will be available by GEO id, so you can find them at GEO omnibus and also use `GEOquery::getGEO("GSEXXXXX")` to get the expression data into R session.
+
+Basically you needed to perform basic steps for a dataset: normalize and make sense of the PCA plot. Then you need to design differential expression to address the general question for your homework. Once you perform DE I want you to highlight genes that are different and perform pathway enrichment.
+
+Datasets IDs are listed in the table below:
+
+https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing
