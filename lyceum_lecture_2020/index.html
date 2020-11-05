@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Что значит ”биоинформатика”?</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Константин Зайцев" />
+    <link rel="stylesheet" href="libs\itmo.css" type="text/css" />
+    <link rel="stylesheet" href="libs\itmo-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Что значит ”биоинформатика”?
+### Константин Зайцев
+### 6 ноября, 2020
+
+---
+
+
+class: center, middle
+
+# Биоинформатика
+
+---
+
+## Биоинформатика
+
+
+
+.pull-left[.small[
+* Биоинформатика - междисциплинарная область, которая разрабатывает алгоритмы и программы для понимания биологических данных  
+
+
+* Биоинформатика сочетает в себе биологию, математику, статистику, информатику для анализа и интерпретации биологических данных
+]
+]
+.pull-right[
+  .center[&lt;img src="bioinf.png" width="80%"&gt;]
+]
+
+
+---
+
+## Биология везде
+
+* Биология
+* Медицина / эпидемиология 
+* Генная инженерия 
+* Сельское хозяйство
+* Криминалистика
+* История
+
+---
+
+## Биоинформатика - значит сейчас
+
+* Знания и технологии в биологии постоянно
+изменяются
+* И даже прямо сейчас
+* Там где есть большие технологии и большие данные всегда найдут своё место математика и алгоритмы
+
+--
+* Откуда берутся большие данные?
+
+---
+
+## Проект "Геном Человека"
+
+.pull-left[
+* Начат в 1990 году
+* Черновик структуры генома – 2000 год
+* Собран геном "целиком" – 2003 год
+]
+.pull-right[
+  .center[&lt;img src="human_genome_project.jpg" width="80%"&gt;]
+]
+
+---
+
+## Цена секвенирования быстро падает
+
+.center[&lt;img src="sequencing_cost.png" width="62%"&gt;]
+
+---
+
+## Основная догма молекулярной биологии
+
+.center[&lt;img src="dogma.png" width="50%"&gt;]
+
+---
+
+## Геном по-простому
+
+* ДНК – (две спирали) последовательность из
+4 возможных символов: A, T, G и С
+* Геном – последовательность всей ДНК
+человека
+* Ген – участок генома
+* Человеческий геном содержит примерно 3
+миллиарда пар оснований (символов)
+* РНК – одна цепь, вместо T используем U
+* Каждые три символа РНК кодируют одну
+аминокислоту
+* Белок – последовательность аминокислот
+
+---
+
+## Геном по-простому
+
+.center[&lt;img src="central_example.png" width="80%"&gt;]
+
+---
+
+## Основная догма молекулярной биологии
+
+.center[&lt;img src="dogma.png" width="50%"&gt;]
+
+---
+
+## Секвенирование и сборка
+
+
+
+.pull-left[.small[
+* Секвенирование - процесс "прочтения" молекулы ДНК, восстановление последовательности. Получение набора нуклеотидов из физической молекулы 
+
+
+* Чаще всего прочитанные фрагменты - части одной большей молекулы. Восстановление всей молекулы - это сборка
+]
+
+]
+.pull-right[
+  .center[&lt;img src="assembly.png" width="80%"&gt;]
+]
+
+---
+
+## Граф Де Брюина
+
+Предположим, что у нас есть молекула большая молекула:
+
+ATAGACCCTAGACGAT
+
+Разобьем граф на k-меры, где `\(k=4\)`. k-меры - это все подстроки длины k: ATAG, TAGA, AGAC, GACC, ACCC, CCCT, CCTA, CTAG, TAGA, AGAC, GACG, ACGA, CGAT.
+
+k-меры - это вершины графа. Для того, что провести ребра в графе, посмотрим на все подстроки длины `\(L = k + 1 = 5\)`. В каждой такой подстроке есть два k-мера - мы проводим из левого k-мера, в правый k-мер.
+
+---
+
+## Граф Де Брюина
+
+Для строки ATAGACCCTAGACGAT
+
+.center[&lt;img src="debruijn.png" width="70%"&gt;]
+
+
+---
+
+## Граф Де Брюина
+
+Тогда искомая молекула это путь в графе по всем вершинам!
+
+.center[&lt;img src="debruijn.png" width="70%"&gt;]
+
+---
+
+## Сборка по Графу Де Брюина
+
+Прочтения (длины 8) - результаты секвенирования:  
+ATAGACCC  
+GACCCTAG  
+CCTAGACG  
+TAGACGAT  
+
+Используем k-меры длины 4
+
+Какая была искомая молекула?
+
+--
+
+Графы Де Брюина для целой молекулы и для прочтений будут совпадать!
+
+---
+
+## Сборка по Графу Де Брюина
+
+.pull-left[
+Прочтения (длины 8):  
+ATAGACCC  
+GACCCTAG  
+CCTAGACG  
+TAGACGAT 
+]
+.pull-right[
+  .center[&lt;img src="debruijn.png" width="100%"&gt;]
+]
+
+--
+
+Искомая молекула - это путь в графе ATAGACCCTAGACGAT !
+
+---
+
+## Сборка по Графу Де Брюина
+
+В реальной жизни, конечно, всё заметно сложнее и больше!
+
+Длина искомой молекулы - сотни миллионов нуклеотидов.
+
+Длина прочтений - ~100-200 нуклеотидов (в случае коротких прочтений).
+
+Сотни миллионов прочтений!
+
+Используемые k-меры - длины от 30 до 70.
+
+Какая была искомая молекула?
+
+---
+
+## Сборка генома
+
+* Сборка человеческого генома была бы невозможна без алгоритмической составляющей
+* Собранный геном позволил нам понять, сколько вообще генов есть в геноме,
+какие там бывают вариации, а затем (собрав ещё больше данных) начать связывать мутации в геноме с генетическими заболеваниями
+
+---
+
+## Основная догма молекулярной биологии
+
+.center[&lt;img src="dogma.png" width="50%"&gt;]
+
+---
+
+## Секвенирование РНК одиночных клеток
+
+.center[&lt;img src="scheme_3.png" width="100%"&gt;]
+
+---
+
+## Секвенирование РНК одиночных клеток
+
+.center[&lt;img src="dropseq_gif.gif" width="100%"&gt;]
+
+---
+
+## Секвенирование РНК одиночных клеток
+
+.pull-left[.small[
+* Результат секвенирования РНК одиночных клеток - огромная таблица
+* Колонки этой матрицы - это клетки, десятки-сотни тысяч
+* Строки этой матрицы - это гены, в человеке ~25 000
+* Сколько молекул РНК гена нашлось в клетке?
+* Как вообще интерпретировать такие результаты?
+]]
+.pull-right[
+  .center[&lt;img src="count_matrix.png" width="100%"&gt;]
+]
+
+---
+
+## Методы машинного обучения
+
+.pull-left[
+* Методы понижения размерности (tSNE / UMAP): превратить многомерную матрицу в двухмерную картинку
+* Методы кластеризации (алгоритмы основанные на графах): обнаруживать клеточные популяции
+]
+.pull-right[
+  .center[&lt;img src="umap_example.png" width="100%"&gt;]
+]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Взято из статьи https://nn.neurology.org/content/nnn/7/4/e732.full.pdf&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Методы машинного обучения
+
+
+* Методы машинного обучения сильно упрощают интерпретацию данных
+* Только когда есть возможность интерпретации - мы можем начинать делать какие-либо биологические выводы
+
+---
+
+## Основная догма молекулярной биологии
+
+.center[&lt;img src="dogma.png" width="50%"&gt;]
+
+---
+
+## Молекулярный докинг
+
+* Молекулярный докинг - подобласть молекулярного моделирования
+* Докинг - это метод, который предсказывает предпочтительную ориентацию одной молекулы относительно второй, когда они связаны друг с другом с образованием стабильного комплекса.
+
+---
+
+## Молекулярный докинг
+
+.center[&lt;img src="docking.png" width="60%"&gt;]
+
+
+&lt;div class="my-footer"&gt;&lt;span&gt;Взято из https://en.wikipedia.org/wiki/Docking_(molecular)&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+## Молекулярный докинг
+
+.center[&lt;img src="rotafly.gif" width="50%"&gt;]
+
+
+---
+
+## Молекулярный докинг
+
+* Автоматический поиск кандидатов для новых медикаментов:
+* Если вы знаете, что один препарат работает за счёт связывания с одним рецептором, вы можете перебрать кучу разных молекул и проверить (вычислительно) связываются ли они с этим же рецептором
+* Если ваше моделирование предсказало связывание - вы можете протестировать эту молекулу и рецептор в лаборатории
+
+---
+
+## Биоинформатика
+
+* Огромное поле с большим количеством различных задач
+* Кроме науки, есть и компании, использующие биоинформатические подходы
+
+---
+
+## Как попасть в биоинформатику?
+
+Обычные пути:
+* Получить образование в статистике\прикладной математике\информатике и выбрать диплом связанный с биоинформатикой
+* Получить образование в биологии\генной инженерии\биотехнологии и выбрать диплом, где нужно использовать биоинформатические программы
+
+---
+
+## Как попасть в биоинформатику?
+
+Прямые пути:
+* МГУ ФББ (Факультет биоинженерии и биоинформатики, специалитет)
+* ВШЭ ФКН (факультет компьютерных наук, майнор трек - биоинформатика)
+* ИТМО, магистратура "**биоинформатика и системная биология**"
+* ВШЭ, магиструтура "анализ данных в биологии и медицине"
+* **Институт биоинформатики** - дополнительное образование (https://bioinf.me/)
+
+---
+
+class: center, middle
+
+# Есть ли у вас вопросы?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
