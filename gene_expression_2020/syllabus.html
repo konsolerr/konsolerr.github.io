@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -330,6 +329,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -402,6 +402,7 @@ summary {
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
 <p>Most of the lessons will be in format of seminars: lectures and practical part with your laptops. Prior the start of the course, you are required to install latest version of R (<a href="https://cran.r-project.org/bin/" class="uri">https://cran.r-project.org/bin/</a>) and Rstudio (<a href="https://www.rstudio.com/" class="uri">https://www.rstudio.com/</a>) to your laptop. Most of the practices we will be working in R and only for several we will require a command line.</p>
+<p><strong>N.B.</strong> all the code on the slides is built with R v.4.0.2. Usage of some of the packages might differ from version to version, so you might have to run the code differently if you are using different version of R.</p>
 </div>
 <div id="homeworks" class="section level2">
 <h2>Homeworks</h2>
@@ -419,6 +420,10 @@ summary {
 <h3>Lecture materials</h3>
 <ol style="list-style-type: decimal">
 <li>Lecture 1: <a href="https://konsolerr.github.io/gene_expression_2020/intro" target="_blank">introduction</a> and <a href="https://konsolerr.github.io/gene_expression_2020/facs" target="_blank">FACS</a></li>
+<li>Lecture 2: <a href="https://konsolerr.github.io/gene_expression_2020/transcription/Transcription.pdf" target="_blank">transcription</a></li>
+<li>Lecture 3: Microarrays <a href="https://konsolerr.github.io/gene_expression_2020/microarray/microarray.html" target="_blank">part 1</a> and <a href="https://konsolerr.github.io/gene_expression_2020/microarray/microarray2.html" target="_blank">part 2</a></li>
+<li>Lecture 4: secondary analysis in gene expression studies. <a href="https://konsolerr.github.io/gene_expression_2020/secondary_analysis/" target="_blank">Slides</a> and <a href="https://konsolerr.github.io/gene_expression_2020/secondary_analysis/secondary_analysis_materials.zip" target="_blank">materials</a>.</li>
+<li>Lecture 5: RNA-seq <a href="https://konsolerr.github.io/gene_expression_2020/rna-seq" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2020/rna-seq/rna_seq_materials.zip" target="_blank">materials</a>.</li>
 </ol>
 <p>Random materials:</p>
 <ol style="list-style-type: decimal">
@@ -431,7 +436,13 @@ summary {
 </div>
 <div id="homeworks-1" class="section level2">
 <h2>Homeworks</h2>
-<p>Will be posted below when announced</p>
+<div id="homework-1-deadline-november-21st" class="section level3">
+<h3>Homework 1: deadline November 21st</h3>
+<p>The first homework is to analyze a microarray gene expression dataset. All the datasets will be available by GEO id, so you can find them at GEO omnibus and also use <code>GEOquery::getGEO(&quot;GSEXXXXX&quot;)</code> to get the expression data into R session.</p>
+<p>Basically you needed to perform basic steps for a dataset: normalize and make sense of the PCA plot. Then you need to design differential expression to address the general question for your homework. Once you perform DE I want you to highlight genes that are different and perform pathway enrichment.</p>
+<p>Datasets IDs are listed in the table b</p>
+<p><a href="https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing" target="_blank">https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing</a></p>
+</div>
 </div>
 
 

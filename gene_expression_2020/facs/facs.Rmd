@@ -1,6 +1,6 @@
 ---
 title: "Flow cytometry and FACS"
-author: "Kontantin Zaitsev"
+author: "Konstantin Zaitsev"
 date: "September 26<sup>th</sup>, 2020"
 output:
   xaringan::moon_reader:
@@ -97,7 +97,7 @@ class: center, middle
 
 ## Cell surface molecules
 
-There are many cell surface molecules and ost of them have at least two names:
+There are many cell surface molecules and most of them have at least two names:
 
 1. **Functional**: <br> PTPRC (Protein tyrosine phosphatase, receptor type, C) <br> ITGAM (Integrin alpha M)
 2. **Cluster of differentiation**: <br>  CD45, CD11b
@@ -197,7 +197,7 @@ Where
 * $c$ is the speed of light (in vacuum)
 * $\lambda$ is the photon wavelength
 
-**Energy** of emitted photon **is always lower** than the energy of absorbed photon, so **wavelength** of emitted photon **is greater** than the wavelaength of absorbed photon. 
+**Energy** of emitted photon **is always lower** than the energy of absorbed photon, so **wavelength** of emitted photon **is greater** than the wavelength of absorbed photon. 
 
 ---
 
@@ -275,9 +275,29 @@ When you are only given 4 flurophores, how to chose to which antibodies to conju
 ## Lets interpret some FACS plots
 
 * With this knowledge about FACS and how FACS plots look like it should be much easier for you to read and look at different biological papers (especially immunological)
-* Let's open Figure 1 from https://www.nature.com/articles/s41590-019-0449-3.pdf
-* https://konsolerr.github.io/gene_expression_2019/facs/10.1038@s41590-019-0449-3.pdf
+* Let's open Figure 1 from https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0039416&type=printable
 
+---
+
+## Gating 
+
+* Gating is selecting an area on the scatter plot generated during the flow experiment that decides which cells you continue to analyze and which cells you don’t.
+
+.center[
+<img src="gating_example.png" width="700">
+]
+
+---
+
+## Gating
+
+* Often you will see numbers around gates: these are percentages of cell within the gate (from all cells on the plot)
+
+.center[
+<img src="gating_example_2.png" width="250">
+]
+
+<div class="my-footer"><span>taken from https://www.sciencedirect.com/science/article/pii/S1074761315000801?via%3Dihub</span></div> 
 ---
 
 class: center, middle

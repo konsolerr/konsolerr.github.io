@@ -1,6 +1,6 @@
 ---
 title: "Introduction to gene expression"
-author: "Kontantin Zaitsev"
+author: "Konstantin Zaitsev"
 date: "September 26<sup>th</sup>, 2020"
 output:
   xaringan::moon_reader:
@@ -18,6 +18,12 @@ class: center, middle
 
 ---
 
+## Main link
+
+https://konsolerr.github.io/gene_expression_2020/
+
+---
+
 ## About the course
 
 Authors of this course:
@@ -31,7 +37,7 @@ Authors of this course:
 ## About the course
 
 * Course is scientific-oriented
-* Course materials are in english
+* Course materials are in English
 * By “gene expression” we almost always mean “RNA expression” if not said otherwise
 
 Most important link: https://konsolerr.github.io/gene_expression_2019/
@@ -52,7 +58,7 @@ Most important link: https://konsolerr.github.io/gene_expression_2019/
 
 * You are expected to be able to use google
 * You are expected to be able to read documentation / papers
-* Latest R (https://cran.r-project.org/bin/, or just google like "how to install latest R on my favourite operating system")
+* Latest R (https://cran.r-project.org/bin/, or just google like "how to install latest R on my favorite operating system")
 * Rstudio (https://www.rstudio.com/)
 * 4 large homeworks which you will have to defend ( in person (?) )
 
@@ -114,11 +120,11 @@ class: center, middle
 * Measuring RNA abundance is **much easier**
 
 
-* Given several conditions and a gene: for <strong class='red'>the same gene</strong> fold change in RNA abundance will inform us aboust fold change in protein level
+* Given several conditions and a gene: for <strong class='red'>the same gene</strong> fold change in RNA abundance will inform us about fold change in protein level
 ---
 ## Structure of mRNA
 
-* We are mostly interested in mRNA (messgenger RNA), because it is protein coding RNA
+* We are mostly interested in mRNA (messenger RNA), because it is protein coding RNA
 * Estimated 10<sup>5</sup> to 10<sup>6</sup> mRNA molecules per animal cell with high dynamic range for genes: from several copies to 10<sup>4</sup>
 
 <div class="my-footer"><span>https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3129258/
@@ -132,7 +138,7 @@ class: center, middle
 * rRNA - ribosomal RNA: 80% of total cell RNA
 * tRNA - transfer RNA: 15% of the cell RNA
 * mRNA - messenger RNA for protein-coding genes
-* Orther RNAs: miRNA, lncRNA
+* Other RNAs: miRNA, lncRNA
 
 ---
 ## Strategies to capture RNA
@@ -253,7 +259,7 @@ We say that gene is differentially expressed, when they have different average e
 
 
 * Previous example was about gene expression on a **gene level**
-* We can go to **transcript level** and detect differnt isoforms
+* We can go to **transcript level** and detect different isoforms
 
 ---
 
@@ -322,7 +328,7 @@ class: center, middle
 ## What else
 
 * Mouse and human (I mostly work with) are very well annotated
-* What if the organism of intereset is not well-studied?
+* What if the organism of interest is not well-studied?
 
 ---
 
@@ -338,7 +344,7 @@ class: center, middle
 
 * RNA-Seq Assembly is an identification of all expressed isoforms from RNA-seq
 * Reference-guided Transcriptome assembly
-* De nove RNA-seq Assembly
+* De-novo RNA-seq Assembly
 
 ---
 
@@ -446,7 +452,7 @@ class: center, middle
 
 * Performed scRNA-seq on myeloid blood cells
 * Compared existed classification with their findings
-* Inentified new subsets
+* Identified new subsets
 
 ]
 
@@ -466,7 +472,7 @@ class: center, middle
 
 ## Why this way?
 
-* We will cover things mostaly in chronological order
+* We will cover things mostly in chronological order
 * Basic models and frameworks will get more complicated as we get through
 
 ---
