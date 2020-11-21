@@ -66,6 +66,8 @@ There will be 4 projects homeworks during this course:
 4. Lecture 4: secondary analysis in gene expression studies. <a href="https://konsolerr.github.io/gene_expression_2020/secondary_analysis/" target="_blank">Slides</a> and <a href="https://konsolerr.github.io/gene_expression_2020/secondary_analysis/secondary_analysis_materials.zip" target="_blank">materials</a>.
 5. Lecture 5: RNA-seq <a href="https://konsolerr.github.io/gene_expression_2020/rna-seq" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2020/rna-seq/rna_seq_materials.zip" target="_blank">materials</a>.
 6. Lecture 6: RNA-seq normalization and DE <a href="https://konsolerr.github.io/gene_expression_2020/normalization/normalization" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2020/normalization/normalization_materials.zip" target="_blank">materials</a>.
+7. Lecture 7: Transcriptome assembly and annotation. <a href="https://konsolerr.github.io/gene_expression_2020/assembly/transcriptome_assembly.pdf" target="_blank">Slides</a>
+8. Lecture 8: scRNA-seq <a href="https://konsolerr.github.io/gene_expression_2020/scRNA-seq" target="_blank">slides</a> and <a href="https://konsolerr.github.io/gene_expression_2020/scRNA-seq/materials.zip" target="_blank">materials</a>. Brief lecture about trajectory methods for scRNA-seq: <a href="https://konsolerr.github.io/gene_expression_2019/scRNA-seq/trajectory.pdf" target="_blank">slides</a>
 
 Random materials:
 
