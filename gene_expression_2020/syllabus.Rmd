@@ -90,3 +90,29 @@ Datasets IDs are listed in the table b
 
 <a href="https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing" target="_blank">https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing</a>
 
+### Homework 2: deadline December 13th
+### Homework 3: deadline December 13th
+
+### Homework 4: deadline December 13th
+
+For fourth homework you will need to chose one of recent scRNA-seq datasets and perform basic analysis:
+
+* Preprocessing: filtering out bad cells and normalization
+* UMAP + clustering
+* Marker selection for clusters
+
+I recommend using code snippets from the lecture or usual seurat tutorial at https://satijalab.org/seurat/v3.1/pbmc3k_tutorial.html
+
+
+Dataset suggestions (you can analyze any dataset you want, these are just some suggestions):
+
+
+* Transcriptome Analysis Reveals Non Foamy Rather Than Foamy Plaque Macrophages Are Proinflammatory in Atherosclerotic Murine Models, https://www.ahajournals.org/doi/pdf/10.1161/CIRCRESAHA.118.312804. Link to the dataset: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3215435
+* Suppressing miR-21 activity in tumor-associated macrophages promotes an antitumor immune response, https://www.jci.org/articles/view/127125. Link to the dataset: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE118931
+* Coopted temporal patterning governs cellular hierarchy, heterogeneity and metabolism in Drosophila neuroblast tumors, https://elifesciences.org/articles/50375. Link to the dataset: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3161971 
+* Single-Cell RNA-Sequencing From Mouse Incisor Reveals Dental Epithelial Cell-Type Specific Genes https://www.frontiersin.org/articles/10.3389/fcell.2020.00841/full . Link to the dataset is  https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM4407907 
+* Cellular and molecular properties of neural progenitors in the developing mammalian hypothalamus, https://www.nature.com/articles/s41467-020-17890-2. Link to the dataset is https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM3330882 
+
+You will pass this homework **by presenting results and comparing with the publication**.
+
+
