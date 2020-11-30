@@ -86,14 +86,22 @@ The first homework is to analyze a microarray gene expression dataset. All the d
 
 Basically you needed to perform basic steps for a dataset: normalize and make sense of the PCA plot. Then you need to design differential expression to address the general question for your homework. Once you perform DE I want you to highlight genes that are different and perform pathway enrichment.
 
-Datasets IDs are listed in the table b
+Datasets IDs are listed in the table below
 
 <a href="https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing" target="_blank">https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit?usp=sharing</a>
 
-### Homework 2: deadline December 13th
-### Homework 3: deadline December 13th
+### Homework 2: deadline December 15th
 
-### Homework 4: deadline December 13th
+In the second homework we will analyze RNA-seq data. You will need to run a basic pipeline to analyze raw RNA-seq data and perform secondary analysis of given dataset using Deseq2.
+
+Detailed description of the homework and scripts to help are located at https://drive.google.com/drive/folders/1C_awgIWc9UTXV0NwZ4IyT72FdtzKbmDz.
+
+Datasets to analyze and biological questions (as well as you logins to the server) are available at https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit#gid=178367419.
+
+
+### Homework 3: deadline December 15th
+
+### Homework 4: deadline December 19th
 
 For fourth homework you will need to chose one of recent scRNA-seq datasets and perform basic analysis:
 
