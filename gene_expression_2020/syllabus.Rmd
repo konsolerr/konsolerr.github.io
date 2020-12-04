@@ -99,7 +99,11 @@ Detailed description of the homework and scripts to help are located at https://
 Datasets to analyze and biological questions (as well as you logins to the server) are available at https://docs.google.com/spreadsheets/d/1DpZUgJ3iEkKcFCNYv5PHz1bEcltX4UbQtB-uFTCc6S8/edit#gid=178367419.
 
 
-### Homework 3: deadline December 15th
+### Homework 3: deadline December 19th
+
+In this homework you will need to find fusion and viral transcripts in RNA-seq dataset.
+
+https://docs.google.com/document/d/1lOHbz4aIzs8Tt_dNRuCDTs3Wxfg2L0Ax5ew9OcEsGfI/edit?usp=sharing
 
 ### Homework 4: deadline December 19th
 
