@@ -1,0 +1,582 @@
+---
+title: "Introduction into single-cell RNA-seq"
+author: "Konstantin Zaitsev"
+date: "March 18<sup>th</sup>, 2021"
+output:
+  xaringan::moon_reader:
+    css: ["../libs/itmo.css", "../libs/itmo-fonts.css"]
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+## Cell is the fundamental unit
+
+* Microscopy
+* FACS (fluorescence activated cell sorting)/ CyTOF (Cytometry by Time Of Flight)
+* scRNA-seq (single-cell RNA-seq)
+* Single cell genomics and epigenetics
+
+---
+
+## Single cell RNA-seq
+
+.pull-left[
+* RNA-seq is a snapshot of what is happening in the sample
+* Sample consistss of many different cells and cell types
+* Single-cell RNA-seq - thousand of individual snapshots of many cells to capture the whole picture
+]
+.pull-right[
+  .center[<img src="islets.png" width="60%">]
+]
+
+---
+
+## Why single-cell RNA-seq
+
+
+Heterogenous populations:
+* New cell subpopulations discovery
+* Comparison of similar cell subpopulations
+* Marker selection for cell subpopulations
+
+Homogenous populations:
+* Understanding heterogeneity
+* Cellular states and cellular processes
+
+Tracking of cell differentiation
+
+---
+
+## Smart-seq2
+
+.center[<img src="smartseq2.png" width="80%">]
+
+<div class="my-footer"><span>Paper: https://www.nature.com/articles/nprot.2014.006</span></div> 
+
+
+---
+
+## Single-cell RNA-seq of myeloid cells
+
+.pull-left[
+* Villani, Satija et al
+* Science, 2017
+* 1152 cells
+]
+
+.pull-right[
+.center[<img src="myeloid_fix.png" width="100%">]
+]
+
+
+<div class="my-footer"><span>Paper: https://science.sciencemag.org/content/356/6335/eaah4573</span></div> 
+
+---
+
+## Single-cell RNA-seq of myeloid cells
+
+.center[<img src="design_myeloid.png" width="100%">]
+
+
+<div class="my-footer"><span>Paper: https://science.sciencemag.org/content/356/6335/eaah4573</span></div> 
+
+
+---
+
+## Single-cell RNA-seq of melanoma
+
+.pull-left[
+* Tirosh, Izar et al
+* Science, 2016
+* 4645 cells
+]
+
+.pull-right[
+<img src="sc_cancer.png" width="110%">
+]
+
+<div class="my-footer"><span>Paper: https://science.sciencemag.org/content/352/6282/189.long</span></div> 
+
+---
+
+## Drop-seq: Cell, 2015
+
+.center[
+<img src="dropseq.png" width="60%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div> 
+
+---
+
+## 10x chromium machine: NComms, 2017
+
+.center[
+<img src="10x.png" width="65%">
+]
+
+<div class="my-footer"><span>Paper: https://www.nature.com/articles/ncomms14049</span></div> 
+
+---
+
+## Seq-Well: NMeth, 2017
+
+.pull-left[
+<img src="seqwell_head.png" width="100%">
+]
+
+.pull-right[
+<img src="seqwell_design.png" width="100%">
+]
+
+<div class="my-footer"><span>Paper: https://www.nature.com/articles/nmeth.4179</span></div> 
+
+---
+
+## Microwell-Seq: Cell, 2018
+
+.center[
+<img src="microwellseq.png" width="60%">
+]
+
+<div class="my-footer"><span>Paper: https://www.ncbi.nlm.nih.gov/pubmed/29474909</span></div> 
+
+---
+
+## Growth of single-cell technologies
+
+.center[
+<img src="cells.png" width="105%">
+]
+
+<div class="my-footer"><span>Human cell atlas white paper: https://arxiv.org/pdf/1810.05192.pdf</span></div> 
+
+---
+
+## Growth of single-cell technologies
+
+.center[
+<img src="papers.png" width="90%">
+]
+
+<div class="my-footer"><span>Based on pubmed results</span></div> 
+
+---
+
+## Main challenges
+
+* **How to amplify and sequence small number of RNA (typical mammalian cell has only 200 000 mRNA molecules)?**
+* How to isolate cells?
+* How to work with big number of cells?
+
+---
+
+
+## Low library complexity
+
+* Small numbers of mRNA molecules yield low complexity cDNA library
+* cDNA molecules to be amplified by PCR
+* We don’t want to sequence tons of PCR duplicates
+
+.center[
+<img src="pcr.png" width="80%">
+]
+
+---
+
+## Template-switching PCR
+
+.pull-left[
+* Switching Mechanism At the 5' end of RNA Template (SMART)
+* Robust for low input libraries
+]
+
+.pull-right[
+<img src="template_switch.png" width="90%">
+]
+
+---
+
+## Drop-seq schematics
+
+.center[
+<img src="scheme_1.png" width="95%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div>
+---
+
+## Drop-seq microfluidics
+
+.pull-left[
+<img src="microfluidics1.jpg" width="90%">
+]
+
+.pull-right[
+<img src="microfluidics2.jpg.png" width="110%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div>
+
+---
+
+## Drop-seq microfluidics
+
+.center[
+<img src="dropseq_gif.gif" width="100%">
+]
+
+---
+
+## Drop-seq schematics
+
+.center[
+<img src="scheme_2.png" width="95%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div>
+
+---
+
+## Barcoding
+
+.center[
+<img src="barcoded_beads-01.png" width="100%">
+]
+
+---
+
+## Barcoding
+
+.center[
+<img src="barcoded_beads-03.png" width="100%">
+]
+
+---
+
+## Barcoding
+
+.center[
+<img src="barcoded_beads-02.png" width="100%">
+]
+
+---
+
+## Barcoding
+
+.center[
+<img src="barcoded_beads-04.png" width="100%">
+]
+
+---
+
+## Drop-seq schematics
+
+.center[
+<img src="scheme_3.png" width="95%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div>
+
+---
+
+## Sequencing
+
+.center[
+<img src="umis1.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis2.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis3.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis4.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis5.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis6.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis7.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis8.png" width="100%">
+]
+
+---
+
+## All questions were addressed
+
+* Low input mRNA – template switching PCR
+* Cell isolation – microfluidics
+* Read identification – Cell barcodes
+* Dealing with PCR duplicates – Cell/UMI barcodes
+
+---
+
+## All questions were addressed
+
+* Low input mRNA – template switching PCR
+* **Cell isolation – microfluidics (might vary from technology to technology)**
+* **Barcoding with beads proved to be very effective**
+
+---
+
+## Dataset for today:
+
+* https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.2/5k_pbmc_v3_nextgem
+
+.center[
+<img src="5k_v3.png" width="70%">
+]
+
+---
+
+## Let's have a loot at the summary
+
+* http://cf.10xgenomics.com/samples/cell-exp/3.0.2/5k_pbmc_v3_nextgem/5k_pbmc_v3_nextgem_web_summary.html
+
+---
+
+## Understaing what's noise
+
+.center[
+<img src="filtering_procedure.png" width="60%">
+]
+
+---
+
+## Understaing what's noise
+
+There is cell-free RNA in the cellular suspension that will be captured in empty droplets (with beads), and we must distinguish cells from empty droplets:
+
+* We can set a hard threshold on UMI to filter noise from actual cells
+* We can calculate noise signature and test every cell against this signature (emptyDrops, https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y)
+
+---
+
+## SCN: single-cell navigator
+
+* In our lab we develop tools to visualize single-cell expression data
+* scNavigator currently has many public datasets (and will have even more)
+* For now we only need our "toy" dataset, follow the link below
+
+https://artyomovlab.wustl.edu/scn/?token=10x_5k_pbmc
+
+---
+
+## Basic steps to analysis of scRNA-seq
+
+* Filtering out “bad” barcodes
+* Normalizing expression levels: (scaling and log2 normalizing)
+* PCA
+* Visualization (tSNE or UMAP)
+* Clustering
+* Cellular subset annotation
+
+---
+
+## What is count matrix
+
+Count matrix is large:
+
+* 33538 genes 
+* 5155 cells
+
+---
+
+
+## Normalization (old way)
+
+* Scaling expression to 10 000 UMIs (instead of million in RPM)
+* Finding features with high variance (features above mean/variance trend)
+* Scaling data (for PCA and so on)
+
+---
+## SCTransform: 
+
+.center[
+<img src="sctransform.png" width="80%">
+]
+
+<div class="my-footer"><span>Paper: https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-019-1874-1 </span></div>
+
+---
+## SCTransform: 
+
+.center[
+<img src="sctransform_figure.png" width="55%">
+]
+
+<div class="my-footer"><span>Paper: https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-019-1874-1 </span></div>
+
+---
+
+## Basic steps to analysis of scRNA-seq
+
+* Filtering out “bad” barcodes
+* Normalizing expression levels: (scaling and log2 normalizing)
+* **PCA**
+* Visualization (tSNE or UMAP)
+* Clustering
+* Cellular subset annotation
+
+---
+## High-dimensionality of scRNA-seq
+
+Initially matrix is very large in size, this causes different kind of issues:
+
+* Some algorithms are just slow when performed in this high-dimensionality data
+* Curse of dimensionality
+
+We usually take several steps to reduce dims before creating 2d clustered map of our dataset
+
+* Keeping only variable genes (since those introduce variance to the dataset)
+* PCA will reduce dimensionality to 20-30 first components
+
+---
+
+## Basic steps to analysis of scRNA-seq
+
+* Filtering out “bad” barcodes
+* Normalizing expression levels: (scaling and log2 normalizing)
+* PCA
+* **Visualization (tSNE or UMAP)**
+* Clustering
+* Cellular subset annotation
+
+---
+
+## Visualization
+
+Both tSNE and UMAP will put our data after PCA into a 2D plane:
+* Dots that are close to each other are cells that are transcriptionally similar to each other
+* Dots that are far from each other are cells that are trasncriptionally diffirent from each other
+
+Lets look at dimensionality of each cell:
+* Variable genes only: 30k+ -> 2-3k of variable genes
+* PCA: 2-3k of variable genes -> 20-30 principal components
+* tSNE or UMAP: 20-30 PCs -> 2d or 3d plots
+
+---
+
+## tSNE
+
+tSNE - "t-Distributed Stochastic Neighbor Embedding (t-SNE) is a technique for dimensionality reduction that is particularly well suited for the visualization of high-dimensional datasets"
+
+* We can calculate distances in original space, and then calculate conditional probabilities $p_{i| j}$ that point $i$ would choose point $j$ as a neighbor. $p_{i| j}$  are proportional to "distances" from $i$ to all other points (actually probability density around point $i$, but it doesn't matter here).
+* Once all $p_{i, j}$ are calculated in original space we try to find such 2d/3d space that would have similar probabilities
+
+<div class="my-footer"><span>Paper: http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf </span></div>
+
+---
+
+
+## UMAP
+
+.center[
+<img src="umap.png" width="80%">
+]
+
+<div class="my-footer"><span>Paper: https://arxiv.org/pdf/1802.03426.pdf </span></div>
+
+---
+
+## UMAP
+
+https://pair-code.github.io/understanding-umap/
+
+---
+
+## Basic steps to analysis of scRNA-seq
+
+* Filtering out “bad” barcodes
+* Normalizing expression levels: (scaling and log2 normalizing)
+* PCA
+* Visualization (tSNE or UMAP)
+* **Clustering**
+* Cellular subset annotation
+
+---
+
+## Clustering and annotation
+
+Clustering:
+* Graph-based clustering (preferred)
+* K-means 
+
+Annotation:
+* First, check known markers
+* For each cluster, perform differential expression: cluster against all others
+* Top DE genes exprected to be highly distinctive marker genes
+
+---
+
+## Clustering
+
+.pull-left[
+* Instead of defining clusters based on distance we first find “shared nearest neighbors"
+* Cells that have a lot of neighbors in common, most likely “live in the same neighborhood”
+* Algorithm is trying to find such neighborhoods
+]
+
+.pull-right[
+  .center[<img src="snn-cliq.png" width="80%">]
+]
+
+<div class="my-footer"><span>Paper: https://academic.oup.com/bioinformatics/article/31/12/1974/214505 </span></div>
+
+---
+
+## Annotation
+
+Known markers: CD14, CD79A, CD3D are known markers of Monocytes, B cells and T cells respectively
+
+---
+## Communication is important
+
+* When clusters are found we want to identify which cell subsets are presented, to “annotate” them
+* If you are a bioinformatician and you are a single-cell RNA-seq dataset that have been designed/done by you, this is a perfect to time to go and talk to a biologist who performed/designed the experiment
+* If you are a biologist who designed/performed single-cell RNA-seq experiment, chances are, you know all cellular subsets and markers better than almost anyone else
+* This is where you communicate and try to make sense of the data
+
+---
+
+## Questions?
+
+

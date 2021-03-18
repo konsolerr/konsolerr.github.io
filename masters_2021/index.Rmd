@@ -1,0 +1,16 @@
+---
+title: "Day 4: intro to scRNA-seq"
+author: "Konstantin Zaitsev"
+date: "3/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Outline
+
+* Intro to single-cell RNA-seq: <a href="https://konsolerr.github.io/masters_2021/intro_week/scRNA-seq/" target="_blank">slides</a> 
+* Visual exploration of scRNA-seq data using scNavigator:
+<a href="https://konsolerr.github.io/masters_2021/intro_week/visual_analysis_expression_masters_2021.pdf" target="_blank">slides</a> 
