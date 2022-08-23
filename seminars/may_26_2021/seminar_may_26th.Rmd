@@ -1,0 +1,799 @@
+---
+title: "Single-cell Navigator"
+author: "Konstantin Zaitsev"
+institute: "ITMO University"
+date: "2021/05/26 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    css: ["../libs/itmo.css", "../libs/itmo-fonts.css"]
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+## What is Single cell RNA-seq
+
+.pull-left[
+* RNA-seq is a snapshot of what is happening in the sample
+* Sample consists of many different cells and cell types
+* Single-cell RNA-seq - thousand of individual snapshots of many cells to capture the whole picture
+]
+.pull-right[
+  .center[<img src="islets.png" width="60%">]
+]
+
+---
+
+## Why we use single-cell RNA-seq
+
+
+Heterogenous populations:
+* New cell subpopulations discovery
+* Comparison of similar cell subpopulations
+* Marker selection for cell subpopulations
+
+Homogenous populations:
+* Understanding heterogeneity
+* Cellular states and cellular processes
+
+Tracking of cell differentiation
+
+---
+
+## We can capture more cells
+
+.center[
+<img src="cells.png" width="105%">
+]
+
+<div class="my-footer"><span>Human cell atlas white paper: https://arxiv.org/pdf/1810.05192.pdf</span></div> 
+
+---
+
+## Number of publications is rising
+
+```{r message=F, include=F}
+library(ggplot2)
+```
+
+```{r fig.height=2, fig.width=8, dev='svg'}
+data <- read.csv("C:/Users/zayat/OneDrive/Documents/PubMed_Timeline_Results_by_Year.csv", sep=",", skip = 1)
+ggplot(data=data, aes(x=Year, y=Count)) +
+  geom_point() + geom_line() + theme_bw() + scale_x_continuous(breaks=2009:2021)
+```
+
+<div class="my-footer"><span>Based on pubmed results</span></div> 
+
+--
+* Not only datasets, but also tools and methods
+
+---
+
+## Drop-seq schematics
+
+.center[
+<img src="scheme_3.png" width="95%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div>
+
+---
+
+## Barcoding
+
+.center[
+<img src="barcoded_beads-04.png" width="100%">
+]
+
+---
+
+## Drop-seq schematics
+
+.center[
+<img src="scheme_3.png" width="95%">
+]
+
+<div class="my-footer"><span>Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8</span></div>
+
+---
+## Sequencing
+
+.center[
+<img src="umis7.png" width="100%">
+]
+---
+
+## Sequencing
+
+.center[
+<img src="umis8.png" width="100%">
+]
+
+---
+
+## Creating a map of the dataset
+
+.center[
+<img src="pbmc_katyas.png" width="55%">
+]
+
+<div class="my-footer"><span>Paper: https://nn.neurology.org/content/nnn/7/4/e732.full.pdf</span></div>
+---
+
+class: center, middle
+
+# scNavigator
+
+---
+
+## Working with public datasets can be easy
+
+https://artyomovlab.wustl.edu/scn/
+
+* Initially we created scNavigator (back in the days single-cell explorer) to make life a bit easier
+* Remove a person between a biologists and their data
+* We wanted to be able to visualize and easily interpet scRNA-seq data
+
+
+---
+
+## scNavigator today
+
+* Visualization web browser
+* Large database of processed scRNA-seq datasets (kudos to Masha Firuleva)
+* Signature search
+
+---
+
+## scNavigator today
+
+* **Visualization web browser**
+* Large database of processed scRNA-seq datasets (kudos to Masha Firuleva)
+* Signature search
+
+---
+
+## scNavigator: visualization
+
+Link to play with
+
+https://artyomovlab.wustl.edu/scn/?token=GSE131847_GSM3822188
+
+* Clustering, dim reductions, scatter plots
+* Plots to show expressions (scatter plots and violin plots)
+* Plots to show summarized pathway expression
+* Markers tab: very easy way to check out markers and visualize their expression
+* Filtering: you can only work with the cells you want to
+
+---
+
+## scNavigator features
+
+* It is in **web**, you can send link with the dataset to your collaborators
+* All the plotting is done on the client-side (which means we can have many users accessing data in the same time)
+* Web means we can cache the data that requested often
+* It is fast and convenient (fast is objective, convenient is subjective)
+
+---
+
+## scNavigator today
+
+* Visualization web browser
+* **Large database of processed scRNA-seq datasets (kudos to Masha Firuleva)**
+* Signature search
+
+---
+
+## Public datasets
+
+Two main sources
+
+* NCBI GEO (Gene Expression Omnibus, https://www.ncbi.nlm.nih.gov/geo/)
+* EMBL EBI (European Bioinformatics Institute, part of EMBL, https://www.ebi.ac.uk/)
+
+---
+
+## Increasing number of public datasets
+
+.pull-left[
+* Number of public GSE dataset which were qualified as scRNA-seq
+* Histogram and cumulative count
+]
+
+.pull-right[
+<img src="gse_dump_cumsum.png" width="90%">
+]
+
+---
+
+## How we know something is a single-cell GSE
+
+<img src="search_strategy.png" width="65%">
+
+
+---
+
+## What are the patterns
+
+.pull-left[
+* All keywords about scRNA-seq
+* All kinds of technologies
+* Mentioning of Seurat
+]
+
+.pull-right[
+<img src="patterns.png" width="65%">
+]
+
+
+
+---
+
+## Our progress
+
+.pull-left[.small[
+* We know that some of those are false positives: our method tagged GSE as single-cell while it's not
+* There are cases where in GSE we have mixed data: couple of single-cell GSM as well as bulk GSM - these also affect this histogram
+* Other cases are being investigated
+]]
+
+.pull-right[
+<img src="processed_unprocessed_samples.png" width="90%">
+]
+
+---
+
+## Datasets are avaialable at the main page
+
+https://artyomovlab.wustl.edu/scn/
+
+.center[
+<img src="main_page.png" width="80%">
+]
+
+---
+
+## Current database snapshot
+
+.pull-left[.small[
+* Total ~3500 single-cell samples (as of two weeks ago)
+* Some merged GSEs are available
+* We will troubleshoot unprocessed datasets
+* We tested the pipeline for bulk-like scRNA-seq dataset, will start those soon
+]]
+
+.pull-right[
+<img src="by_species.png" width="70%"><br/>
+<img src="by_tech.png" width="70%">
+]
+
+
+---
+
+## Single Cell Explorer vs Single Cell Navigator
+
+New in SCN:
+
+1. Public datasets from ~1100 to 3500+
+2. Gene Signature Search
+3. Filtering (You can select which parts of dataset to show)
+4. Information tab
+5. Documentation present at the website
+6. Pretty sure there were some small client-side optimizations and bug fixes as well
+
+---
+
+## Hidden differences:
+
+.small[
+1. Server moved from JS to Kotlin
+2. Small changes to JSON file format
+  1. In **dataset.json** "organism" is called "species" now
+  2. In **exp_data.json** now we have "expType" which can be 
+"counts" (default) or "as_is"
+3. Changes to H5 format:
+previous was row-wise compressed matrix full-size,
+now we keep matrix in compressed sparse format 
+https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html (arrays are compressed in chunks of root-square of the size of the vector - this gives a performance boost)
+4. Now we have special files for gene signature search "mm\hs\rn.modules.gmt" and "modules.annotation.json" if you want your dataset to be included in the search
+]
+
+
+
+
+
+
+
+---
+## To convert your Seurat object use SCNPrep
+
+https://github.com/ctlab/SCNPrep/
+
+---
+
+## How do we process single-cell RNA-seq
+
+
+.pull-left[
+* Determine chemistry version
+* Kallisto Bustools (from both reads and bams)
+* EmptyDrops to remove noise
+* Seurat analysis
+* SCNPrep
+]
+
+.pull-right[
+<img src="pipeline.png" width="70%">
+]
+
+<div class="my-footer"><span>https://github.com/pachterlab/kallistobustools</span></div>
+---
+
+## Seurat analysis
+
+Seurat is an R package for analysis of single-cell RNA-seq data
+
+* Some more QC: removing cells with high mito-content
+* Normalization
+* (if dataset consists of multiple samples) merging samples together
+* PCA 
+* Dimensionality reductions: both tSNE and UMAP
+* Clustering
+* Markers identification
+
+<div class="my-footer"><span>https://satijalab.org/seurat/</span></div>
+---
+
+
+## Saving statistic
+
+Seurat is an R package for analysis of single-cell RNA-seq data
+
+* Number of cells, average UMIs for cell, average genes per cells
+* Mito Content: average, median, max mito content
+* PCA: standard deviation for first 1, 5, 10, 20, 30, 50 components
+* Clustering: number of clusters for different resolutions (0.2, 0.4, 0.6, 0.8, 1.0)
+* Markers identification: markers and number of significant markers for each cluster
+
+<div class="my-footer"><span>https://satijalab.org/seurat/</span></div>
+---
+
+## Elbow plot for PCA
+
+* The whole matrix is really huge, so we never calculate all the PCs
+
+<img src="max_min_sd.png" width="50%">
+
+---
+
+## Cells vs clusters: 
+
+<img src="cluster_vs_cells.png" width="55%">
+
+---
+
+## RNA (UMIs) vs genes: 
+
+<img src="rna_vs_genes.png" width="55%">
+
+---
+
+## Mito.content vs genes: 
+
+<img src="mito_vs_genes.png" width="55%">
+
+---
+
+## How all these statistics are correlated?
+
+<img src="corplot.png" width="55%">
+
+---
+
+## Max SD vs clusters
+
+<img src="clusters_main_cors.png" width="55%">
+
+---
+
+## Min SD vs Cells
+
+<img src="min_sd_points.png" width="40%">
+<img src="min_sd_hex.png" width="40%">
+
+---
+
+## Min SD doesn't affect number of clusters
+
+<img src="min_sd_vs_clusters.png" width="80%">
+
+---
+## Future directions about SD of PCs
+
+* Currently we are calculating not only the first and last PCs but also cumulative SD for all the components
+* Is 20-30 PCs is almost always enough?
+* Does max SD inform us about heterogeneity of the dataset?
+* Does min SD inform us about noise levels?
+
+---
+## Statistics for clusters
+
+* We have the same stats calculated for clusters
+* Also numbers of markers
+* Future work
+
+---
+## Clustering consistency
+
+* We clustered every datasets with different clustering resolutions: 0.2, 0.4, 0.6, 0.8 and 1
+* Can we somehow measure how clustering is consistent or find datasets that were "overclustered" ?
+
+---
+
+## Clustering consistency
+
+Let's assume we have two similar cells from the same subpopulations:
+
+* They are from the same subpopulation if they are in the same cluster under highest resolution
+* If they are from the same subpopulation we assume that they fall into the same cluster under all the resolution
+
+---
+
+## Clustering consistency
+
+```{r include=FALSE}
+table <- data.frame(
+  res_0.2=c("Cluster_0.2_1", "Cluster_0.2_2"),
+  res_0.4=c("Cluster_0.4_1", "Cluster_0.4_2"),
+  res_0.6=c("Cluster_0.6_1", "Cluster_0.6_2"),
+  res_0.8=c("Cluster_0.8_1", "Cluster_0.8_2"),
+  res_1.0=c("Cluster_1.0_1", "Cluster_1.0_2"),
+  row.names=c("Cell_1", "Cell_2")
+)
+```
+
+
+```{r }
+knitr::kable(table, format = "html")
+```
+
+Hypothesis:
+
+$$Cluster_{1.0, 1} = Cluster_{1.0, 2} \Rightarrow$$
+
+$$\Rightarrow \forall res \in (0.2, 0.4, 0.6, 0.8, 1.0) \ \ \  Cluster_{res, 1} = Cluster_{res,2}$$
+---
+
+## Clustering consistency
+
+* For each cluster in highest resolution we can calculate how often on average we have mistakes in cluster IDs in other resolutions
+* Lower number of mislabeled pairs - more consistent clustering
+* Preliminary results show that heterogeneous samples show much lower number of mislabeled pair
+
+---
+
+## Clustering consistency
+
+.tiny[
+Example of 0 mislabeled pairs on average is
+https://artyomovlab.wustl.edu/scn/?token=GSE157220_GSM4759278
+
+Example of high (0.6395) mislabeled pairs on average is
+https://artyomovlab.wustl.edu/scn/?token=GSE157220_GSM4759278
+]
+
+
+<img src="heterogeneity.png" width="30%">
+<img src="homogeneity.png" width="30%">
+
+
+---
+## scNavigator today
+
+* Visualization web browser
+* Large database of processed scRNA-seq datasets (kudos to Masha Firuleva)
+* **Signature search**
+
+---
+
+## GeneQuery inspired gene signature search
+
+* Having this large database of public scRNA-seq datasets we wanted to implement gene signature search
+* Given with a list of gene, we can match it against markers of all the clusters present in our database
+
+---
+
+## Quick note: how we get the markers
+
+Differential epxression (DE)
+
+.pull-left[
+<img src="clusters.png" width="70%">
+]
+
+.pull-right[
+<img src="markers.png" width="70%">
+]
+
+---
+
+## DE
+
+* For each cluster we run differential expression test of this cluster against all other clusters
+
+```{r echo=F}
+data <- read.csv2("C:/Users/zayat/OneDrive/Documents/markers.csv", sep=",")
+head(data)
+```
+
+
+---
+
+## Universes and modules
+
+.pull-left[
+* Let $N$ be the number of datasets
+* $U_i$ is a set of genes expressed in a dataset $i$
+* $U_0 = \cup_i^{N} U_i$
+* $M_{i, j}$ is a set of markers of cluster $j$ in dataset $i$
+]
+
+.pull-right[
+<img src="what_is_database.png" width="80%">
+]
+
+---
+
+## Statistical framework is hypergeometric test
+
+* Let $Q$ be the gene set from the query
+* For each module $M_{i,j}$ we will calculate
+
+$$ Q\_m = Q \cap M\_{i, j} \ \ \ \ \   Q\_u = Q \cap U\_i$$
+* Genes from module $|M_{i,j}|$ are red balls and other genes $|U_i - M_{i, j}|$ from universe are white balls
+* We draw $|Q_u|$ balls from the urn (without replacement) and get $|Q_m|$ red balls
+* Hypergeometric test can tell how likely we can get this many red balls if we draw them randomly
+
+---
+
+## Statistical framework
+
+* Hypergeometric test will generate p values
+* P values will be corrected for multiple hypotheses
+* Significant hits returned to the user
+* See the example
+
+---
+
+## What can be interesting?
+
+* **How genes in universes overlap with each other?**
+* How genes in modules overlap with each other?
+
+---
+
+## How to compare universes?
+
+.pull-left[
+* Most of the universes overlap for housekeeping genes
+* Most of the obvious metrics to calculate overlap (like Jaccard Index) won't work
+* We have to somehow weight genes
+]
+
+.pull-right[
+<img src="gene_ranks.png" width="80%">
+]
+
+---
+
+## TF-IDF
+
+TF-IDF is term frequency–inverse document frequency
+
+* Genes are terms, we have $|U_0|$ terms
+* $U_i$ are documents
+* $tf(g, U_i) = 1$ if $g \in U_i$ and $0$ otherwise
+* $idf(g) = log(\frac{N}{|\{U_i | g \in U_i\}|})$
+* $tfidf(g, U_i) = tf(g, U_i) * idf(g)$
+
+---
+
+## TF-IDF
+
+.pull-left[
+<img src="gene_ranks.png" width="80%">
+]
+.pull-right[
+<img src="tf-idfs.png" width="80%">
+]
+
+---
+
+## Universe Network
+
+.pull-left[
+Plans:
+* Redraw this one with newer database
+* Identify what tissues (or cell types?) cliques represent
+* Ideally, non cell-type specific pathways should not contribute to this network
+]
+
+.pull-right[
+<img src="universe_network.png" width="80%">
+]
+
+---
+
+## What can be interesting?
+
+* How genes in universes overlap with each other?
+* **How genes in modules overlap with each other?**
+
+---
+
+
+## Module sizes
+
+.center[
+<img src="module_sizes.png" width="90%">
+]
+
+---
+
+## Module sizes
+
+* Number of modules (clusters) kinda represent heterogeneity of the datasets
+* More heterogeneous datasets will have more genes expressed
+* Some modules are very small and chance to get any of these genes at random is very small
+
+---
+
+## Plans on modules
+
+* Get the same networks for modules
+* Identify cell types present in the network
+
+---
+
+
+## Cancer dataset study case
+
+.center[
+<img src="figure4.png" width="55%">
+]
+
+
+---
+
+## Markers for the study case
+
+.small[
+Anti-inflammatory: Ms4a7	Clec12a	Fcer1g Lpl	Slc11a1	Rab3il1
+C1qa	Blvrb	Ckb C1qc	Clec4b1	Sirpa
+Fcgr4	Grn	Pycard
+C1qb	Adgre1	Ctsc
+Cd72	Clec4a1	Hexa
+Aif1	Clec4a2	Lst1
+Slamf9	Lgmn	AF251705
+Nr1h3	Cd300e	Ctsb
+
+Pro-inflammatory: Arg1	Adam8	Ninj1
+Mmp12	Basp1	Slc2a1
+Hilpda	Cstb	Il1rn
+Clec4d	Il7r	Ndrg1
+Hmox1	Ftl1	Cd36
+Lgals3	Fabp5	Cxcl2
+Plin2	Emp1	Rgcc
+Bnip3	Egln3	Thbs1
+Fth1	Ctsl	Spp1
+Card19	Ero1l	Fabp4
+
+Monocyte-like: Il1b	Gm9733	Btg2
+Ccr2	Zbp1	Plbd1
+Ifitm3	H2-DMa	Ly6i
+Plac8	Spi1	Osm
+Ms4a6c	Samhd1	Cybb
+Lyz2	Naaa	Fos
+Ms4a4c	H2-DMb1	Hp
+Prdx5	Junb	Cd74
+Tgfbi	Ly6c2	Slamf8
+Klra2	Zfp36	Scimp
+
+Folr2+: Sepp1	Trf	Cd163
+Apoe	Mrc1	Fxyd2
+Fcgrt	Igf1	Ccl24
+Folr2	Itm2b	Igfbp4
+F13a1	Ednrb	Tmem37
+Gas6	Ltc4s	Glul
+Cbr2	C4b	Wfdc17
+Pltp	Lyve1	Cd209f
+Clec10a	Npl	Pf4
+Timp2	Rnase4	C1qc
+
+]
+
+---
+## Summary
+
+* scNavigator is both visualization tool and a scRNA-seq database (most likely largest as of today)
+* Gene signature search is an amazing feature that allows to cross match different datasets
+* I plan to fix more bugs that we find (we still find those in both scNavigator itself and SCNPrep), move dev to master, and release scNavigator as version 1.0.0 by end of June
+
+---
+
+## Acknowledgments
+
+* **Maria Firuleva** for processing all these datasets, she is the true hero of the publication
+* Max Artyomov for motivational kicks to do something
+* Alexey Sergushichev for trying to make lab-like environment in Discord during quarantine
+
+---
+
+class: center, middle
+
+# Questions?
+
+---
+## What can be interesting?
+
+* How genes in universes overlap with each other?
+* How genes in modules overlap with each other?
+* **How our p-values correspond with theoretical ones?**
+
+---
+
+## Theoretical p values for random genes
+
+* Null hypothesis, we query genes $Q$ by random
+* If null hypothesis is true, then
+
+$$ \forall i,j \ \ \  p(Q, M_{i, j}) \sim U[0, 1]$$
+
+One of the most interesting features of such search is what the minimal p value reported for all genes?
+
+$$ p\_{min}(Q) = \min\_{i, j} p(Q, M\_{i,j}) $$
+$$ p(Q, M\_{i, j}) \sim U[0, 1] \implies p\_{min}(Q) \sim beta(M, 1)$$
+
+---
+
+## Empirical p-values against theoretical
+
+.pull-left[
+* Sample 100 and 1000 genes from $U_0$
+* Query them
+* Memorize minimal p value
+* Repeat
+]
+.pull-right[
+<img src="first_sampling.png" width="90%">
+]
+
+---
+
+## Why we under-report p values
+
+* $p(Q, M_{i, j}) \sim U[0, 1]$
+
+.center[
+<img src="laugh.gif" width="80%">
+]
+
+---
+
+## Why we under-report p values
+
+.center[
+<img src="distributions.gif" width="50%">
+]
+
+---
+
+## Future plans for p-values
+
+* Currently we select modules as markers that have p value adjusted less then 0.01
+* We might consider lowering this threshold for p value 0.05 unadjusted to include more genes in the modules
+* Ideally we have to investigate how p-value threshold affects the number of genes in the modules
+* Maybe we could cluster samples differently?
+* Can we model this differently? So far gene signature test seems to be very conservative
