@@ -1,0 +1,802 @@
+---
+title: "Introduction to \n single-cell RNA-seq analysis"
+author: "Konstantin Zaitsev"
+date: "14/10/2022"
+format: 
+  revealjs: 
+    slide-number: true
+    theme: [libs/itmo.scss]
+    footer: "INC RAS - 2022"
+    logo: libs/itmo_small_white_eng.png
+editor: visual
+---
+
+## Single cell RNA-seq
+
+::: columns
+::: {.column width="60%"}
+-   RNA-seq is a snapshot of what is happening in the sample
+-   Sample consists of many different cells and cell types
+-   Single-cell RNA-seq - thousand of individual snapshots of many cells to capture the whole picture
+:::
+
+::: {.column width="40%"}
+![](images/islets.png)
+:::
+:::
+
+## Why single-cell RNA-seq
+
+Heterogeneous populations:
+
+-   New cell subpopulations discovery
+-   Comparison of similar cell subpopulations
+-   Marker selection for cell subpopulations
+
+Homogeneous populations:
+
+-   Understanding heterogeneity
+-   Cellular states and cellular processes
+
+Tracking of cell differentiation
+
+## Smart-seq2
+
+![](images/smartseq2.png)
+
+::: footer
+Paper: https://www.nature.com/articles/nprot.2014.006
+:::
+
+## Single-cell RNA-seq of myeloid cells
+
+::: columns
+::: {.column width="40%"}
+-   Villani, Satija et al
+-   Science, 2017
+-   1152 cells
+:::
+
+::: {.column width="60%"}
+![](images/myeloid_fix.png)
+:::
+:::
+
+::: footer
+Paper: https://science.sciencemag.org/content/356/6335/eaah4573
+:::
+
+## Single-cell RNA-seq of myeloid cells
+
+![](images/design_myeloid.png)
+
+::: footer
+Paper: https://science.sciencemag.org/content/356/6335/eaah4573
+:::
+
+## Single-cell RNA-seq of melanoma
+
+::: columns
+::: {.column width="30%"}
+-   Tirosh, Izar et al
+-   Science, 2016
+-   4645 cells
+:::
+
+::: {.column width="70%"}
+![](images/sc_cancer.png)
+:::
+:::
+
+::: footer
+Paper: https://science.sciencemag.org/content/352/6282/189.long</span>
+:::
+
+## Drop-seq: Cell, 2015
+
+![](images/dropseq.png)
+
+::: footer
+Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8
+:::
+
+## 10x chromium machine: NComms, 2017
+
+![](images/10x.png)
+
+::: footer
+Paper: https://www.nature.com/articles/ncomms14049
+:::
+
+## Seq-Well: NMeth, 2017
+
+::: columns
+::: {.column width="50%"}
+![](images/seqwell_head.png)
+:::
+
+::: {.column width="50%"}
+![](images/seqwell_design.png)
+:::
+:::
+
+::: footer
+Paper: https://www.nature.com/articles/nmeth.4179
+:::
+
+## Microwell-Seq: Cell, 2018
+
+![](images/microwellseq.png)
+
+::: footer
+Paper: https://www.ncbi.nlm.nih.gov/pubmed/29474909
+:::
+
+## Growth of single-cell technologies
+
+![](images/cells.png)
+
+::: footer
+Human cell atlas white paper: https://arxiv.org/pdf/1810.05192.pdf
+:::
+
+## Growth of single-cell technologies
+
+![](images/papers.png)
+
+::: footer
+Based on pubmed results
+:::
+
+## Main challenges
+
+-   **How to amplify and sequence small number of RNA (typical mammalian cell has only 200 000 mRNA molecules)?**
+-   How to isolate cells?
+-   How to work with big number of cells?
+
+## Low library complexity
+
+-   Small numbers of mRNA molecules yield low complexity cDNA library
+-   cDNA molecules to be amplified by PCR
+-   We don't want to sequence tons of PCR duplicates
+
+![](images/pcr.png)
+
+## Template-switching PCR
+
+::: columns
+::: {.column width="50%"}
+-   Switching Mechanism At the 5' end of RNA Template (SMART)
+-   Robust for low input libraries
+:::
+
+::: {.column width="50%"}
+![](images/template_switch.png)
+:::
+:::
+
+## Drop-seq schematics
+
+![](images/scheme_1.png)
+
+::: footer
+Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8
+:::
+
+## Drop-seq microfluidics
+
+::: columns
+::: {.column width="50%"}
+![](images/microfluidics1.jpg)
+:::
+
+::: {.column width="50%"}
+![](images/microfluidics2.jpg.png)
+:::
+:::
+
+::: footer
+Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8
+:::
+
+## Drop-seq microfluidics
+
+![](images/dropseq_gif.gif)
+
+## Drop-seq schematics
+
+![](images/scheme_2.png)
+
+::: footer
+Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8
+:::
+
+## Barcoding
+
+::: r-stack
+![](images/barcoded_beads-01.png){.fragment .fade-out data-fragment-index="0"}
+
+![](images/barcoded_beads-03.png){.fragment .currently-visible data-fragment-index="0"}
+
+![](images/barcoded_beads-02.png){.fragment}
+
+![](images/barcoded_beads-04.png){.fragment}
+:::
+
+## Drop-seq schematics
+
+![](images/scheme_3.png)
+
+::: footer
+Paper: https://www.cell.com/abstract/S0092-8674(15)00549-8
+:::
+
+## Sequencing
+
+::: r-stack
+![](images/umis1.png){.fragment .fade-out data-fragment-index="0"}
+
+![](images/umis2.png){.fragment .currently-visible data-fragment-index="0"}
+
+![](images/umis3.png){.fragment}
+
+![](images/umis4.png){.fragment}
+
+![](images/umis5.png){.fragment}
+
+![](images/umis6.png){.fragment}
+
+![](images/umis7.png){.fragment}
+
+![](images/umis8.png){.fragment}
+:::
+
+## All questions were addressed
+
+-   Low input mRNA -- template switching PCR
+-   Cell isolation -- microfluidics
+-   Read identification -- Cell barcodes
+-   Dealing with PCR duplicates -- Cell/UMI barcodes
+
+## All questions were addressed
+
+-   Low input mRNA -- template switching PCR
+-   **Cell isolation -- microfluidics (might vary from technology to technology)**
+-   **Barcoding with beads proved to be very effective**
+
+## Dataset for today:
+
+-   [https://www.10xgenomics.com/resources/datasets/1-k-pbm-cs-from-a-healthy-donor-v-3-chemistry-3-standard-3-0-0](https://www.10xgenomics.com/resources/datasets/1-k-pbm-cs-from-a-healthy-donor-v-3-chemistry-3-standard-3-0-0){target="_blank"}
+
+![](images/1k_v3.png)
+
+## Dataset summary
+
+-   [https://cf.10xgenomics.com/samples/cell-exp/3.0.0/pbmc_1k_v3/pbmc_1k_v3_web_summary.html](https://cf.10xgenomics.com/samples/cell-exp/3.0.0/pbmc_1k_v3/pbmc_1k_v3_web_summary.html){target="_blank"}
+
+## What is noise?
+
+![](images/filtering_procedure.png)
+
+## What is noise?
+
+There is cell-free RNA in the cellular suspension that will be captured in empty droplets (with beads), and we must distinguish cells from empty droplets:
+
+-   We can set a hard threshold on UMI to filter noise from actual cells
+-   We can calculate noise signature and test every cell against this signature (like [emptyDrops](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y))
+
+## Our setup
+
+-   Go to <https://drive.google.com/drive/folders/18J9NgzLSLnBjmz_YQsMdOSKKK-lWhSVw?usp=sharing>
+-   Download `materials.zip` from the google folder
+-   Create new RStudio project
+-   Upload the script to your r-studio session
+-   Open file `scrna-seq-intro.R`
+
+## Our setup: create project
+
+-  Create new project
+-  New Directory -> New Project -> chose a name and folder
+
+::: columns
+::: {.column width="50%"}
+![](images/new_project.png)
+:::
+::: {.column width="50%"}
+![](images/new_project_wizard.png)
+:::
+:::
+
+## Our setup: upload materials
+
+- Upload the materials zip
+
+::: columns
+::: {.column width="50%"}
+![](images/upload_button.png)
+:::
+::: {.column width="50%"}
+![](images/select_materials.png)
+:::
+:::
+
+
+## Our setup: final files
+
+![](images/files.png)
+
+## Our setup
+
+-   You will see chunks of code appearing on my slides
+-   Follow along!
+-   Select the code and press Ctrl + Enter to run the chunk
+
+## Basic steps to analysis of scRNA-seq
+
+-   **Filtering out "bad" cells**
+-   Normalizing expression levels: (scaling and log2 normalizing)
+-   PCA
+-   Visualization (tSNE or UMAP)
+-   Clustering
+-   Cellular subset annotation
+
+## Loading all the librarires
+
+We will use Seurat - R toolkit for single-cell genomics
+
+[https://satijalab.org/seurat/](https://satijalab.org/seurat/){target="_blank"}
+
+```{r}
+#| echo: true
+
+library(Seurat)
+library(Matrix)
+library(MAST)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r }
+theme_set(theme_bw(base_size=16))
+```
+
+## Loading the data
+
+```{r}
+#| echo: true
+data <- Read10X("filtered_feature_bc_matrix/")
+dim(data)
+```
+
+-   33538 genes
+-   1222 cells
+
+## UMI distribution
+
+```{r}
+#| echo: true
+#| output-location: fragment
+
+plotData <- data.frame(
+  umis <- colSums(data)
+)
+ggplot(data=plotData, aes(x=umis)) +
+  geom_histogram() + theme_bw()
+
+```
+
+## Filtering (genes and barcodes)
+
+```{r}
+#| echo: true
+seurat <- CreateSeuratObject(data, min.cells = 10, min.features = 10)
+dim(seurat)
+
+```
+
+-   Only 12566 genes left after filtering (detected in $\leq 10$ cells)
+
+## Filtering (genes and barcodes)
+
+```{r}
+#| echo: true
+
+FeatureScatter(seurat, "nCount_RNA", "nFeature_RNA") + 
+  scale_x_log10() + 
+  scale_y_log10()
+
+```
+
+## Mitochondrial content
+
+-   High numbers of mitochondrial transcripts are associated with apoptotic[^1], stressed[^2] and low-quality cells in general
+-   mtDNA% threshold depends highly on the tissue type and the questions being investigated[^3]
+
+[^1]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8599307/
+[^2]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC126185/
+[^3]: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6072887/
+
+```{r}
+#| echo: true
+seurat[["percent.mt"]] <- PercentageFeatureSet(seurat, pattern = "^MT-")
+```
+
+## Filtering (genes and barcodes)
+
+```{r}
+#| echo: true
+FeatureScatter(seurat, "nCount_RNA", "percent.mt") + 
+  scale_x_log10()
+```
+
+## Filtering (genes and barcodes)
+
+```{r}
+#| echo: true
+FeatureScatter(seurat, "nFeature_RNA", "percent.mt") + 
+  scale_x_log10()
+```
+
+## Filtering (genes and barcodes)
+
+```{r}
+#| echo: true
+FeatureScatter(seurat, "nFeature_RNA", "percent.mt") + scale_x_log10() +
+  geom_hline(yintercept = 15, lty=2) + geom_vline(xintercept = 1200, lty=2)
+```
+
+## Filtering (genes and barcodes)
+
+```{r}
+#| echo: true
+seurat <- subset(seurat, subset = nFeature_RNA > 1200 & percent.mt < 15)
+dim(seurat)
+```
+
+-   we filtered out 211 droplets due to low quality
+
+## Basic steps to analysis of scRNA-seq
+
+-   Filtering out "bad" cells
+-   **Normalizing expression levels: (scaling and log2 normalizing)**
+-   PCA
+-   Visualization (tSNE or UMAP)
+-   Clustering
+-   Cellular subset annotation
+
+## Normalization (old way)
+
+-   Scaling expression to 10 000 UMIs (instead of million in RPM)
+-   Finding features with high variance (features above mean/variance trend)
+-   Scaling data (for PCA and so on)
+
+```{r}
+#| echo: true
+#| eval: false
+
+seurat <- NormalizeData(seurat, normalization.method = "LogNormalize", scale.factor = 10000)
+seurat <- FindVariableFeatures(seurat, selection.method = "vst", nfeatures = 2000)
+seurat <- ScaleData(seurat)
+
+```
+
+## Normalization - SCTransform
+
+```{r}
+#| echo: true
+#| cache: true
+seurat <- SCTransform(seurat, vars.to.regress = "percent.mt", verbose = FALSE)
+```
+
+![](images/sctransform.png)
+
+::: footer
+Paper: https://www.biorxiv.org/content/biorxiv/early/2019/03/18/576827.full.pdf
+:::
+
+## Variable genes
+
+```{r}
+#| echo: true
+VariableFeaturePlot(seurat) + scale_y_log10()
+```
+
+## Variable genes
+
+```{r}
+#| echo: true
+top10_variable_genes <- head(VariableFeatures(seurat), 10)
+VariableFeaturePlot(seurat) %>% 
+  LabelPoints(points = top10_variable_genes, repel = TRUE) +
+  scale_y_log10()
+```
+
+## Basic steps to analysis of scRNA-seq
+
+-   Filtering out "bad" barcodes
+-   Normalizing expression levels: (scaling and log2 normalizing)
+-   **PCA**
+-   Visualization (tSNE or UMAP)
+-   Clustering
+-   Cellular subset annotation
+
+## High-dimensionality of scRNA-seq
+
+Initially matrix is very large in size, this causes different kind of issues:
+
+-   Some algorithms are just slow when performed in this high-dimensionality data
+-   Curse of dimensionality
+
+We usually take several steps to reduce dims before creating 2d clustered map of our dataset
+
+-   Keeping only variable genes (since those introduce variance to the dataset)
+-   PCA will reduce dimensionality to 20-30 first components
+
+## PCA
+
+```{r}
+#| echo: true
+seurat <- RunPCA(seurat, verbose = FALSE)
+ElbowPlot(seurat, ndims = 50)
+```
+
+## Basic steps to analysis of scRNA-seq
+
+-   Filtering out "bad" barcodes
+-   Normalizing expression levels: (scaling and log2 normalizing)
+-   PCA
+-   **Visualization (tSNE or UMAP)**
+-   Clustering
+-   Cellular subset annotation
+
+## Visualization
+
+Both tSNE and UMAP will put our data after PCA into a 2D plane:
+
+-   Dots that are close to each other are cells that are transcriptionally similar to each other
+-   Dots that are far from each other are cells that are trasncriptionally different from each other
+
+Lets look at dimensionality of each cell:
+
+-   Variable genes only: 30k+ -\> 2-3k of variable genes
+-   PCA: 2-3k of variable genes -\> 20-30 principal components
+-   tSNE or UMAP: 20-30 PCs -\> 2d or 3d plots
+
+## tSNE
+
+```{r}
+#| echo: true
+seurat <- RunTSNE(seurat, dims=1:20)
+DimPlot(seurat, reduction = "tsne") + NoLegend()
+```
+
+::: footer
+Paper: http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf
+:::
+
+## tSNE
+
+tSNE - "t-Distributed Stochastic Neighbor Embedding (t-SNE) is a technique for dimensionality reduction that is particularly well suited for the visualization of high-dimensional datasets"
+
+-   We can calculate distances in original space, and then calculate conditional probabilities $p_{i| j}$ that point $i$ would choose point $j$ as a neighbor. $p_{i| j}$ are proportional to "distances" from $i$ to all other points (actually probability density around point $i$, but it doesn't matter here).
+-   Once all $p_{i, j}$ are calculated in original space we try to find such 2d/3d space that would have similar probabilities
+
+::: footer
+Paper: http://www.jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf
+:::
+
+## UMAP
+
+```{r}
+#| echo: true
+seurat <- RunUMAP(seurat, dims=1:20)
+DimPlot(seurat, reduction = "umap") + NoLegend()
+```
+
+::: footer
+Paper: https://arxiv.org/pdf/1802.03426.pdf
+:::
+
+## UMAP
+
+![](images/umap.png)
+
+::: footer
+Paper: https://arxiv.org/pdf/1802.03426.pdf
+:::
+
+## UMAP
+
+<https://pair-code.github.io/understanding-umap/>
+
+## Comparing two
+
+::: r-stack
+::: {.fragment .fade-out data-fragment-index="0"}
+```{r}
+#| echo: true
+DimPlot(seurat, reduction = "tsne") + NoLegend()
+```
+:::
+
+::: {.fragment .currently-visible data-fragment-index="0"}
+```{r}
+#| echo: true
+DimPlot(seurat, reduction = "umap") + NoLegend()
+```
+:::
+:::
+
+## Basic steps to analysis of scRNA-seq
+
+-   Filtering out "bad" barcodes
+-   Normalizing expression levels: (scaling and log2 normalizing)
+-   PCA
+-   Visualization (tSNE or UMAP)
+-   **Clustering**
+-   Cellular subset annotation
+
+## Clustering and annotation
+
+Clustering:
+
+-   Graph-based clustering (preferred)
+-   K-means
+
+Annotation:
+
+-   First, check known markers
+-   For each cluster, perform differential expression: cluster against all others
+-   Top DE genes expected to be highly distinctive marker genes
+
+## Clustering
+
+::: columns
+::: {.column width="50%"}
+-   Instead of defining clusters based on distance we first find "shared nearest neighbors"
+-   Cells that have a lot of neighbors in common, most likely "live in the same neighborhood"
+-   Algorithm is trying to find such neighborhoods
+:::
+
+::: {.column width="50%"}
+![](images/snn-cliq.png)
+:::
+:::
+
+::: footer
+Paper: https://academic.oup.com/bioinformatics/article/31/12/1974/214505
+:::
+
+## Clustering
+
+```{r}
+#| echo: true
+seurat <- FindNeighbors(seurat, dims = 1:20, verbose = FALSE)
+seurat <- FindClusters(seurat, resolution=0.6, verbose = FALSE)
+```
+
+## Clustering
+
+::: r-stack
+::: {.fragment .fade-out data-fragment-index="0"}
+```{r}
+#| echo: true
+DimPlot(seurat, reduction = "tsne", label = TRUE) + NoLegend()
+```
+:::
+
+::: {.fragment .currently-visible data-fragment-index="0"}
+```{r}
+#| echo: true
+DimPlot(seurat, reduction = "umap", label = TRUE) + NoLegend()
+```
+:::
+:::
+
+## PBMC
+
+![](images/pbmc.png)
+
+## Annotation
+
+-   Known markers: CD14, CD79A, CD3D are known markers of Monocytes, B cells and T cells respectively
+
+```{r }
+#| echo: true
+#| fig-height: 3
+FeaturePlot(seurat, c("CD14", "CD79A", "CD3D"), cols=c("grey", "red"), reduction="umap", ncol=3)
+```
+
+## Annotation
+
+We can run differential expression test to identify markers automatically using MAST test
+
+```{r }
+#| echo: true
+allMarkers <- FindAllMarkers(seurat, max.cells.per.ident = 100, test.use = "MAST", only.pos = T)
+goodMarkers <- allMarkers %>% group_by(cluster) %>% top_n(n = 1, wt = avg_log2FC) %>% pull(gene)
+goodMarkers
+```
+
+## Ways to show expression
+
+We usually either show expression **on top of reduction plot**, or show a violin plot for expression
+
+```{r}
+#| echo: true
+#| fig-height: 3
+FeaturePlot(seurat, goodMarkers[1:3], cols=c("grey", "red"), reduction="umap", ncol=3)
+```
+
+## Ways to show expression
+
+We usually either show expression of top of reduction plot, or show a **violin plot** for expression
+
+```{r }
+#| echo: true
+#| fig-height: 3
+VlnPlot(seurat, goodMarkers[1:3], pt.size = 0.1)
+```
+
+## Communication is important
+
+-   When clusters are found we want to identify which cell subsets are presented, to "annotate" them
+-   If you are a bioinformatician and you are a single-cell RNA-seq dataset that have been designed/done by you, this is a perfect to time to go and talk to a biologist who performed/designed the experiment
+-   If you are a biologist who designed/performed single-cell RNA-seq experiment, chances are, you know all cellular subsets and markers better than almost anyone else
+-   This is where you communicate and try to make sense of the data
+
+## Differential expression in single-cell RNA-seq
+
+-   Within one dataset (comparing clusters, comparing a cluster vs all other clusters)
+-   Marker identification, population annotation
+-   This is OK, statistical power is enough to make conclusions about cellular populations within single-dataset
+
+## Differential expression in single-cell RNA-seq
+
+-   Between two datasets (comparing the same cells between samples A vs B)
+-   Only one biological replicate is present in the data :(
+-   Different noise levels in the samples
+
+## Differential expression in single-cell RNA-seq
+
+-   Between groups of samples (comparing the same cells between several samples of condition A vs several samples of condition B)
+-   More biological replicates :)
+-   Still different noise levels within the samples and within the groups
+-   Can we do it correctly?
+
+## Differential expression in single-cell RNA-seq
+
+![](images/de_false_discoveries.png)
+
+::: footer
+Paper:https://www.nature.com/articles/s41467-021-25960-2.pdf
+:::
+
+------------------------------------------------------------------------
+
+## Differential expression in single-cell RNA-seq
+
+![](images/de_test_design.png)
+
+::: footer
+Paper:https://www.nature.com/articles/s41467-021-25960-2.pdf
+:::
+
+------------------------------------------------------------------------
+
+## Differential expression in single-cell RNA-seq
+
+![](images/de_findings.png)
+
+::: footer
+Paper:https://www.nature.com/articles/s41467-021-25960-2.pdf
+:::
+
+------------------------------------------------------------------------
+
+## Takeaway messages about differential expression
+
+-   When you have an option - make more biological replicates and stick to pseudo-bulk DE. This will reduce false discoveries
+-   Latest chemistry from 10x enables samples multiplexing easier than before <https://www.10xgenomics.com/products/single-cell-fixed-rna-profiling>
+
+## Questions?

@@ -1,0 +1,35 @@
+/*-- scss:defaults --*/
+
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700);
+
+// fonts
+$font-family-sans-serif: 'Open Sans', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Microsoft YaHei', 'Songti SC', serif;
+$font-family-monospace: 'Source Code Pro', 'Lucida Console', Monaco, monospace;
+
+// font sizes defaults
+$presentation-font-size-root: 30px;
+$presentation-font-smaller: 0.7;
+$presentation-line-height: 1.3;
+
+
+// colors
+$body-bg: #ffffff !default;
+$body-color: #000 !default;
+$link-color: #51483d !default;
+$selection-bg: #26351c !default;
+
+// headings
+$presentation-heading-font: 'Roboto';
+$presentation-heading-color: #383d3d !default;
+
+/*-- scss:rules --*/
+
+.reveal a {
+  line-height: 1.3em;
+}
+
+.reveal .slide-logo {
+  max-height: 10rem !important;
+}
